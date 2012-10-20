@@ -1,0 +1,197 @@
+<technology-catalog>
+
+   <technologies>
+
+	 <technology name="JPA2" target-name="JPA2"
+         template-config-file-name="mp-template-config-JPA2.xml" 
+         default-outputdir="JPA2"
+         depends-on-targets="BSLA_LIB" 
+         template-dir="../../minuteTemplate/template/framework/jpa" 
+         status="released"
+         description="Generates:\JPA2 Domain entities with annotation\JPA2 metamodel for compilable criteria queries">
+	      <frameworks>
+	        <framework name="JPA" version="2"></framework>
+	      </frameworks>  	             
+	 </technology>  
+	 
+	 <technology name="Maven Spring Hibernate" target-name="MVN_SPRING_HIBERNATE_LAST"
+         template-config-file-name="mp-template-config-bsla-hibernate-last-features.xml" 
+         default-outputdir="bslaSpringHibernate"
+         template-dir="../../minuteTemplate/template/framework/bsla" 
+         status="released"
+         description="Generates Maven Spring Hibernate backend and advanced DAOs layer.">
+	      <frameworks>
+	        <framework name="Spring" version="2.5+"></framework>
+	        <framework name="Hibernate" version="3.2+"></framework>
+	        <framework name="ehCache" version=""></framework>
+	      </frameworks>  	             
+	 </technology>  
+
+	<technology name="Maven Spring JPA/Hibernate" 
+	   template-config-file-name="mp-template-config-bsla-JPA-last-features.xml" 
+	   default-outputdir="bslaSpringJPAHibernate"
+	   template-dir="../../minuteTemplate/template/framework/bsla"
+	   status="released"
+	   description="Generates Maven Spring JPA/Hibernate backend and advanced DAOs layer.">
+	      <frameworks>
+	        <framework name="Spring" version="2.5+"></framework>
+	        <framework name="Hibernate" version="3.2+"></framework>
+	        <framework name="JPA" version="1.0"></framework>
+	        <framework name="ehCache" version=""></framework>
+	      </frameworks>  	   
+	</technology> 	 
+
+	<technology name="FitNesse" 
+	   template-config-file-name="mp-template-config-fitnesse.xml" 
+	   default-outputdir="fitnesse"
+	   template-dir="../../minuteTemplate/template/framework/bsla"
+	   status="released"
+	   description="Generates FitNesse fixtures and wiki artifacts to perform CRUD operations on your backend. 
+	   \Generates setup fixture to set the connection pool and reset database data.">
+	      <frameworks>
+	        <framework name="FitNesse" version=""></framework>
+	        <framework name="Scriptella" version=""></framework>
+	        <framework name="MP 4 FitNesse" version=""></framework>
+	      </frameworks>  		   
+	</technology> 	
+
+	<technology name="BSLA_LIB" target-name="BSLA_LIB"
+	   template-config-file-name="mp-template-config-bsla-LIB-features.xml" 
+	   template-dir="../../minuteTemplate/template/framework/bsla"
+	   is-generable="false">
+	</technology> 	
+	
+	<technology name="JQUERY_LIB" target-name="JQUERY_LIB"
+	   template-config-file-name="mp-template-config-jquery-features.xml" 
+	   template-dir="../../minuteTemplate/template/framework/jquery"
+	   is-generable="false">
+	</technology> 	
+	
+	<technology name="JPA2_LIB" target-name="JPA2_LIB"
+	   template-config-file-name="mp-template-config-jquery-features.xml" 
+	   template-dir="../../minuteTemplate/template/framework/jpa"
+	   is-generable="false">
+	</technology> 		
+
+	<technology name="Spring Hibernate Standard" 
+     		template-config-file-name="mp-template-config-hibernate.xml"
+     		template-dir="../../minuteTemplate/template/framework/bsla"
+     		default-outputdir="springHibernate"
+     		status="released"
+     		description="Generates Spring Hibernate backend and DAO layer.">
+	      <frameworks>
+	        <framework name="Spring" version="1.2.5+"></framework>
+	        <framework name="Hibernate" version="3.2+"></framework>
+	      </frameworks>      		
+	</technology> 			 
+
+	<technology name="Spring iBatis Standard"  
+		template-config-file-name="mp-template-config-ibatis.xml" 
+		default-outputdir="springIbatis"
+		template-dir="../../minuteTemplate/template/framework/bsla"
+		status="released"
+		description="Generates Spring iBatis backend and DAO layer.">
+	      <frameworks>
+	        <framework name="Spring" version="1.2.5+"></framework>
+	        <framework name="iBatis" version=""></framework>
+	      </frameworks> 		
+	</technology> 			 
+		  
+	<technology name="Spring JPA Standard" 
+		template-config-file-name="mp-template-config-jpa.xml" 
+		default-outputdir="springJpa"
+		template-dir="../../minuteTemplate/template/framework/bsla"
+		status="released"
+		description="Generates Spring JPA/Hibernate backend and DAO layer.">
+	      <frameworks>
+	        <framework name="Spring" version="1.2.5+"></framework>
+	        <framework name="Hibernate" version="3.2+"></framework>
+	        <framework name="JPA" version="1.0"></framework>
+	      </frameworks> 		
+	</technology> 			 
+
+	 <technology name="OpenXava" 
+         template-config-file-name="mp-template-config-openxava-last-features.xml" 
+         default-outputdir="openxava"
+         template-dir="../../minuteTemplate/template/framework/openxava" 
+         depends-on-targets="BSLA_LIB,JPA2_LIB" 
+         status="released"
+         comment=""
+         description="Generates JPA and OX specific annotations as well as a web site to navigate and manipulate your datamodel.">   
+	      <frameworks>
+	        <framework name="OpenXava" version="4.0.1"></framework>
+	      </frameworks>        
+	 </technology>
+	 		 
+	 <technology name="Grails" 
+        template-config-file-name="mp-template-config-grails-last-features.xml" 
+        default-outputdir="grails"
+        template-dir="../../minuteTemplate/template/framework/grails" 
+        depends-on-targets="BSLA_LIB,JPA2_LIB,JQUERY_LIB" 
+        status="released"
+        comment=""
+        description="Generates grails artifacts:
+        \gorm groovy files\controllers standard and serving rest URL (json, xml)
+        \jQuery sample client
+        \Configs:\UrlMapping, DataSouce, BuildConfig\Misc scripts.">   
+	      <conventions>
+	        <convention name="version-convention" is-applied="true" description="Apply version for entities having the version column" helper="" defaultValue="version">
+	        </convention>
+	      </conventions>
+	      <limitations>
+	        <limitation name="Many-two-many" is-applied="true" description="Not applied: code generated for m2m relationships is commented" helper="" defaultValue="version"/>
+	        <limitation name="ID column not primary key" is-applied="true" description="compilation error of gorm will result" helper="" defaultValue="version"/>
+	        <!-- <limitation name="Version" is-applied="true" description="version column not handled for optimistic locking in this release" helper="" defaultValue="version"/>-->
+	      </limitations>	      
+	      <frameworks>
+	        <framework name="Grails" version="1.3.5"></framework>
+	      </frameworks>        
+	 </technology>
+
+	 <technology name="Play" 
+         template-config-file-name="mp-template-config-play-last-features.xml" 
+         default-outputdir="play"
+         template-dir="../../minuteTemplate/template/framework/play" 
+         depends-on-targets="BSLA_LIB,JPA2_LIB,JQUERY_LIB" 
+         status="released"
+         comment=""
+         description="Generates play artifacts:
+         \Domain model extending GenericModel
+         \Controllers standard and serving rest URL (json, xml)
+         \jQuery sample client
+         \Routes, application conf\Misc scripts.">   
+	      <limitations>
+	      </limitations>	      
+	      <frameworks>
+	        <framework name="Play" version="1.1"></framework>
+	      </frameworks>        
+	 </technology>
+	 	 	 		 
+	 <technology name="Vaadin" 
+	   template-config-file-name="mp-template-config-vaadin-last-features.xml" 
+	   default-outputdir="vaadin"
+	   template-dir="../../minuteTemplate/template/framework/vaadin"
+	   depends-on-targets="MVN_SPRING_HIBERNATE_LAST" 
+	   status="draft"
+	   description="Generates Vaadin Front end on top of a Maven Spring JPA/Hibernate backend and advanced DAOs layer.">
+	      <frameworks>
+	        <framework name="Vaadin" version="6.3+"></framework>
+	        <framework name="Toolkit productivity tools addon" version="1.1+"></framework>
+	      </frameworks>  		   
+	 </technology>	
+	   
+	 <technology 
+	   name="Roo" 
+	   template-config-file-name="mp-template-config-roo-last-features.xml" 
+	   default-outputdir="roo"
+	   template-dir="../../minuteTemplate/template/framework/roo"
+	   status="draft"
+	   description="Generates Roo backend artifacts">
+	      <frameworks>
+	        <framework name="Roo" version="1.1"></framework>
+	      </frameworks>  	   
+	</technology> 
+		  
+   </technologies>
+   
+</technology-catalog>

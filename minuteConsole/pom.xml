@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.minuteproject</groupId>
+  <artifactId>minuteConsole</artifactId>
+  <version>0.9</version>
+  <packaging>jar</packaging>
+  <name>minute project console</name>
+
+    <developers>
+        <developer><name>florian adler</name></developer>
+    </developers>
+
+    <properties>
+        <sl4j-release-version>1.6.4</sl4j-release-version>
+        <mainClass>net.sf.minuteProject.console.ConsoleSample</mainClass>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>net.sf.minuteproject</groupId>
+      <artifactId>minuteKernel</artifactId>
+      <version>0.9</version>
+    </dependency> 
+     <dependency>
+        <groupId>com.miglayout</groupId>
+        <artifactId>miglayout</artifactId>
+        <version>3.7.4</version> <!-- 3.6.3 -->
+    </dependency>
+      <dependency>
+          <groupId>org.apache.ant</groupId>
+          <artifactId>ant</artifactId>
+          <version>1.8.4</version>
+      </dependency>
+  </dependencies>
+
+    <build>
+    <finalName>mp-console</finalName>
+        <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>2.5.1</version>
+            <configuration>
+                <source>1.6</source>
+                <target>1.6</target>
+            </configuration>
+        </plugin>
+             <!-- http://mojo.codehaus.org/appassembler/appassembler-maven-plugin/usage-program.html
+                  http://mojo.codehaus.org/appassembler/appassembler-maven-plugin/usage-program-structure.html
+             TODO reuse local lib/*.jar
+             TODO http://stackoverflow.com/questions/97640/force-maven2-to-copy-dependencies-into-target-lib
+              -->
+        <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>appassembler-maven-plugin</artifactId>
+            <version>1.3</version>
+            <configuration>
+                <repositoryLayout>flat</repositoryLayout>   <!-- lib style -->
+                <platforms>
+                    <platform>windows</platform>
+                    <platform>unix</platform>
+                </platforms>
+                <programs>
+                    <program>
+                        <mainClass>${mainClass}</mainClass>
+                        <commandLineArguments>
+                            <commandLineArgument>../src/main/config/catalog/technology-catalog.xml</commandLineArgument>
+                        </commandLineArguments>
+                        <name>minuteProject: from Database to Java starter projects</name>
+                    </program>
+                </programs>
+            </configuration>
+        </plugin>
+        </plugins>
+    </build>
+
+
+
+</project>
