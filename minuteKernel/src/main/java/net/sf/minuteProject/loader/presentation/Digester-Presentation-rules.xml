@@ -1,0 +1,513 @@
+
+<!DOCTYPE digester-rules PUBLIC 
+        "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" 
+        "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<digester-rules>
+ <pattern value="dictionary">
+  <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Dictionary"/>
+  <set-next-rule methodname="setDictionary" paramtype="net.sf.minuteProject.loader.presentation.node.Dictionary"/>
+  <set-properties-rule/>
+  <bean-property-setter-rule  propertyname="name" pattern="name"/>
+  <pattern value="flow">
+   <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Flow"/>
+   <set-next-rule methodname="setFlow" paramtype="net.sf.minuteProject.loader.presentation.node.Flow"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <bean-property-setter-rule  propertyname="pageref" pattern="pageRef"/>
+   <pattern value="page">
+    <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Page"/>
+    <set-next-rule methodname="setPage" paramtype="net.sf.minuteProject.loader.presentation.node.Page"/>
+    <set-properties-rule/>
+    <bean-property-setter-rule  propertyname="name" pattern="name"/>
+    <bean-property-setter-rule  propertyname="id" pattern="id"/>
+    <bean-property-setter-rule  propertyname="windowref" pattern="windowRef"/>
+    <pattern value="window">
+     <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Window"/>
+     <set-next-rule methodname="setWindow" paramtype="net.sf.minuteProject.loader.presentation.node.Window"/>
+     <set-properties-rule/>
+     <bean-property-setter-rule  propertyname="name" pattern="name"/>
+     <bean-property-setter-rule  propertyname="id" pattern="id"/>
+     <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+     <bean-property-setter-rule  propertyname="blockref" pattern="blockRef"/>
+     <bean-property-setter-rule  propertyname="listblockref" pattern="listBlockRef"/>
+     <pattern value="block">
+      <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Block"/>
+      <set-next-rule methodname="setBlock" paramtype="net.sf.minuteProject.loader.presentation.node.Block"/>
+      <set-properties-rule/>
+      <bean-property-setter-rule  propertyname="name" pattern="name"/>
+      <bean-property-setter-rule  propertyname="id" pattern="id"/>
+      <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+      <bean-property-setter-rule  propertyname="componentref" pattern="componentRef"/>
+      <pattern value="component">
+       <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+       <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+       <set-properties-rule/>
+       <bean-property-setter-rule  propertyname="name" pattern="name"/>
+       <bean-property-setter-rule  propertyname="id" pattern="id"/>
+       <bean-property-setter-rule  propertyname="type" pattern="type"/>
+       <bean-property-setter-rule  propertyname="length" pattern="length"/>
+       <bean-property-setter-rule  propertyname="height" pattern="height"/>
+       <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+       <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+       <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+       <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+       <bean-property-setter-rule  propertyname="label" pattern="label"/>
+       <bean-property-setter-rule  propertyname="description" pattern="description"/>
+       <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+       <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+       <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+       <bean-property-setter-rule  propertyname="action" pattern="action"/>
+       <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+       <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+       <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+       <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+       <pattern value="valueList">
+        <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+        <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+        <set-properties-rule/>
+        <bean-property-setter-rule  propertyname="type" pattern="type"/>
+        <bean-property-setter-rule  propertyname="name" pattern="name"/>
+        <bean-property-setter-rule  propertyname="id" pattern="id"/>
+        <pattern value="valueElement">
+         <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+         <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+         <set-properties-rule/>
+         <bean-property-setter-rule  propertyname="name" pattern="name"/>
+         <bean-property-setter-rule  propertyname="value" pattern="value"/>
+        </pattern>
+       </pattern>
+      </pattern>
+     </pattern>
+     <pattern value="listblock">
+      <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Listblock"/>
+      <set-next-rule methodname="setListblock" paramtype="net.sf.minuteProject.loader.presentation.node.Listblock"/>
+      <set-properties-rule/>
+      <bean-property-setter-rule  propertyname="name" pattern="name"/>
+      <bean-property-setter-rule  propertyname="id" pattern="id"/>
+      <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+      <bean-property-setter-rule  propertyname="numberoflinemax" pattern="numberOfLineMax"/>
+      <bean-property-setter-rule  propertyname="haspagination" pattern="hasPagination"/>
+      <bean-property-setter-rule  propertyname="componentref" pattern="componentRef"/>
+      <pattern value="component">
+       <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+       <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+       <set-properties-rule/>
+       <bean-property-setter-rule  propertyname="name" pattern="name"/>
+       <bean-property-setter-rule  propertyname="id" pattern="id"/>
+       <bean-property-setter-rule  propertyname="type" pattern="type"/>
+       <bean-property-setter-rule  propertyname="length" pattern="length"/>
+       <bean-property-setter-rule  propertyname="height" pattern="height"/>
+       <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+       <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+       <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+       <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+       <bean-property-setter-rule  propertyname="label" pattern="label"/>
+       <bean-property-setter-rule  propertyname="description" pattern="description"/>
+       <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+       <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+       <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+       <bean-property-setter-rule  propertyname="action" pattern="action"/>
+       <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+       <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+       <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+       <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+       <pattern value="valueList">
+        <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+        <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+        <set-properties-rule/>
+        <bean-property-setter-rule  propertyname="type" pattern="type"/>
+        <bean-property-setter-rule  propertyname="name" pattern="name"/>
+        <bean-property-setter-rule  propertyname="id" pattern="id"/>
+        <pattern value="valueElement">
+         <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+         <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+         <set-properties-rule/>
+         <bean-property-setter-rule  propertyname="name" pattern="name"/>
+         <bean-property-setter-rule  propertyname="value" pattern="value"/>
+        </pattern>
+       </pattern>
+      </pattern>
+     </pattern>
+    </pattern>
+   </pattern>
+  </pattern>
+  <pattern value="page">
+   <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Page"/>
+   <set-next-rule methodname="setPage" paramtype="net.sf.minuteProject.loader.presentation.node.Page"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <bean-property-setter-rule  propertyname="windowref" pattern="windowRef"/>
+   <pattern value="window">
+    <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Window"/>
+    <set-next-rule methodname="setWindow" paramtype="net.sf.minuteProject.loader.presentation.node.Window"/>
+    <set-properties-rule/>
+    <bean-property-setter-rule  propertyname="name" pattern="name"/>
+    <bean-property-setter-rule  propertyname="id" pattern="id"/>
+    <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+    <bean-property-setter-rule  propertyname="blockref" pattern="blockRef"/>
+    <bean-property-setter-rule  propertyname="listblockref" pattern="listBlockRef"/>
+    <pattern value="block">
+     <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Block"/>
+     <set-next-rule methodname="setBlock" paramtype="net.sf.minuteProject.loader.presentation.node.Block"/>
+     <set-properties-rule/>
+     <bean-property-setter-rule  propertyname="name" pattern="name"/>
+     <bean-property-setter-rule  propertyname="id" pattern="id"/>
+     <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+     <bean-property-setter-rule  propertyname="componentref" pattern="componentRef"/>
+     <pattern value="component">
+      <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+      <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+      <set-properties-rule/>
+      <bean-property-setter-rule  propertyname="name" pattern="name"/>
+      <bean-property-setter-rule  propertyname="id" pattern="id"/>
+      <bean-property-setter-rule  propertyname="type" pattern="type"/>
+      <bean-property-setter-rule  propertyname="length" pattern="length"/>
+      <bean-property-setter-rule  propertyname="height" pattern="height"/>
+      <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+      <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+      <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+      <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+      <bean-property-setter-rule  propertyname="label" pattern="label"/>
+      <bean-property-setter-rule  propertyname="description" pattern="description"/>
+      <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+      <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+      <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+      <bean-property-setter-rule  propertyname="action" pattern="action"/>
+      <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+      <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+      <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+      <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+      <pattern value="valueList">
+       <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+       <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+       <set-properties-rule/>
+       <bean-property-setter-rule  propertyname="type" pattern="type"/>
+       <bean-property-setter-rule  propertyname="name" pattern="name"/>
+       <bean-property-setter-rule  propertyname="id" pattern="id"/>
+       <pattern value="valueElement">
+        <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+        <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+        <set-properties-rule/>
+        <bean-property-setter-rule  propertyname="name" pattern="name"/>
+        <bean-property-setter-rule  propertyname="value" pattern="value"/>
+       </pattern>
+      </pattern>
+     </pattern>
+    </pattern>
+    <pattern value="listblock">
+     <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Listblock"/>
+     <set-next-rule methodname="setListblock" paramtype="net.sf.minuteProject.loader.presentation.node.Listblock"/>
+     <set-properties-rule/>
+     <bean-property-setter-rule  propertyname="name" pattern="name"/>
+     <bean-property-setter-rule  propertyname="id" pattern="id"/>
+     <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+     <bean-property-setter-rule  propertyname="numberoflinemax" pattern="numberOfLineMax"/>
+     <bean-property-setter-rule  propertyname="haspagination" pattern="hasPagination"/>
+     <bean-property-setter-rule  propertyname="componentref" pattern="componentRef"/>
+     <pattern value="component">
+      <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+      <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+      <set-properties-rule/>
+      <bean-property-setter-rule  propertyname="name" pattern="name"/>
+      <bean-property-setter-rule  propertyname="id" pattern="id"/>
+      <bean-property-setter-rule  propertyname="type" pattern="type"/>
+      <bean-property-setter-rule  propertyname="length" pattern="length"/>
+      <bean-property-setter-rule  propertyname="height" pattern="height"/>
+      <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+      <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+      <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+      <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+      <bean-property-setter-rule  propertyname="label" pattern="label"/>
+      <bean-property-setter-rule  propertyname="description" pattern="description"/>
+      <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+      <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+      <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+      <bean-property-setter-rule  propertyname="action" pattern="action"/>
+      <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+      <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+      <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+      <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+      <pattern value="valueList">
+       <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+       <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+       <set-properties-rule/>
+       <bean-property-setter-rule  propertyname="type" pattern="type"/>
+       <bean-property-setter-rule  propertyname="name" pattern="name"/>
+       <bean-property-setter-rule  propertyname="id" pattern="id"/>
+       <pattern value="valueElement">
+        <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+        <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+        <set-properties-rule/>
+        <bean-property-setter-rule  propertyname="name" pattern="name"/>
+        <bean-property-setter-rule  propertyname="value" pattern="value"/>
+       </pattern>
+      </pattern>
+     </pattern>
+    </pattern>
+   </pattern>
+  </pattern>
+  <pattern value="window">
+   <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Window"/>
+   <set-next-rule methodname="setWindow" paramtype="net.sf.minuteProject.loader.presentation.node.Window"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+   <bean-property-setter-rule  propertyname="blockref" pattern="blockRef"/>
+   <bean-property-setter-rule  propertyname="listblockref" pattern="listBlockRef"/>
+   <pattern value="block">
+    <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Block"/>
+    <set-next-rule methodname="setBlock" paramtype="net.sf.minuteProject.loader.presentation.node.Block"/>
+    <set-properties-rule/>
+    <bean-property-setter-rule  propertyname="name" pattern="name"/>
+    <bean-property-setter-rule  propertyname="id" pattern="id"/>
+    <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+    <bean-property-setter-rule  propertyname="componentref" pattern="componentRef"/>
+    <pattern value="component">
+     <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+     <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+     <set-properties-rule/>
+     <bean-property-setter-rule  propertyname="name" pattern="name"/>
+     <bean-property-setter-rule  propertyname="id" pattern="id"/>
+     <bean-property-setter-rule  propertyname="type" pattern="type"/>
+     <bean-property-setter-rule  propertyname="length" pattern="length"/>
+     <bean-property-setter-rule  propertyname="height" pattern="height"/>
+     <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+     <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+     <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+     <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+     <bean-property-setter-rule  propertyname="label" pattern="label"/>
+     <bean-property-setter-rule  propertyname="description" pattern="description"/>
+     <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+     <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+     <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+     <bean-property-setter-rule  propertyname="action" pattern="action"/>
+     <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+     <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+     <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+     <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+     <pattern value="valueList">
+      <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+      <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+      <set-properties-rule/>
+      <bean-property-setter-rule  propertyname="type" pattern="type"/>
+      <bean-property-setter-rule  propertyname="name" pattern="name"/>
+      <bean-property-setter-rule  propertyname="id" pattern="id"/>
+      <pattern value="valueElement">
+       <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+       <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+       <set-properties-rule/>
+       <bean-property-setter-rule  propertyname="name" pattern="name"/>
+       <bean-property-setter-rule  propertyname="value" pattern="value"/>
+      </pattern>
+     </pattern>
+    </pattern>
+   </pattern>
+   <pattern value="listblock">
+    <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Listblock"/>
+    <set-next-rule methodname="setListblock" paramtype="net.sf.minuteProject.loader.presentation.node.Listblock"/>
+    <set-properties-rule/>
+    <bean-property-setter-rule  propertyname="name" pattern="name"/>
+    <bean-property-setter-rule  propertyname="id" pattern="id"/>
+    <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+    <bean-property-setter-rule  propertyname="numberoflinemax" pattern="numberOfLineMax"/>
+    <bean-property-setter-rule  propertyname="haspagination" pattern="hasPagination"/>
+    <bean-property-setter-rule  propertyname="componentref" pattern="componentRef"/>
+    <pattern value="component">
+     <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+     <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+     <set-properties-rule/>
+     <bean-property-setter-rule  propertyname="name" pattern="name"/>
+     <bean-property-setter-rule  propertyname="id" pattern="id"/>
+     <bean-property-setter-rule  propertyname="type" pattern="type"/>
+     <bean-property-setter-rule  propertyname="length" pattern="length"/>
+     <bean-property-setter-rule  propertyname="height" pattern="height"/>
+     <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+     <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+     <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+     <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+     <bean-property-setter-rule  propertyname="label" pattern="label"/>
+     <bean-property-setter-rule  propertyname="description" pattern="description"/>
+     <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+     <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+     <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+     <bean-property-setter-rule  propertyname="action" pattern="action"/>
+     <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+     <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+     <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+     <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+     <pattern value="valueList">
+      <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+      <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+      <set-properties-rule/>
+      <bean-property-setter-rule  propertyname="type" pattern="type"/>
+      <bean-property-setter-rule  propertyname="name" pattern="name"/>
+      <bean-property-setter-rule  propertyname="id" pattern="id"/>
+      <pattern value="valueElement">
+       <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+       <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+       <set-properties-rule/>
+       <bean-property-setter-rule  propertyname="name" pattern="name"/>
+       <bean-property-setter-rule  propertyname="value" pattern="value"/>
+      </pattern>
+     </pattern>
+    </pattern>
+   </pattern>
+  </pattern>
+  <pattern value="component">
+   <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+   <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <bean-property-setter-rule  propertyname="type" pattern="type"/>
+   <bean-property-setter-rule  propertyname="length" pattern="length"/>
+   <bean-property-setter-rule  propertyname="height" pattern="height"/>
+   <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+   <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+   <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+   <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+   <bean-property-setter-rule  propertyname="label" pattern="label"/>
+   <bean-property-setter-rule  propertyname="description" pattern="description"/>
+   <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+   <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+   <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+   <bean-property-setter-rule  propertyname="action" pattern="action"/>
+   <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+   <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+   <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+   <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+   <pattern value="valueList">
+    <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+    <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+    <set-properties-rule/>
+    <bean-property-setter-rule  propertyname="type" pattern="type"/>
+    <bean-property-setter-rule  propertyname="name" pattern="name"/>
+    <bean-property-setter-rule  propertyname="id" pattern="id"/>
+    <pattern value="valueElement">
+     <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+     <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+     <set-properties-rule/>
+     <bean-property-setter-rule  propertyname="name" pattern="name"/>
+     <bean-property-setter-rule  propertyname="value" pattern="value"/>
+    </pattern>
+   </pattern>
+  </pattern>
+  <pattern value="block">
+   <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Block"/>
+   <set-next-rule methodname="setBlock" paramtype="net.sf.minuteProject.loader.presentation.node.Block"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+   <bean-property-setter-rule  propertyname="componentref" pattern="componentRef"/>
+   <pattern value="component">
+    <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+    <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+    <set-properties-rule/>
+    <bean-property-setter-rule  propertyname="name" pattern="name"/>
+    <bean-property-setter-rule  propertyname="id" pattern="id"/>
+    <bean-property-setter-rule  propertyname="type" pattern="type"/>
+    <bean-property-setter-rule  propertyname="length" pattern="length"/>
+    <bean-property-setter-rule  propertyname="height" pattern="height"/>
+    <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+    <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+    <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+    <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+    <bean-property-setter-rule  propertyname="label" pattern="label"/>
+    <bean-property-setter-rule  propertyname="description" pattern="description"/>
+    <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+    <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+    <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+    <bean-property-setter-rule  propertyname="action" pattern="action"/>
+    <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+    <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+    <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+    <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+    <pattern value="valueList">
+     <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+     <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+     <set-properties-rule/>
+     <bean-property-setter-rule  propertyname="type" pattern="type"/>
+     <bean-property-setter-rule  propertyname="name" pattern="name"/>
+     <bean-property-setter-rule  propertyname="id" pattern="id"/>
+     <pattern value="valueElement">
+      <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+      <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+      <set-properties-rule/>
+      <bean-property-setter-rule  propertyname="name" pattern="name"/>
+      <bean-property-setter-rule  propertyname="value" pattern="value"/>
+     </pattern>
+    </pattern>
+   </pattern>
+  </pattern>
+  <pattern value="listBlock">
+   <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Listblock"/>
+   <set-next-rule methodname="setListblock" paramtype="net.sf.minuteProject.loader.presentation.node.Listblock"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <bean-property-setter-rule  propertyname="isform" pattern="isForm"/>
+   <bean-property-setter-rule  propertyname="numberoflinemax" pattern="numberOfLineMax"/>
+   <bean-property-setter-rule  propertyname="haspagination" pattern="hasPagination"/>
+   <bean-property-setter-rule  propertyname="componentref" pattern="componentRef"/>
+   <pattern value="component">
+    <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Component"/>
+    <set-next-rule methodname="setComponent" paramtype="net.sf.minuteProject.loader.presentation.node.Component"/>
+    <set-properties-rule/>
+    <bean-property-setter-rule  propertyname="name" pattern="name"/>
+    <bean-property-setter-rule  propertyname="id" pattern="id"/>
+    <bean-property-setter-rule  propertyname="type" pattern="type"/>
+    <bean-property-setter-rule  propertyname="length" pattern="length"/>
+    <bean-property-setter-rule  propertyname="height" pattern="height"/>
+    <bean-property-setter-rule  propertyname="helper" pattern="helper"/>
+    <bean-property-setter-rule  propertyname="validation" pattern="validation"/>
+    <bean-property-setter-rule  propertyname="ismandatory" pattern="isMandatory"/>
+    <bean-property-setter-rule  propertyname="valuelistref" pattern="valueListRef"/>
+    <bean-property-setter-rule  propertyname="label" pattern="label"/>
+    <bean-property-setter-rule  propertyname="description" pattern="description"/>
+    <bean-property-setter-rule  propertyname="editable" pattern="editable"/>
+    <bean-property-setter-rule  propertyname="visible" pattern="visible"/>
+    <bean-property-setter-rule  propertyname="isactionform" pattern="isActionForm"/>
+    <bean-property-setter-rule  propertyname="action" pattern="action"/>
+    <bean-property-setter-rule  propertyname="defaultvalue" pattern="defaultValue"/>
+    <bean-property-setter-rule  propertyname="examplevalue" pattern="exampleValue"/>
+    <bean-property-setter-rule  propertyname="positionx" pattern="positionX"/>
+    <bean-property-setter-rule  propertyname="positiony" pattern="positionY"/>
+    <pattern value="valueList">
+     <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+     <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+     <set-properties-rule/>
+     <bean-property-setter-rule  propertyname="type" pattern="type"/>
+     <bean-property-setter-rule  propertyname="name" pattern="name"/>
+     <bean-property-setter-rule  propertyname="id" pattern="id"/>
+     <pattern value="valueElement">
+      <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+      <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+      <set-properties-rule/>
+      <bean-property-setter-rule  propertyname="name" pattern="name"/>
+      <bean-property-setter-rule  propertyname="value" pattern="value"/>
+     </pattern>
+    </pattern>
+   </pattern>
+  </pattern>
+  <pattern value="valueList">
+   <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+   <set-next-rule methodname="setValuelist" paramtype="net.sf.minuteProject.loader.presentation.node.Valuelist"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="type" pattern="type"/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <pattern value="valueElement">
+    <object-create-rule classname="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+    <set-next-rule methodname="setValueelement" paramtype="net.sf.minuteProject.loader.presentation.node.Valueelement"/>
+    <set-properties-rule/>
+    <bean-property-setter-rule  propertyname="name" pattern="name"/>
+    <bean-property-setter-rule  propertyname="value" pattern="value"/>
+   </pattern>
+  </pattern>
+ </pattern>
+
+</digester-rules>

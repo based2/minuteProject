@@ -1,0 +1,20 @@
+<target name="SDD beans">		
+	<architecture-target name="SDD beans" description="Statement Driven Development beans">
+	</architecture-target>	
+
+	<template-target 
+    	name="SDD html client"
+		libdir="./lib/jQuery_LIB.vm"
+		outputdir="src/main/webapp"
+		package-root="">
+
+		<!-- SDD beans -->	
+		<template name="JQuerySDDSearchDatatableHtml" templateFileName="JQuerySDDSearchDatatableHtml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			file-extension="html" file-prefix="" file-suffix="Input" has-updatable-nature="true"
+			scope-specific-value="query" >
+		</template>	
+
+    </template-target>
+
+</target>

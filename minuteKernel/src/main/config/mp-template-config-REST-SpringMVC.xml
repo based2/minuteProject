@@ -1,0 +1,80 @@
+<target name="REST on top of BSLA">		
+	<architecture-target name="REST architecture artifacts" description="REST architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"></plugin>
+
+	<template-target 
+    	name="REST java set"
+		libdir="lib/SPRING_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" /> 
+
+		<template name="SpringMVCRestController" templateFileName="SpringMVCRestController.vm" 
+			file-extension="java" technicalPackage="rest" file-suffix="Resource" 
+			entity-specific="true" has-updatable-nature="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="implement-interface" value="false"></property>
+      		<property name="add-message-format" value="message-format"></property>
+		</template>
+
+	</template-target>
+
+	<template-target 
+    	name="REST java SDD set"
+		libdir="lib/SPRING_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+
+		<template name="SpringMVCSDDRestController" templateFileName="SpringMVCSDDRestController.vm" 
+			file-extension="java" technicalPackage="rest" file-suffix="Resource" 
+			scope-specific-value="query" has-updatable-nature="true" >
+      		<property name="add-message-format" value="message-format"></property>
+		</template>
+
+	</template-target>
+	
+	<template-target 
+    	name="REST web.xml config"
+		libdir="lib/SPRING_LIB.vm"
+		outputdir="src/main/webapp/WEB-INF"
+		package-root=""
+		belongToPackage="true">
+
+		<template name="WebXml.REST.BSLA" templateFileName="WebXml.REST.BSLA.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="web" has-updatable-nature="true"
+			application-specific="true" add-model-name="false" >
+		</template>
+
+		<template name="SpringMVCRestServletXml" templateFileName="SpringMVCRestServletXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="rest-servlet" has-updatable-nature="true"
+			application-specific="true" add-model-name="false" >
+		</template>
+
+		<template name="SpringMVCRestApplicationContextXml" templateFileName="SpringMVCRestApplicationContextXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="application-context" has-updatable-nature="true"
+			application-specific="true" add-model-name="false" >
+		</template>
+
+    </template-target>
+
+	<template-target 
+	    templatedir = "template" 
+		libdir=""
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="PomXml.REST.BSLA" templateFileName="PomXml.REST.BSLA.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>	
+					
+	</template-target>	  	
+  	         		
+</target>

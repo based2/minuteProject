@@ -1,0 +1,141 @@
+<target name="JSF">		
+	<architecture-target name="JSF primefaces" description="JSF primefaces architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="presentationUtils" className="net.sf.minuteProject.plugin.presentation.PresentationUtils"></plugin>
+
+	<template-target 
+    	name="JSF java set"
+		libdir="lib/JSF_LIB.vm,lib/EJB_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" />
+
+		<template name="JSFBeanManagerMenu" templateFileName="JSFPrimefacesMenuBean.vm" 
+			file-extension="java" technicalPackage="menu" file-suffix="Menu" 
+			model-specific="true" add-model-name="true" has-updatable-nature="true">
+		</template>	
+							 
+		<template name="JSFBeanManagerController" templateFileName="JSFBeanManagerController.vm" 
+			subdir="" outputsubdir="" technicalPackage="controller"
+			file-extension="java" file-prefix="" file-suffix="Controller" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<property name="add-backend-implementation" value="ejb"></property>
+		</template>
+
+		<template name="EJB3DaoImpl" templateFileName="EJB3DaoImpl.vm" 
+			file-extension="java" technicalPackage="dao.impl" file-suffix="DaoEJB" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="implement-interface" value="false"></property>
+		</template>		
+				
+	</template-target>
+
+  	<template-target 
+    	name="i18n set"
+		outputdir="src/main/resources"
+		belongToPackage="true">
+			 
+		<template name="JSFI18nProperties" templateFileName="I18nProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="i18n"
+			file-extension="properties" file-prefix="" file-suffix="" 
+			model-specific="true" has-updatable-nature="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="separator" value="_"/>
+		</template>
+
+	</template-target>
+		
+	<template-target 
+    	name="JSF xhtml set"
+		libdir="lib/JSF_LIB.vm"
+		outputdir="src/main/webapp"
+		package-root=""
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" /> 
+			 
+		<template name="JSFXhtmlCreateEntity" templateFileName="JSFXhtmlCreateEntity.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="Create" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		<template name="JSFXhtmlListEntity" templateFileName="JSFXhtmlListEntity.vm" 
+			file-extension="xhtml" technicalPackage="" file-suffix="List" 
+			entity-specific="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+        <template name="JSFXhtmlDecorator" templateFileName="JSFXhtmlDecorator.vm" 
+            file-extension="xhtml" technicalPackage="" file-suffix="_Decorator" 
+            application-specific="true" add-model-name="false">
+        </template>
+        
+        <template name="JSFXhtmlMenu" templateFileName="JSFPrimefacesMenuXhtml.vm" 
+            file-extension="xhtml" technicalPackage="" file-suffix="Menu" 
+            model-specific="true" add-model-dir-name="true" add-model-name="false">
+        </template>     
+        
+        <template name="JSFXhtmlPrimefacesBreadcrumbs" templateFileName="JSFXhtmlPrimefacesBreadcrumbs.vm" 
+            file-extension="xhtml" technicalPackage="" file-suffix="BreadCrumb" 
+            model-specific="true" add-model-dir-name="true" add-model-name="false" >
+        </template>     
+        
+        <template name="JSFPrimefacesIndexXhtml" templateFileName="JSFPrimefacesIndexXhtml.vm" 
+            file-extension="xhtml" technicalPackage="" file-suffix="index" 
+            application-specific="true" add-model-name="false" >
+        </template>     
+        
+        <template name="JSFCssDefault" templateFileName="JSFPrimefacesCss.vm" 
+            file-extension="css" technicalPackage="css" file-suffix="style" 
+            model-specific="true" add-model-name="false" add-model-dir-name="false" >
+        </template> 
+
+    </template-target>		
+
+	<template-target 
+    	name="JSF set"
+		libdir="lib/JSF_LIB.vm"
+		outputdir="src/main/webapp/WEB-INF"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="JSFWebXml" templateFileName="JSFWebXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="web" 
+			application-specific="true" add-model-name="false" >
+		</template>
+
+		<template name="JSFFaceConfigXml" templateFileName="JSFFaceConfigXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="faces-config" 
+			application-specific="true" add-model-name="false" >
+		</template>
+
+		<template name="JSFBeanXml" templateFileName="JSFBeanXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="beans" 
+			application-specific="true" add-model-name="false" >
+		</template>
+						
+    </template-target>
+
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="PomXml.JSF" templateFileName="PomXml.JSF.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+			<property name="add-backend-implementation" value="ejb"></property>
+		</template>	
+					
+	</template-target>
+
+</target>

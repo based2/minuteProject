@@ -1,0 +1,139 @@
+<target name="JOOQ">		
+	<architecture-target name="JOOQ" description="JOOQ architecture">
+	</architecture-target>	
+    <plugin name="jooqUtils" className="net.sf.minuteProject.plugin.jooq.JooqUtils"></plugin>
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="persistenceUtils" className="net.sf.minuteProject.plugin.persistence.PersistenceUtils"/>
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="enumUtils" className="net.sf.minuteProject.utils.EnumUtils"></plugin>	
+	
+	<template-target 
+    	name="JOOQ set"
+		libdir="lib/JOOQ_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="EnumerationReferenceData" value="JOOQ.enum"></property>
+		<property name="DomainEntityUMLTemplate" value="JOOQ.entity"></property>
+		<property name="jooq-reserved-word-in-method" value="table, fields, configuration"></property>
+		
+		<template name="JOOQ.entity" templateFileName="JOOQ.entity.vm" 
+			subdir="" outputsubdir="" technicalPackage="tables" add-business-package-dir-name="false"
+			file-extension="java" file-prefix="" file-suffix="" 
+			entity-specific="true" has-updatable-nature="true">
+		</template>
+		
+		<template name="JOOQ.record" templateFileName="JOOQ.record.vm" 
+			subdir="" outputsubdir="" technicalPackage="tables.records"
+			file-extension="java" file-prefix="" file-suffix="Record" add-business-package-dir-name="false"
+			entity-specific="true" has-updatable-nature="true">
+		</template>
+		
+<!-- 		<template name="JOOQ.stored-procedure" templateFileName="JOOQ.stored-procedure.vm" 
+			subdir="" outputsubdir="" technicalPackage="routines"
+			file-extension="java" file-prefix="" file-suffix="" 
+			function-specific="true" has-updatable-nature="true"
+			add-model-name="false">
+		</template>
+ -->
+		<template name="JOOQ.model" templateFileName="JOOQ.model.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="java" file-prefix="" file-suffix="" 
+			model-specific="true" has-updatable-nature="true">
+		</template>
+
+		<template name="JOOQ.model.factory" templateFileName="JOOQ.model.factory.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="java" file-prefix="" file-suffix="Factory" 
+			model-specific="true" has-updatable-nature="true">
+		</template>
+		
+		<template name="JOOQ.keys" templateFileName="JOOQ.keys.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			file-extension="java" file-prefix="Keys" file-suffix="" 
+			model-specific="true" has-updatable-nature="true"
+			add-model-name="false">
+		</template>
+		
+		<template name="JOOQ.tables" templateFileName="JOOQ.tables.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			file-extension="java" file-prefix="Tables" file-suffix="" 
+			model-specific="true" has-updatable-nature="true"
+			add-model-name="false">
+		</template>
+		
+		<!-- stored proc -->
+		<template name="JOOQ.routines" templateFileName="JOOQ.routines.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			file-extension="java" file-prefix="Routines" file-suffix="" 
+			model-specific="true" has-updatable-nature="true"
+			add-model-name="false">
+		</template>
+
+		<template name="JOOQ.stored-procedure" templateFileName="JOOQ.stored-procedure.vm" 
+			subdir="" outputsubdir="" technicalPackage="routines" has-updatable-nature="true"
+			file-extension="java" file-prefix="" file-suffix="" 
+			scope-specific-value="function" >
+		</template>
+
+        <!-- enumeration for reference data -->
+        <template name="JOOQ.enum" templateFileName="JOOQ.enum.vm" 
+            subdir="" outputsubdir="" technicalPackage="enums"
+            file-extension="java" file-prefix="" file-suffix="" 
+            field-specific="true" has-updatable-nature="true"
+            file-name-builder-plugin="referenceDataUtils"
+            file-name-builder-method="getEnumName"  
+            check-template-to-generate="true" 
+            is-template-to-generate-method="referenceDataUtils.isCandidateForReferenceDataGeneration">
+            <property name="generateForTag" value="checkconstraint"></property>
+        </template>
+
+    </template-target>
+
+	<template-target 
+    	name="JOOQ set"
+		libdir="lib/JOOQ_LIB.vm"
+		outputdir="src/test/java"
+		belongToPackage="true">
+		<property name="EnumerationReferenceData" value="JOOQ.enum"></property>
+		<property name="DomainEntityUMLTemplate" value="JOOQ.entity"></property>
+		
+		<template name="JOOQ.entity.unittest" templateFileName="JOOQ.entity.unittest.vm" 
+			subdir="" outputsubdir="" technicalPackage="tables" add-business-package-dir-name="false"
+			file-extension="java" file-prefix="Test" file-suffix="" 
+			entity-specific="true" has-updatable-nature="true">
+		</template>
+		
+	</template-target>
+	
+	<template-target 
+	    templatedir = "template" 
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="JOOQ.PomXml" templateFileName="JOOQ.PomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" has-updatable-nature="true"
+			application-specific="true" add-model-name="false">
+		</template>	
+					
+	</template-target>	  	
+  	         		
+	<template-target 
+	    templatedir = "jooq-generator-input" 
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="JOOQ.generator.input" templateFileName="JOOQ.generator.input.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true"
+			file-extension="properties" file-prefix="jooq-" file-suffix="" 
+			application-specific="true"  has-updatable-nature="true">
+		</template>	
+					
+	</template-target>	  	
+  	         		
+</target>

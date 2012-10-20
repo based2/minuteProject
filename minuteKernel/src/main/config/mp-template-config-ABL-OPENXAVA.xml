@@ -1,0 +1,69 @@
+<target name="ABL framework"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="mp-template-config.xsd">
+	<architecture-target name="ABL" description="Automated Business Logic architecture">
+	</architecture-target>	
+
+    <plugin name="ablUtils" className="net.sf.minuteProject.utils.rule.AblUtils"></plugin>
+
+	<template-target 
+    	name="ABL"
+		libdir="lib/ABL_LIB.vm"
+		outputdir="src">
+		<!-- ABL beans -->	
+		<template name="ABL.Logic" templateFileName="ABL.Logic.vm" 
+			subdir="" outputsubdir="" technicalPackage="businesslogic"
+			file-extension="groovy" file-prefix="" file-suffix="Logic" 
+            check-template-to-generate="true" 
+            is-template-to-generate-method="ablUtils.isToGenerateBasedRulePresence"
+			has-updatable-nature="true"
+			scope-specific-value="entity">
+			<property name="DomainEntityUMLTemplate" value="OpenxavaDomainObjectUML" ></property>  
+		</template>	
+		
+		<template name="ABL.LogicBase" templateFileName="ABL.LogicBase.vm" 
+			subdir="" outputsubdir="" technicalPackage="businesslogic"
+			file-extension="groovy" file-prefix="" file-suffix="BizLogicBase" 
+			has-updatable-nature="true" add-model-name="false"
+			scope-specific-value="model" >
+		</template>	
+
+        <template name="ABL.ConstraintExceptionTranslatorJCA" templateFileName="ABL.ConstraintExceptionTranslatorJCA.vm" 
+            subdir="" outputsubdir="" technicalPackage="businesslogic"
+            file-extension="java" file-prefix="" file-suffix="ConstraintExceptionTranslatorJCA" 
+            has-updatable-nature="true" add-model-name="false"
+            scope-specific-value="model" >
+        </template> 
+        
+        <template name="ABL.ConstraintViolation" templateFileName="ABL.ConstraintViolation.vm" 
+            subdir="" outputsubdir="" technicalPackage="businesslogic"
+            file-extension="java" file-prefix="" file-suffix="AblConstraintViolation" 
+            has-updatable-nature="true" add-model-name="false"
+            scope-specific-value="model" >
+        </template> 
+        
+    </template-target>
+    
+	<template-target 
+    	name="ABL"
+		outputdir="src"
+		package-root="">
+
+		<template name="ABL.Config" templateFileName="ABL.Config.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-dir-name="false"
+			file-extension="properties" file-prefix="" file-suffix="ABLConfig" 
+			has-updatable-nature="true" add-model-name="false"
+			application-specific="true" >
+			<property name="DomainEntityUMLTemplate" value="OpenxavaDomainObjectUML" ></property>    
+		</template>
+
+		<template name="ABL.Logging" templateFileName="ABL.Logging.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-dir-name="false"
+			file-extension="properties" file-prefix="" file-suffix="ABL_logging" 
+			has-updatable-nature="true" add-model-name="false"
+			application-specific="true" >
+		</template>
+
+    </template-target>
+</target>

@@ -1,0 +1,275 @@
+<target name="Roo">		
+	<architecture-target name="openxava" description="openxava architecture">
+	</architecture-target>	
+    <plugin name="hibernate3" className="net.sf.minuteProject.plugin.hibernate.Hibernate3"></plugin>
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="entitySecurityUtils" className="net.sf.minuteProject.utils.security.EntitySecurityUtils"/>
+	<plugin name="authorizationUtils" className="net.sf.minuteProject.utils.security.AuthorizationUtils"/>
+   	<plugin name="rooUtils" className="net.sf.minuteProject.plugin.roo.RooUtils"/>
+   	<plugin name="referenceUtils" className="net.sf.minuteProject.utils.ReferenceUtils"/>
+   	
+  	<template-target 
+    	name="Roo Console"
+		outputdir="roo-with-console"
+		package-root=""
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+			 
+		<template name="RooConsoleProjectSetup" templateFileName="RooConsoleProjectSetup.vm" 
+			add-model-dir-name="false"
+			file-extension="roo" file-prefix="" file-suffix="" 
+			model-specific="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+		</template>
+
+		<template name="RooConsoleProjectSetup" templateFileName="RooConsoleProjectSetup.vm" 
+			add-model-dir-name="false"
+			file-extension="cmd" file-prefix="" file-suffix="-roo" 
+			model-specific="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="showShellCommand" value="true"/>
+		</template>
+		
+		<template name="RooConsoleProjectSetup" templateFileName="RooConsoleProjectSetup.vm" 
+			add-model-dir-name="false"
+			file-extension="sh" file-prefix="" file-suffix="-roo" 
+			model-specific="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="showShellCommand" value="true"/>
+		</template>	
+
+		<template name="RooVaadinBuildCommandWindows" templateFileName="RooVaadinBuildCommandWindows.vm" 
+			add-model-dir-name="false"
+			file-extension="cmd" file-prefix="build-" file-suffix="-roo-vaadin" 
+			model-specific="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="showShellCommand" value="true"/>
+		</template>	
+		
+		<template name="RooVaadinCommand" templateFileName="RooVaadinCommand.vm" 
+			add-model-dir-name="false"
+			file-extension="cmd" file-prefix="" file-suffix="-roo-vaadin" 
+			model-specific="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="showShellCommand" value="true"/>
+		</template>	
+		
+		<template name="RooVaadinCommand" templateFileName="RooVaadinCommand.vm" 
+			add-model-dir-name="false"
+			file-extension="sh" file-prefix="" file-suffix="-roo-vaadin" 
+			model-specific="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+     		<property name="showShellCommand" value="true"/>
+		</template>	
+							
+	</template-target>
+	
+  	<template-target 
+    	name="Roo backend"
+		outputdir="roo-with-console/src-generated/main/java"
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+			 
+		<template name="RooEntityAj" templateFileName="RooEntityAj.vm" 
+			file-extension="aj" file-suffix="_Roo_Entity" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" 
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+      
+		<template name="RooDomainObject" templateFileName="RooDomainObject.vm" 
+			file-extension="java" file-suffix="" technicalPackage="domain"
+			entity-specific="true" is-to-generate="false" 
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>		
+		
+		<template name="RooEntityToStringAj" templateFileName="RooEntityToStringAj.vm" 
+			file-extension="aj" file-suffix="_Roo_ToString" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+											
+	</template-target>	
+
+  	<template-target 
+    	name="Roo backend"
+		outputdir="roo-with-console/src-generated/main/resources"
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+			
+		<template package-root="META-INF"
+			name="RooPersistenceXml" templateFileName="RooPersistenceXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="persistence" 
+			model-specific="true">
+		</template>	
+									
+	</template-target>	
+
+  	<template-target 
+    	name="Roo backend"
+		outputdir="roo-with-console/"
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+			
+		<template package-root=""
+			name="RooPomXml" templateFileName="RooPomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="pom" file-suffix="-generated" 
+			model-specific="true">
+		</template>	
+									
+	</template-target>	
+			
+  	<template-target 
+    	name="Roo backend"
+		outputdir="roo-with-console/src-generated/test/java"
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+			 
+		<template name="RooIntegrationTestAj" templateFileName="RooIntegrationTestAj.vm" 
+			file-extension="aj" file-suffix="IntegrationTest_Roo_IntegrationTest" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		<template name="RooDomainDataOnDemand" templateFileName="RooDomainDataOnDemand.vm" 
+			file-extension="java" file-suffix="DataOnDemand" technicalPackage="domain"
+			entity-specific="true" is-to-generate="false" check-template-to-generate="true">
+		</template>			
+		
+		<template name="RooIntegrationTest" templateFileName="RooIntegrationTest.vm" 
+			file-extension="java" file-suffix="IntegrationTest" technicalPackage="domain"
+			entity-specific="true" is-to-generate="false" check-template-to-generate="true">
+		</template>	
+							
+	</template-target>	
+
+    <!-- ROO without console -->	
+  	<template-target 
+    	name="Roo backend without console main"
+		outputdir="roo-without-console/src/main/java"
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+			 
+		<template name="RooEntityAj" templateFileName="RooEntityAj.vm" 
+			file-extension="aj" file-suffix="_Roo_Entity" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+		<template name="RooConfigurableAj" templateFileName="RooConfigurableAj.vm" 
+			file-extension="aj" file-suffix="_Roo_Configurable" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+		<template name="RooJavaBeanAj" templateFileName="RooJavaBeanAj.vm" 
+			file-extension="aj" file-suffix="_Roo_JavaBean" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>		
+		
+		<template name="RooDomainObject" templateFileName="RooDomainObject.vm" 
+			file-extension="java" file-suffix="" technicalPackage="domain"
+			entity-specific="true">
+		</template>		
+		
+		<template name="RooEntityToStringAj" templateFileName="RooEntityToStringAj.vm" 
+			file-extension="aj" file-suffix="_Roo_ToString" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+											
+	</template-target>	
+
+  	<template-target 
+    	name="Roo backend without console resources"
+		outputdir="roo-without-console/src/main/resources"
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+			
+		<template package-root="META-INF"
+			name="RooPersistenceXml" templateFileName="RooPersistenceXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="persistence" 
+			model-specific="true">
+		</template>	
+							
+		<template package-root="META-INF/spring"
+			name="RooApplicationContextXml" templateFileName="RooApplicationContextXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="applicationContext" 
+			model-specific="true">
+		</template>	
+		
+		<template package-root="META-INF/spring"
+			name="RooDatabaseProperties" templateFileName="RooDatabaseProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="properties" file-prefix="" file-suffix="database" 
+			model-specific="true">
+		</template>			
+											
+	</template-target>	
+
+  	<template-target 
+    	name="Roo backend without console pom"
+		outputdir="roo-without-console/"
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+			
+		<template package-root=""
+			name="RooPomXml" templateFileName="RooPomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			model-specific="true">
+		</template>	
+									
+	</template-target>	
+			
+  	<template-target 
+    	name="Roo backend without console test"
+		outputdir="roo-without-console/src/test/java"
+		libdir="lib/Roo_LIB.vm"
+		belongToPackage="true">
+		
+		<template name="RooDomainDataOnDemand" templateFileName="RooDomainDataOnDemand.vm" 
+			file-extension="java" file-suffix="DataOnDemand" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>			
+		
+		<template name="RooIntegrationTestJava" templateFileName="RooIntegrationTestJava.vm" 
+			file-extension="java" file-suffix="IntegrationTest" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+
+		<template name="RooIntegrationTestAj" templateFileName="RooIntegrationTestAj.vm" 
+			file-extension="aj" file-suffix="IntegrationTest_Roo_IntegrationTest" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+		
+		<template name="RooEntityDataOnDemandAj" templateFileName="RooEntityDataOnDemandAj.vm" 
+			file-extension="aj" file-suffix="DataOnDemand_Roo_DataOnDemand" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>		
+
+		<template name="RooIntegrationTestConfigurableAj" templateFileName="RooIntegrationTestConfigurableAj.vm" 
+			file-extension="aj" file-suffix="IntegrationTest_Roo_Configurable" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+		
+		<template name="RooEntityDataOnDemandConfigurableAj" templateFileName="RooEntityDataOnDemandConfigurableAj.vm" 
+			file-extension="aj" file-suffix="DataOnDemand_Roo_Configurable" technicalPackage="domain"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+											
+	</template-target>	
+    
+</target>

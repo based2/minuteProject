@@ -1,0 +1,17 @@
+<target name="WSDL first">		
+	<architecture-target name="WSDL first" description="starts from wsdl to generate maven jax-ws project"/>	
+	<plugin name="wsdlUtils" className="net.sf.minuteProject.utils.wsdl.WsdlUtils"></plugin>
+
+	<template-target 
+	    templatedir = "template" 
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		<template name="WSDLVaadinClientApp" templateFileName="WSDLVaadinClientApp.vm" 
+			subdir="" outputsubdir="" technicalPackage="vaadin" has-updatable-nature="true"
+			file-extension="java" file-prefix="Vaadin" file-suffix="App" 
+			scope-specific-value="wsdl"  >
+		</template>
+	</template-target>	
+	
+</target>	

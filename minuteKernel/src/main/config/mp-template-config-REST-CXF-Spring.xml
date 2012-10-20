@@ -1,0 +1,97 @@
+<target name="REST with CXF on top of BSLA">		
+	<architecture-target name="REST architecture artifacts" description="REST architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"></plugin>
+
+	<template-target 
+    	name="REST java set"
+		libdir="lib/CXF_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" /> 
+
+		<template name="CXFSpringEntityResource" templateFileName="CXFSpringEntityResource.vm" 
+			file-extension="java" technicalPackage="rest" file-suffix="Resource" 
+			entity-specific="true" has-updatable-nature="true" 
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="implement-interface" value="false"></property>
+      		<property name="add-message-format" value="message-format"></property>
+		</template>
+
+	</template-target>
+	
+	<template-target 
+    	name="REST java SDD set"
+		libdir="lib/CXF_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+
+		<template name="CXFSpringSDDJsonResource" templateFileName="CXFSpringSDDResource.vm" 
+			file-extension="java" technicalPackage="rest" file-suffix="JsonResource" 
+			scope-specific-value="query" has-updatable-nature="true" >
+      		<property name="add-message-format" value="message-format"></property>
+      		<property name="add-format" value="json"></property>
+		</template>
+
+		<template name="CXFSpringSDDXmlResource" templateFileName="CXFSpringSDDResource.vm" 
+			file-extension="java" technicalPackage="rest" file-suffix="XmlResource" 
+			scope-specific-value="query" has-updatable-nature="true" >
+      		<property name="add-message-format" value="message-format"></property>
+      		<property name="add-format" value="xml"></property>
+		</template>
+
+        <template name="CXFSpringSDDCompositeJsonResource" templateFileName="CXFSpringSDDCompositeResource.vm" 
+            file-extension="java" technicalPackage="rest" file-suffix="CompositeJsonResource" 
+            scope-specific-value="composite" has-updatable-nature="true" >
+      		<property name="add-message-format" value="message-format"></property>
+      		<property name="add-format" value="json"></property>     
+        </template>
+
+        <template name="CXFSpringSDDCompositeXmlResource" templateFileName="CXFSpringSDDCompositeResource.vm" 
+            file-extension="java" technicalPackage="rest" file-suffix="CompositeXmlResource" 
+            scope-specific-value="composite" has-updatable-nature="true" >
+      		<property name="add-message-format" value="message-format"></property>
+      		<property name="add-format" value="xml"></property>     
+        </template>
+
+	</template-target>
+
+	<template-target 
+    	name="REST web.xml config"
+		libdir="lib/CXF_LIB.vm"
+		outputdir="src/main/webapp/WEB-INF"
+		package-root=""
+		belongToPackage="true">
+
+		<template name="CXFSpringWebXml" templateFileName="CXFSpringWebXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="web" has-updatable-nature="true"
+			application-specific="true" add-model-name="false" >
+		</template>
+
+		<template name="CXFSpringConfig" templateFileName="CXFSpringConfig.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="application-context" has-updatable-nature="true"
+			application-specific="true" add-model-name="false" >
+		</template>
+
+    </template-target>
+
+	<template-target 
+	    templatedir = "template" 
+		libdir=""
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="PomXml.CXF.BSLA" templateFileName="PomXml.CXF.BSLA.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>	
+					
+	</template-target>	  	
+  	         		
+</target>

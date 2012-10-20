@@ -1,0 +1,136 @@
+<target name="JPA2">		
+	<architecture-target name="JPA2" description="JPA2 architecture">
+	</architecture-target>	
+    <plugin name="hibernate3" className="net.sf.minuteProject.plugin.hibernate.Hibernate3"></plugin>
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="entitySecurityUtils" className="net.sf.minuteProject.utils.security.EntitySecurityUtils"/>
+	<plugin name="jpa2Utils" className="net.sf.minuteProject.plugin.jpa.Jpa2Utils"/>
+	<plugin name="persistenceUtils" className="net.sf.minuteProject.plugin.persistence.PersistenceUtils"/>
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="jaxbUtils" className="net.sf.minuteProject.utils.binding.JaxbUtils"></plugin>	
+	
+	<template-target 
+    	name="JPA set"
+		libdir="lib/JPA2_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		
+		<template name="DomainEntityJPA2Annotation" templateFileName="DomainEntityJPA2Annotation.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="" 
+			entity-specific="true" package-specific="false" 
+			model-specific="false" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="convertClobToString" value="true"/>
+      		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property> 
+      		<property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2" ></property>    		
+      		<property name="DomainEntityJPA2EmbeddedId" value="DomainEntityJPA2EmbeddedId" ></property>   		
+		</template>
+		
+		<template name="DomainEntityJPA2Metamodel" templateFileName="DomainEntityJPA2Metamodel.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="_" 
+			entity-specific="true" package-specific="false" model-specific="false"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property>
+      		<property name="EnumerationReferenceData" value="EnumerationReferenceDataJPA2" ></property>
+		    <property name="DomainEntityJPA2EmbeddedId" value="DomainEntityJPA2EmbeddedId" ></property> 
+		</template>		
+
+		<template name="DomainEntityJPA2EmbeddedId" templateFileName="DomainEntityJPA2EmbeddedId.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="Id" 
+			entity-specific="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnCompositePKNotMany2Many">
+      		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property>
+		</template>		
+
+		<!-- enumeration for reference data -->
+		<template name="EnumerationReferenceDataJPA2" templateFileName="EnumerationReferenceData.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain.enumeration"
+			file-extension="java" file-prefix="" file-suffix="Enum" 
+			field-specific="true"  has-updatable-nature="true"
+			file-name-builder-plugin="referenceDataUtils"
+			file-name-builder-method="getEnumName"
+            check-template-to-generate="true" 
+            is-template-to-generate-method="referenceDataUtils.isCandidateForReferenceDataGeneration">
+			<property name="generateForTag" value="checkconstraint"></property>
+		</template>
+
+    </template-target>
+
+	<template-target 
+    	name="web-inf config"
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir="src/main/resources"
+		belongToPackage="true">
+
+		<template package-root="META-INF"
+			name="Persistence.xml.JPA2" templateFileName="Persistence.xml.JPA2.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="persistence" has-updatable-nature="true"
+			entity-specific="false" package-specific="false" model-specific="true">
+<!-- 			<property name="environment" value="remote"/> -->
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property>
+		</template>
+
+		<template name="EhCacheXml" templateFileName="EhCache.Xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="ehcache" file-suffix="" 
+			application-specific="true" package-root=""
+			add-model-name="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresence">
+			<property name="property-presence" value="add-cache-implementation" ></property>
+		</template>
+
+  	</template-target>
+
+	<template-target 
+    	name="web-inf config"
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir="src/test/resources"
+		belongToPackage="true">			
+
+		<template package-root="META-INF"
+			name="Persistence.xml.JPA2" templateFileName="Persistence.xml.JPA2.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="persistence" has-updatable-nature="true"
+			entity-specific="false" package-specific="false" model-specific="true">
+			<property name="environment" value="local"/>
+			<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" ></property>
+		</template>
+
+  	</template-target>
+
+	<template-target 
+		libdir="lib/BslaLibrary.vm,lib/Maven_LIB.vm"
+		tool="velocity"
+		outputdir="src-overwritten/main/resources"
+		package-root="">	
+		<template name="MavenOverwrittenReadMe" templateFileName="MavenOverwrittenReadMe.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="txt" file-prefix="" file-suffix="README" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>					
+	</template-target>
+	  	  	
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="PomXml.JPA2" templateFileName="PomXml.JPA2.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>	
+					
+	</template-target>	  	
+  	         		
+</target>

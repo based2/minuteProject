@@ -1,0 +1,197 @@
+<target name="fitnesse">		
+	<architecture-target name="fitnesse" description="fitness templates">
+	</architecture-target>	
+	<plugin name="restrictedCodeUtils" 	className="net.sf.minuteProject.utils.code.RestrictedCodeUtils"></plugin>
+	<plugin name="schemaUtils" className="net.sf.minuteProject.plugin.database.SchemaUtils"></plugin>
+	<plugin name="fitnesseUtils" className="net.sf.minuteProject.plugin.fitnesse.FitnesseUtils"></plugin>
+	
+	<template-target 
+	   name="fitnesse CRUD Wiki templates" 
+	   package-root="TestFitnesseCrud"
+	   outputdir="src-wiki/FitNesseRoot"
+	   belongToPackage="true">
+	
+		<!-- select fixture -->
+	    <!-- set a directory for the entity -->
+		<!-- change to content.txt-->
+		<template name="FitnesseWikiEntityCRUDSnippetContent" templateFileName="FitnesseWikiEntityCRUDSnippetContent.vm" 
+			subdir="" outputsubdir="" technicalPackage="fitnesse.fixture.crud"
+			file-extension="txt" file-prefix="" file-suffix="content" 
+			entity-specific="true" package-specific="false" model-specific="false"
+      		add-entity-dir-name="true" add-scope-name="false"  add-technical-dir-name="false" add-business-package-dir-name="false" 
+      		entity-dir-name-format="FORMAT_UPPER_CASE_FIRST_LETTER_ONLY_JAVA_CLASS" 
+      		entity-dir-name-prefix="Test"
+      		package-name-builder-plugin="fitnesseUtils"
+			package-name-builder-method="getRenderingEntityPackageName"	>
+			<property name="package-appender" value="Crud"/>      		
+		</template>
+    
+		<!-- datasource snippet -->
+		<!-- set a directory for the entity -->
+		<!-- change to content.txt-->
+		<template name="FitnesseWikiDBConnectionSnippetContent" templateFileName="FitnesseWikiDBConnectionSnippetContent.vm" 
+			subdir="" outputsubdir="" technicalPackage="DbConnection"
+			file-extension="txt" file-prefix="" file-suffix="content" 
+			entity-specific="false" package-specific="false" model-specific="true"
+      		add-technical-dir-name="true" add-business-package-dir-name="false" 
+      		add-model-dir-name="false" add-scope-name="false" 
+      		package-name-builder-plugin="fitnesseUtils"
+			package-name-builder-method="getRenderingModelPackageName"	>
+			<property name="package-appender" value="Crud"/> 
+		</template>
+
+		<template name="FitnesseWikiSiteSnippetContent" templateFileName="FitnesseWikiSiteSnippetContent.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="txt" file-prefix="" file-suffix="content" 
+			entity-specific="false" package-specific="false" model-specific="true"
+      		add-entity-dir-name="false" add-scope-name="false" 
+      		add-technical-dir-name="false" add-business-package-dir-name="false" 
+      		add-model-dir-name="false"
+      		package-name-builder-plugin="fitnesseUtils"
+			package-name-builder-method="getRenderingModelPackageName"	>
+			<property name="package-appender" value="Crud"/>       		
+		</template>
+  </template-target>	
+  
+
+	<template-target 
+	   name="fitnesse CRUD Wiki templates" 
+	   outputdir="src-wiki/FitNesseRoot"
+	   package-root="TestFitnesse"
+       belongToPackage="true">
+	
+		<!-- select fixture -->
+	    <!-- set a directory for the entity -->
+		<!-- change to content.txt-->
+		<template name="FitnesseWikiEntitySnippetContent" templateFileName="FitnesseWikiEntitySnippetContent.vm" 
+			subdir="" outputsubdir="" technicalPackage="fitnesse.fixture"
+			file-extension="txt" file-prefix="" file-suffix="content" 
+			entity-specific="true" package-specific="false" model-specific="false"
+      		add-entity-dir-name="true" add-scope-name="false"  add-technical-dir-name="false" add-business-package-dir-name="false"
+      		entity-dir-name-format="FORMAT_UPPER_CASE_FIRST_LETTER_ONLY_JAVA_CLASS"
+      		entity-dir-name-prefix="Test"
+      		package-name-builder-plugin="fitnesseUtils"
+			package-name-builder-method="getRenderingEntityPackageName"	>
+			<property name="package-appender" value="Select"/>
+		</template>
+		
+		<!-- set a directory for the entity -->
+		<!-- datasource snippet -->
+		<!-- set a directory for the entity -->
+		<!-- change to content.txt-->
+		<template name="FitnesseWikiDBConnectionSnippetContent" templateFileName="FitnesseWikiDBConnectionSnippetContent.vm" 
+			subdir="" outputsubdir="" technicalPackage="DbConnection"
+			file-extension="txt" file-prefix="" file-suffix="content" 
+			entity-specific="false" package-specific="false" model-specific="true"
+      		add-technical-dir-name="true" add-business-package-dir-name="false" add-model-dir-name="false" add-scope-name="false" 
+      		entity-dir-name-format="FORMAT_UPPER_CASE_FIRST_LETTER_ONLY_JAVA_CLASS"
+      		package-name-builder-plugin="fitnesseUtils"
+			package-name-builder-method="getRenderingModelPackageName"	>
+			<property name="package-appender" value="Select"/>
+		</template>
+		
+		<!-- set a directory for the entity -->
+		<template name="FitnesseWikiSiteSnippetContent" templateFileName="FitnesseWikiSiteSnippetContent.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="txt" file-prefix="" file-suffix="content" 
+			entity-specific="false" package-specific="false" model-specific="true"
+      		add-entity-dir-name="false" add-scope-name="false" 
+      		add-technical-dir-name="false" add-business-package-dir-name="false" add-model-dir-name="false"
+      		package-name-builder-plugin="fitnesseUtils"
+			package-name-builder-method="getRenderingModelPackageName"	>
+			<property name="package-appender" value="Select"/>
+		</template>
+  </template-target>		
+
+	<template-target 
+	   name="fitnesse DB setup Wiki templates" 
+	   libdir="lib/BslaLibrary.vm"
+	   package-root="TestFitnesseSetup"
+	   outputdir="src-wiki/FitNesseRoot"
+	   belongToPackage="true">
+
+		<template name="FitnesseWikiDBSetupSnippetContent" templateFileName="FitnesseWikiDBSetupSnippetContent.vm" 
+			subdir="" outputsubdir="" technicalPackage="Setup"
+			file-extension="txt" file-prefix="" file-suffix="content" 
+			entity-specific="false" package-specific="false" model-specific="true" add-model-dir-name="false"
+      		add-entity-dir-name="false" add-scope-name="false"  add-technical-dir-name="false" add-business-package-dir-name="false" 
+      		entity-dir-name-format="FORMAT_UPPER_CASE_FIRST_LETTER_ONLY_JAVA_CLASS" 
+      		package-name-builder-plugin="fitnesseUtils"
+			package-name-builder-method="getRenderingModelPackageName"	>
+			<property name="package-appender" value="Setup"/>
+		</template>
+    
+    </template-target>
+    	
+  <template-target 
+	   name="fitnesse fixture" 
+	   outputdir="src/main/java"
+		belongToPackage="true">
+	
+		<!-- select fixture -->
+		<template name="FitnesseSelectTableFixture" templateFileName="FitnesseSelectTableFixture.vm" 
+			subdir="" outputsubdir="" technicalPackage="fitnesse.fixture" 
+			file-extension="java" file-prefix="" file-suffix="TableFixture" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>		
+
+		<template name="FitnesseEntityCRUDColumnFixture" templateFileName="FitnesseEntityCRUDColumnFixture.vm" 
+			subdir="" outputsubdir="" technicalPackage="fitnesse.fixture.crud"
+			file-extension="java" file-prefix="" file-suffix="ColumnFixture" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+
+		<template name="QueryFixture" templateFileName="FitnesseQueryColumnFixture.vm" 
+			subdir="" outputsubdir="" technicalPackage="fitnesse.fixture.query"
+			file-extension="java" file-prefix="" file-suffix="ColumnFixture" 
+			scope-specific-value="query">
+		</template>	
+		
+		<template name="FitnesseLog4j" templateFileName="FitnesseLog4j.vm" 
+			subdir="" outputsubdir="" technicalPackage="" package-root=""
+			file-extension="properties" file-prefix="log4j" file-suffix="" add-model-name="false"
+			application-specific="true"  has-updatable-nature="true">
+		</template>	
+
+	</template-target>	
+	
+    <template-target 
+	   name="database setup" 
+	   outputdir="src/main/resources"
+	   package-root=""
+		belongToPackage="true">
+	
+		<template name="ScriptellaResetDbEtlXml" templateFileName="ScriptellaResetDbEtlXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="etl" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>		
+		
+		<!-- db properties -->
+		<template name="DatabaseConnectionProperties" templateFileName="DatabaseConnectionProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="properties" file-prefix="db" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>	
+		
+		<template name="DBSchemaDeleteOrder" templateFileName="DBSchemaDeleteOrder.vm" 
+			subdir="" outputsubdir="" technicalPackage="sql"  has-updatable-nature="true"
+			file-extension="sql" file-prefix="reset_db" file-suffix="" 
+			model-specific="true" add-model-name="false" add-model-dir-name="false">
+		</template>	
+
+		<template name="InsertEnumerationSQL" templateFileName="InsertEnumerationSQL.vm" 
+			subdir="" outputsubdir="" technicalPackage="sql" has-updatable-nature="true"
+			file-extension="sql" file-prefix="insert_reference_data" file-suffix="" 
+			model-specific="true" add-model-name="false" add-model-dir-name="false">
+		</template>	
+
+		<template name="DBCommit" templateFileName="DBCommit.vm" 
+			subdir="" outputsubdir="" technicalPackage="sql"
+			file-extension="sql" file-prefix="commit" file-suffix="" 
+			model-specific="true" add-model-name="false" add-model-dir-name="false">
+		</template>	
+				
+	</template-target>	
+
+</target>	

@@ -1,0 +1,23 @@
+<target name="Helper snippet">	
+
+	<architecture-target name="Vaadin" description="Vaadin Front End Architecture">
+	</architecture-target>	
+
+	<template-target 
+        name="helper"
+	    templatedir = "" 
+		tool="velocity"
+		package-root=""
+		libdir=""
+		outputdir="other/config"
+		belongToPackage="true">
+			 
+		<template name="PackageSecuritySnippet" templateFileName="PackageSecuritySnippet.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="mp-config-snippet" file-suffix="" 
+			application-specific="true" add-model-name="false">			
+		</template>
+		
+	</template-target>		
+
+</target>

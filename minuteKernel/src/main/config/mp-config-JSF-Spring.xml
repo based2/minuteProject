@@ -1,0 +1,172 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>	
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo">			
+			<data-model>
+			    <driver groupId="org.apache.derby" artifactId="derby" version="10.8.1.2"/>
+			    <fileSource name="petshop" dir="c:/MinuteProject/data">
+			    </fileSource>
+			    <!--
+			    <dataSource>	
+					<driverClassName>org.apache.derby.jdbc.ClientDriver</driverClassName>
+					<url>jdbc:derby://localhost:1527/sample</url>
+					<username>app</username>
+					<password>app</password>	
+				</dataSource>
+				<schema>app</schema>			    
+			    -->	
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>	
+											 
+                <primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+                    <primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+                </primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+					<condition type="exclude" startsWith="ID_GEN"></condition>
+					<condition type="exclude" startsWith="SEQUENCE"></condition>
+				</generation-condition>		
+				<business-package default="pet">
+					<condition type="package" startsWith="PRODUCT" result="product"></condition>
+					<condition type="package" startsWith="ITEM" result="product"></condition>
+				</business-package>	
+				<enrichment>
+				   <conventions>
+				      <entity-naming-convention type="apply-strip-table-name-prefix" pattern-to-strip="SYS,FIN"/>
+				      <reference-naming-convention type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true"></reference-naming-convention>
+				   </conventions>
+				    <package name="product">
+				    	<entity-group entities="PRODUCT"></entity-group>
+				    	<entity-group entities="ITEM"></entity-group>
+				    </package>
+					<entity name="PRODUCT" alias="MY_GOOD_PRODUCT">				
+					</entity>				    
+					<entity name="ITEM" alias="MY_GOOD_ITEM" comment="my item table">
+						<field name="PRODUCTID" alias="THIS_IS_MY_PRODUCT" comment="my product field reference"></field>					
+					</entity>				    
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <semantic-reference>
+					     <sql-path path="NAME"/>
+					   </semantic-reference>					
+					</entity>
+				</enrichment>					
+			</business-model>
+            <statement-model>
+                <queries>
+                     <query name="get address abstract" id="dashAddress" type="dashboard" category="pie-chart">
+                         <query-body> <!-- dimensions column first -->
+                         <value>
+<![CDATA[select city, count(*) as nb from address group by city order by count(*) desc]]>
+                            </value>
+                         </query-body>
+                     </query>
+                     <query name="get address summary" id="dashCity" type="dashboard" category="bar-chart">
+                         <query-body> <!-- dimensions column first -->
+                         <value>
+<![CDATA[select city, count(*) as nb, count(*) as nb2 from address group by city order by count(*) desc]]>
+                            </value>
+                         </query-body>
+                     </query>
+                     <query name="get addresses by criteria" id="c">
+                         <query-body><value>
+<![CDATA[select * from address where latitude between ? and ? and longitude between ? and ? and lcase(city) like ?]]>
+                            </value>
+                         </query-body>
+                         <query-params>
+                             <query-param name="latitude_lower_limit" is-mandatory="false" type="DOUBLE" sample="37"></query-param>
+                             <query-param name="latitude_upper_limit" type="DOUBLE" sample="38"></query-param>
+                             <query-param name="longitude_lower_limit" type="DOUBLE" sample="-122"></query-param>
+                             <query-param name="longitude_upper_limit" type="DOUBLE" sample="-123"></query-param>
+                             <query-param name="city" type="STRING" sample="'S'" convert="lowercase,append%" default="%">
+                             </query-param>
+                         </query-params>
+                     </query>
+                </queries>
+            </statement-model>
+		</model>	
+		<targets>
+			<target refname="JPA2" 
+			   name="JPA2" 
+			   fileName="mp-template-config-JPA2.xml" 
+			   outputdir-root="../../dev/JSF/petshop/JPA2"
+			   templatedir-root="../../minuteTemplate/template/framework/jpa">
+               <property name="add-querydsl" value="2.1.2"></property>               
+               <property name="add-jpa2-implementation" value="hibernate"></property>
+               <property name="add-cache-implementation" value="ehcache"></property>
+               <property name="add-domain-specific-method" value="true"></property>		   			   
+			</target>
+
+            <target refname="SDD-beans" 
+                outputdir-root="../../dev/JSF/petshop/JPA2"
+               fileName="mp-template-config-SDD-beans.xml" 
+               templatedir-root="../../minuteTemplate/template/framework/bean">
+            </target>
+            
+			<target refname="SpringService" 
+			   name="SpringService" 
+			   fileName="mp-template-config-SpringService.xml" 
+			   outputdir-root="../../dev/JSF/petshop/JSF"
+			   templatedir-root="../../minuteTemplate/template/framework/spring">
+			</target> 
+
+			<target refname="BackendOnBsla" 
+			   name="default" 
+			   fileName="mp-template-config-JPA2-bsla.xml" 
+			   outputdir-root="../../DEV/JSF/petshop/bsla"
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+				<property name="add-cache-implementation" value="ehcache"></property>
+			</target> 
+
+			<target refname="JSF" 
+			   name="JSF" 
+			   fileName="mp-template-config-JSF-Spring.xml" 
+			   outputdir-root="../../dev/JSF/petshop/JSF"
+			   templatedir-root="../../minuteTemplate/template/framework/jsf"
+			   templatedir-ref="../../minuteTemplate/template/framework/i18n,../../minuteTemplate/template/framework/ejb">
+			   <property name="add-jsf-implementation" value="primefaces"></property>		   			   	   			   
+			   <property name="web-xml-version" value="3.0"></property>		   			   	   			   
+			</target> 
+
+			<target refname="MavenMaster" 
+			   name="maven" 
+			   fileName="mp-template-config-maven.xml" 
+			   outputdir-root="../../dev/JSF/petshop"
+			   templatedir-root="../../minuteTemplate/template/framework/maven">
+			</target> 
+									
+			<target refname="Documentation" 
+			   fileName="mp-template-config-documentation.xml" 
+			   outputdir-root="../../dev/JSF/petshop"
+			   templatedir-root="../../minuteTemplate/template/template">
+			</target>
+			<target refname="LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="CACHE-LIB" 
+			   fileName="mp-template-config-CACHE-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>
+			<target refname="SPRING-LIB" 
+			   fileName="mp-template-config-SPRING-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/spring">
+			</target>
+			<target refname="COMMON-LIB" 
+			   fileName="mp-template-config-COMMON-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/common">
+			</target>
+							
+		</targets>
+	</configuration>
+</generator-config>

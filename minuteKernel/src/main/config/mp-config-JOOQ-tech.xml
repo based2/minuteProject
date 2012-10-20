@@ -1,0 +1,68 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>
+		<model name="jooqtech" version="1.0" package-root="net.sf.mp.demo.jooq">
+			<data-model>
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<fileSource name="jooqtech" dir="c:/MinuteProject/data">
+				</fileSource>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://127.0.0.1:3306/jooq_tech</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<schema>jooq_tech</schema>
+			</data-model>
+			<function-model/>
+			<business-model>
+				<enrichment>
+					<conventions>
+						<table-default-primary-key-convention
+							type="apply-default-primary-key-otherwise-first-one"
+							default-primary-key-names="ID" />
+						<view-primary-key-convention
+							type="apply-default-primary-key-otherwise-first-one"
+							default-primary-key-names="ID">
+						</view-primary-key-convention>
+					</conventions>
+					<entity name="T_BOOK">
+					   <field name="STATUS">
+                            <property tag="checkconstraint" alias="my_book_status">
+                                <property name="SOLD OUT" />
+                                <property name="ORDERED" />
+                                <property name="IN HOUSE" value="on stock" />
+                                <property name="abstract" />
+                            </property>
+					   </field>
+					</entity>
+					<entity name="V_BOOK">
+					   <field name="STATUS">
+                            <property tag="checkconstraint">
+                                <property name="SOLD OUT" />
+                                <property name="ORDERED" />
+                                <property name="IN HOUSE" value="ON STOCK" />
+                            </property>
+					   </field>
+					</entity>
+				</enrichment>
+			</business-model>
+		</model>
+		<targets>
+			<target refname="JOOQ" name="JOOQ" fileName="mp-template-config-JOOQ.xml"
+				outputdir-root="../../dev/JOOQ/jooq-tech" templatedir-root="../../minuteTemplate/template/framework/jooq">
+				<property name="jooq-version" value="2.0.4"></property>
+			</target>
+			<target refname="LIB" fileName="mp-template-config-bsla-LIB-features.xml"
+				templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+		</targets>
+	</configuration>
+</generator-config>

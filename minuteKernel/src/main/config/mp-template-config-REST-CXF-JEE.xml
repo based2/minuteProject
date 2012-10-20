@@ -1,0 +1,68 @@
+<target name="REST">		
+	<architecture-target name="REST architecture artifacts" description="REST architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"></plugin>
+
+	<template-target 
+    	name="REST java set"
+		libdir="lib/REST_LIB.vm,lib/EJB_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" /> 
+
+		<template name="CXFEntityResource" templateFileName="CXFEntityResource.vm" 
+			file-extension="java" technicalPackage="rest" file-suffix="Resource" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="implement-interface" value="false"></property>
+      		<property name="add-message-format" value="message-format"></property>
+		</template>		
+
+		<template name="EJB3DaoImpl" templateFileName="EJB3DaoImpl.vm" 
+			file-extension="java" technicalPackage="dao.impl" file-suffix="DaoEJB" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="implement-interface" value="false"></property>
+		</template>	
+		
+		<template name="JerseyWadlGenerator" templateFileName="JerseyWadlGenerator.vm" 
+			file-extension="java" technicalPackage="rest" file-suffix="WadlGenerator" 
+			model-specific="true">
+		</template>	
+						
+	</template-target>
+
+	<template-target 
+    	name="REST web.xml config"
+		libdir="lib/REST_LIB.vm"
+		outputdir="src/main/webapp/WEB-INF"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="WebXmlREST" templateFileName="WebXmlREST.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="web" 
+			application-specific="true" add-model-name="false" >
+		</template>
+
+    </template-target>
+      	
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="PomXml.CXF" templateFileName="PomXml.CXF.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>	
+					
+	</template-target>	  	
+  	         		
+</target>

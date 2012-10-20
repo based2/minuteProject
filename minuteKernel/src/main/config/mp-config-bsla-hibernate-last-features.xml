@@ -1,0 +1,43 @@
+<!DOCTYPE root>
+<generator-config xmlns:xsi="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+
+		<model name="petshop" version="1.0" package-root="sf.net.mp.demo">
+			<data-model>
+				<driver name="hsqldb" version="1.8.0.7" groupId="hsqldb"
+					artifactId="hsqldb"></driver>
+				<dataSource>
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema <schema> </schema> -->
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix=""
+						name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+				</generation-condition>
+				<business-package default="pet">
+					<condition type="package" startsWith="TB_" result="other"></condition>
+				</business-package>
+				<enrichment>
+					<entity name="CATEGORY" content-type="reference-data" />
+				</enrichment>
+			</business-model>
+		</model>
+		<targets>
+			<target refname="BackendOnBsla" name="default"
+				fileName="mp-template-config-bsla-hibernate-last-features.xml"
+				outputdir-root="../../DEV/output/petshopHibernate" 
+				templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+		</targets>
+	</configuration>
+</generator-config>

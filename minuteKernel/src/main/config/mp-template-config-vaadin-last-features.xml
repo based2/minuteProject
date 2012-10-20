@@ -1,0 +1,179 @@
+<target name="Vaadin">	
+
+	<architecture-target name="Vaadin" description="Vaadin Front End Architecture">
+	</architecture-target>	
+
+	<plugin name="vaadinPlugin" className="net.sf.minuteProject.plugin.vaadin.VaadinPlugin"></plugin>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		<template name="VaadinPomXml" templateFileName="VaadinPomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>				
+	</template-target>	
+
+	<template-target 
+        name="Vaadin CSS"
+	    templatedir = "" 
+		tool="velocity"
+		package-root=""
+		libdir="lib/VAADIN_LIB.vm"
+		outputdir="src/main/webapp/VAADIN/themes"
+		belongToPackage="true">
+			 
+		<template name="VaadinDefaultCss" templateFileName="VaadinDefaultCss.vm" 
+			subdir="" outputsubdir="" technicalPackage="entityviews"
+			file-extension="css" file-prefix="entitymanagerview" file-suffix="" 
+			model-specific="true" add-model-name="false">			
+		</template>
+		
+		<template name="VaadinCustomCss" templateFileName="VaadinCustomCss.vm" 
+			subdir="" outputsubdir="" technicalPackage="entityviews"
+			file-extension="css" file-prefix="entityviews" file-suffix="" 
+			model-specific="true" add-model-name="false">			
+		</template>		
+		
+		<template name="VaadinMainCss" templateFileName="VaadinMainCss.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="css" file-prefix="styles" file-suffix="" 
+			model-specific="true" add-model-name="false">			
+		</template>		
+				
+	</template-target>	
+		
+	<template-target 
+        name="Vaadin front end set"
+	    templatedir = "" 
+		tool="velocity"
+		package-root=""
+		libdir="lib/VAADIN_LIB.vm"
+		outputdir="src/main/webapp/WEB-INF"
+		belongToPackage="true">
+			 
+		<template name="WebXmlVaadin" templateFileName="WebXmlVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="web" file-suffix="" 
+			application-specific="true" add-model-name="false">			
+		</template>
+		
+	</template-target>		
+	
+	<template-target 
+        name="Vaadin front end set"
+	    templatedir = "" 
+		tool="velocity"
+		libdir="lib/VAADIN_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+			 
+		<template name="DomainObjectFormVaadin" templateFileName="DomainObjectFormVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="form"
+			file-extension="java" file-prefix="" file-suffix="Form" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		<template name="DomainObjectContainerVaadin" templateFileName="DomainObjectContainerVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="container"
+			file-extension="java" file-prefix="" file-suffix="Container" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+		
+		<template name="DomainObjectListVaadin" templateFileName="DomainObjectListVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="list"
+			file-extension="java" file-prefix="" file-suffix="List" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+		
+		<template name="DomainObjectListViewVaadin" templateFileName="DomainObjectListViewVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="view.list"
+			file-extension="java" file-prefix="" file-suffix="ListView" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		
+		<template name="DomainObjectSearchViewVaadin" templateFileName="DomainObjectSearchViewVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="view.search"
+			file-extension="java" file-prefix="" file-suffix="SearchView" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+		
+		<template name="DomainObjectApplicationVaadin" templateFileName="DomainObjectApplicationVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="application"
+			file-extension="java" file-prefix="" file-suffix="App" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+		
+		<!-- 
+		<template name="DomainObjectComponentVaadin" templateFileName="DomainObjectComponentVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="component"
+			file-extension="java" file-prefix="" file-suffix="Comp" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+		 
+
+		<template name="DomainObjectComponentVaadin" templateFileName="DomainObjectComponentVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="component"
+			file-extension="java" file-prefix="" file-suffix="Comp" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+		-->
+		<template name="VaadinApplicationController" templateFileName="VaadinApplicationController.vm" 
+			subdir="" outputsubdir="" technicalPackage="controller"
+			file-extension="java" file-prefix="" file-suffix="Controller" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>		
+				
+		<template name="MenuVaadin" templateFileName="MenuVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="vaadin.snippet.menu"
+			file-extension="java" file-prefix="" file-suffix="Menu" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>		
+		
+		<template name="ModelApplicationVaadin" templateFileName="ModelApplicationVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="application"
+			file-extension="java" file-prefix="" file-suffix="Appl" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>		
+		
+		<template name="ModelWindowVaadin" templateFileName="ModelWindowVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="window"
+			file-extension="java" file-prefix="" file-suffix="Window" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>						
+				
+		<template name="ModelWindowVaadin" templateFileName="ModelWindowVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="window"
+			file-extension="java" file-prefix="" file-suffix="Win" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>		
+		
+		<template name="DomainObjectViewVaadin" templateFileName="DomainObjectViewVaadin.vm" 
+			subdir="" outputsubdir="" technicalPackage="view.main"
+			file-extension="java" file-prefix="" file-suffix="Main" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+		
+    </template-target>	
+		
+<!--  Menu application.xml templates -->
+<!--  Menu config persistence.jdbc.jndi templates -->
+
+<!--  Menu config tomcat jndi templates -->
+
+</target>

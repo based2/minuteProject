@@ -1,0 +1,29 @@
+<target name="ABL framework"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="mp-template-config.xsd">
+	<architecture-target name="ABL" description="Server artifacts">
+	</architecture-target>	
+
+    <plugin name="weblogicUtils" className="net.sf.minuteProject.plugin.server.wls.WeblogicUtils"></plugin>
+
+	<template-target 
+    	name="WEBLOGIC"
+		libdir=""
+		outputdir="src/main/webapp/WEB-INF">
+
+		<!-- ABL beans -->	
+		<template name="WeblogicXml" templateFileName="WeblogicXml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="weblogic" file-suffix="" 
+			application-specific="true" package-root=""
+			add-model-name="false" 
+			check-template-to-generate="true" 
+			is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnPropertyPresenceValue" >
+			<property name="property-presence" value="server" ></property>			
+			<property name="property-presence-value" value="weblogic" ></property>			
+		</template>	
+		
+    </template-target>
+
+</target>

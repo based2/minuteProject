@@ -1,0 +1,64 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>	
+		<model name="petshop" package-root="sf.net.mp.demo">
+			<data-model>
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema 
+				<schema> </schema>
+				 -->
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+				</generation-condition>
+				<business-package default="pet">
+					<condition type="package" startsWith="TB_" result="other"></condition>
+				</business-package>
+			</business-model>
+			<statement-model>
+			     <queries>
+			         <query name="get address street">
+			             <query-body><value><![CDATA[select * from address where addressid > ?]]></value></query-body>
+			             <query-what><value>select street1, street2 from address</value></query-what>
+			             <query-where><value><![CDATA[addressid > ?]]></value></query-where>
+			             <query-params>
+			                 <query-param name="identifier_Address" is-mandatory="false" type="INT" sample="1"></query-param>
+			             </query-params>
+			         </query>
+			     </queries>
+			</statement-model>
+			
+		</model>
+		<targets>
+			<target refname="FitNesse" 
+			   name="default" 
+			   fileName="mp-template-config-fitnesse.xml" 
+			   outputdir-root="../../dev/output/Fitnesse"
+			   templatedir-root="../../minuteTemplate/template/framework/fitnesse">
+			</target> 
+			<target refname="LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="COMMON_LIB" 
+			   fileName="mp-template-config-COMMON-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/common">
+			</target>
+		</targets>		
+				
+	</configuration>
+</generator-config>

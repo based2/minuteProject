@@ -1,0 +1,256 @@
+<target name="hibernate bsla"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="mp-template-config.xsd">
+
+	<architecture-target name="hibernate" description="basic springframework layer architecture"/>	
+	<plugin name="hibernate3" className="net.sf.minuteProject.plugin.hibernate.Hibernate3"></plugin>
+	<plugin name="criteriaUtils" className="net.sf.minuteProject.utils.criteria.CriteriaUtils"></plugin>
+	<plugin name="schemaUtils" className="net.sf.minuteProject.plugin.database.SchemaUtils"></plugin>
+	<plugin name="mavenUtils" className="net.sf.minuteProject.plugin.maven.MavenUtils"></plugin>
+	<plugin name="cacheUtils" className="net.sf.minuteProject.utils.cache.CacheUtils"></plugin>
+	<plugin name="referenceDataUtils" className="net.sf.minuteProject.plugin.data.ReferenceDataUtils"></plugin>
+	<plugin name="restrictedCodeUtils" 	className="net.sf.minuteProject.utils.code.RestrictedCodeUtils"></plugin>
+	<plugin name="testUtils" 	className="net.sf.minuteProject.utils.TestUtils"></plugin>	
+
+	<template-target 
+		libdir="lib/BslaLibrary.vm,lib/Maven_LIB.vm"
+		tool="velocity"
+		outputdir="src-overwritten/main/resources"
+		package-root="">	
+		<template name="MavenOverwrittenReadMe" templateFileName="MavenOverwrittenReadMe.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="txt" file-prefix="" file-suffix="README" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>
+	</template-target>
+	
+	<template-target 
+		libdir="lib/BslaLibrary.vm,lib/Maven_LIB.vm"
+		tool="velocity"
+		outputdir="src/test/java"
+		belongToPackage="true">
+		<template name="TestDaoInterface" templateFileName="BslaDaoInterfaceTest.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="DaoTest" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			check-template-to-generate="true" 
+            is-template-to-generate-method="tableUtils.isTable"
+			>
+			<property name="uml" value="true"></property>
+		</template>		
+		<template name="BslaDaoTestAdapter" templateFileName="BslaDaoTestAdapter.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="Adapter" file-suffix="TestDao" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>					
+	</template-target>		
+	
+	<template-target 
+		libdir="lib/BslaLibrary.vm,lib/Maven_LIB.vm"
+		tool="velocity"
+		outputdir="src/test/resources"
+		belongToPackage="true">
+		<template name="BslaSpringDatabase" templateFileName="BslaSpringDatabase.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.spring"
+			file-extension="xml" file-prefix="spring-config-" file-suffix="-database" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		  <property tag="environment" value="local"/>
+		</template>			
+		<template name="BslaSpringProperties" templateFileName="BslaSpringProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.spring"
+			file-extension="properties" file-prefix="spring-config-" file-suffix="" 
+			entity-specific="false" package-specific="false" model-specific="true">
+			<property name="hibernateDialect" value="true"></property>
+			<property tag="environment" value="local"/>
+		</template>					
+	</template-target>		
+	
+	<template-target 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir="src/main/java"
+		belongToPackage="true">
+	
+	    <!-- ENTITY OBJECTs -->
+		<!-- templates -->
+		<template name="DomainObjectUML" templateFileName="DomainObjectUML.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>
+		
+		<!-- Criteria API 
+		<template name="DomainObjectWhatUML" templateFileName="DomainObjectWhatUML.vm" 
+			subdir="" outputsubdir="" technicalPackage="criteria.what"
+			file-extension="java" file-prefix="" file-suffix="What" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>
+		
+		<template name="DomainObjectWhereUML" templateFileName="DomainObjectWhereUML.vm" 
+			subdir="" outputsubdir="" technicalPackage="criteria.where"
+			file-extension="java" file-prefix="" file-suffix="Where" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>
+		-->
+		<!-- ENTITY OBJECTs end -->		
+		
+		<!-- DAO -->
+		<!-- depends  DomainObjectUML, BslaHibernate architecture 	-->	
+		<template name="BslaDaoInterfaceUML" templateFileName="BslaDaoInterfaceUML.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="Dao" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>				
+		
+		<!-- depends BslaDaoInterfaceUML, DomainObjectUML, BslaHibernate architecture		-->
+		<template name="BslaHibernateDaoImplUML" templateFileName="BslaHibernateDaoImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.impl.hibernate3"
+			file-extension="java" file-prefix="" file-suffix="HibernateImpl" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+	    
+	    <!-- EXTENDED DAO -->
+	    <!-- extended dao depends BslaDaoInterfaceUML -->
+		<template name="BslaDaoInterfaceExtendedUML" templateFileName="BslaDaoInterfaceKFUML.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="ExtDao" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+			
+		<!-- depends BslaDaoInterfaceExtendedUML -->	
+		<template name="BslaHibernateExtendedDaoImplUML" templateFileName="BslaHibernateKFDaoImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.impl.hibernate3"
+			file-extension="java" file-prefix="" file-suffix="ExtendedHibernateImpl" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>				
+			
+		<!-- EXTENDED DAO end -->	
+		<!-- DAO end -->
+		
+		<!-- enumeration for reference data -->
+		<template name="EnumerationReferenceData" templateFileName="EnumerationReferenceData.vm" 
+			subdir="" outputsubdir="" technicalPackage="enumeration"
+			file-extension="java" file-prefix="" file-suffix="Enum" 
+			field-specific="true" 
+			file-name-builder-plugin="referenceDataUtils"
+			file-name-builder-method="getEnumName"	
+            check-template-to-generate="true" 
+            is-template-to-generate-method="referenceDataUtils.isCandidateForReferenceDataGeneration"
+			>
+			<property name="generateForTag" value="checkconstraint"></property>
+		</template>
+
+	</template-target>	
+
+	<template-target 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir="src/main/resources"
+		belongToPackage="true">
+		
+		<!-- HIBERNATE CONFIGURATION -->
+		<template name="HibernateMap" templateFileName="Hibernate.hbm.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="persistence"
+			file-extension="hbm.xml" file-prefix="" file-suffix="" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>
+		<template name="HibernateConfig" templateFileName="Hibernate.cfg.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="persistence"
+			file-extension="cfg.xml" file-prefix="" file-suffix="" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>		
+		<!-- HIBERNATE CONFIGURATION end -->
+		
+		<!-- CACHING CONFIGURATION -->
+		<template name="BslaEhCacheXml" templateFileName="BslaEhCache.Xml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="ehcache" file-suffix="" 
+			application-specific="true" package-root=""
+			add-model-name="false">
+		</template>			
+		
+		<!-- CACHING CONFIGURATION end -->
+		
+		<!-- SPRING CONFIGURATION -->
+		<template name="BslaSpringConfigDaoHibernate" templateFileName="BslaSpringConfigDaoHibernate.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.spring"
+			file-extension="xml" file-prefix="dao-hibernate-" file-suffix="" 
+			entity-specific="false" package-specific="true" model-specific="false">
+		</template>									
+							
+		<!-- spring config extended -->
+		<template name="BslaSpringConfigDaoExtHibernate" templateFileName="BslaSpringConfigDaoExtHibernate.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.spring"
+			file-extension="xml" file-prefix="dao-ext-hibernate-" file-suffix="" 
+			entity-specific="false" package-specific="true" model-specific="false">
+		</template>	
+									
+		<template name="BslaSpringConfigDaoHibernate2" templateFileName="BslaSpringConfigDaoHibernate2.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.spring"
+			file-extension="xml" file-prefix="spring-config-hibernate-" file-suffix="-dao" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+		<template name="BslaSpringConfigMainBackend" templateFileName="BslaSpringConfigMainHibernate.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.spring"
+			file-extension="xml" file-prefix="spring-config-" file-suffix="-BE-main" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>								 
+				
+		<template name="BslaSpringDatabase" templateFileName="BslaSpringDatabase.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.spring"
+			file-extension="xml" file-prefix="spring-config-" file-suffix="-database" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>			
+		
+		<template name="BslaSpringProperties" templateFileName="BslaSpringProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="factory.spring"
+			file-extension="properties" file-prefix="spring-config-" file-suffix="" 
+			entity-specific="false" package-specific="false" model-specific="true">
+			<property name="hibernateDialect" value="true"></property>
+			<property tag="environment" value="remote"/>
+		</template>	
+
+		<!-- SPRING CONFIG end-->
+		
+	</template-target>	
+
+	<template-target 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir="src/main/script"
+		package-root=""
+		belongToPackage="true">
+		<template name="SequenceSQL" templateFileName="SequenceSQL.vm" 
+			subdir="" outputsubdir="" technicalPackage="sql"
+			file-extension="sql" file-prefix="" file-suffix="Sequence" 
+			model-specific="true">
+		</template>		
+		<template name="DBSchemaDeleteOrder" templateFileName="DBSchemaDeleteOrder.vm" 
+			subdir="" outputsubdir="" technicalPackage="sql"
+			file-extension="sql" file-prefix="" file-suffix="DeleteOrder" 
+			model-specific="true">
+		</template>				
+		<template name="InsertEnumerationSQL" templateFileName="InsertEnumerationSQL.vm" 
+			subdir="" outputsubdir="" technicalPackage="sql"
+			file-extension="sql" file-prefix="" file-suffix="InsertEnumeration" 
+			model-specific="true">
+		</template>				
+	</template-target>	
+	
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		<template name="pomXml" templateFileName="pomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+			<property tag="dependency" name="hibernate" value="groupId=,artifactId=,version=,scope="/>
+		</template>				
+	</template-target>		
+	
+</target>	

@@ -1,0 +1,65 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration name="petshop">
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo.play">
+			<data-model>
+			    <driver name="hsqldb" version="1.8.0.7" groupId="hsqldb" artifactId="hsqldb"></driver>
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema 
+				<schema> </schema>
+				 -->
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+					<condition type="exclude" startsWith="ID_GEN"></condition>
+				</generation-condition>		
+				<business-package default="">
+				</business-package>		
+				<enrichment>
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <semantic-reference>
+					     <sql-path path="NAME"/>
+					   </semantic-reference>					
+					</entity>
+					<entity name="SELLERCONTACTINFO" alias="SELLER" structure="hierarchy">
+						<field name="EMAIL">
+			              <stereotype stereotype="EMAIL">
+			              </stereotype>
+						</field>
+          			</entity>					
+				</enrichment>					
+			</business-model>
+		</model>	
+		<targets>
+			<target
+			   name="Play" 
+			   fileName="mp-template-config-play-last-features.xml" 
+			   outputdir-root="../../DEV/output/play"
+			   templatedir-root="../../minuteTemplate/template/framework/play">
+			</target> 
+			<target refname="bsla-LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="JPA2-LIB" 
+			   fileName="mp-template-config-JPA2-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/jpa">
+			</target>			
+			<target refname="JQUERY-LIB" 
+			   fileName="mp-template-config-jquery-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/jquery">
+			</target>			
+		</targets>
+	</configuration>
+</generator-config>

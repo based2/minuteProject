@@ -1,0 +1,32 @@
+<target name="Stored procedures beans">		
+	<architecture-target name="Stored procedures beans" description="Stored procedures beans architecture">
+	</architecture-target>	
+
+	<template-target 
+    	name="beans set"
+		libdir=""
+		outputdir="src/main/java"
+		belongToPackage="true">
+
+		<!-- stored proc -->	
+		<template name="StoredProcedureInputBean" templateFileName="JavaBean.vm" 
+			subdir="" outputsubdir="" technicalPackage="function.in"
+			file-extension="java" file-prefix="" file-suffix="In" 
+			scope-specific-value="function-input-entity" >
+		</template>
+
+		<template name="StoredProcedureOutputBean" templateFileName="JavaBean.vm" 
+			subdir="" outputsubdir="" technicalPackage="function.out"
+			file-extension="java" file-prefix="" file-suffix="Out" 
+			scope-specific-value="function-output-entity" >
+		</template>	
+		
+		<!-- dao interface -->
+        <template name="DaoInterfaceStoreProcedure" templateFileName="DaoInterfaceStoreProcedure.vm"
+            file-extension="java" technicalPackage="dao.face" file-suffix="Dao" file-prefix="Procedure"
+            scope-specific-value="function"
+            has-updatable-nature="true">
+        </template> 							
+    </template-target>		
+
+</target>

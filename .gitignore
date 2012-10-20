@@ -1,0 +1,18 @@
+minuteArchitecture/
+minuteDemo/
+minuteFitNesse/
+minuteFoundation/
+minuteRelease/
+minuteSample/
+minuteTemplate/
+out/
+target/
+.classpath
+.project
+*.iml
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear

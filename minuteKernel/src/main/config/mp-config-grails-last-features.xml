@@ -1,0 +1,60 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="config/mp-config.xsd">
+    <configuration>
+
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo.grails">
+			<data-model>
+			    <driver name="hsqldb" version="1.8.0.7" groupId="hsqldb" artifactId="hsqldb"></driver>
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema 
+				<schema> </schema>
+				 -->
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+					<condition type="exclude" startsWith="ID_GEN"></condition>
+				</generation-condition>		
+				<business-package default="">
+				</business-package>		
+				<enrichment>
+                    <conventions>
+                        <version-convention default-value="VERSION" />             
+                    </conventions>  
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <semantic-reference>
+					     <sql-path path="NAME"/>
+					   </semantic-reference>					
+					</entity>
+				
+				</enrichment>					
+			</business-model>
+		</model>	
+		<targets>
+			<target refname="Grails" 
+			   name="Grails" 
+			   fileName="mp-template-config-grails-last-features.xml" 
+			   outputdir-root="../../DEV/output/grails"
+			   templatedir-root="../../minuteTemplate/template/framework/grails">
+			</target> 
+			<target refname="LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="JQUERY_LIB" 
+			   fileName="mp-template-config-jquery-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/jquery">
+			</target>			
+		</targets>
+	</configuration>
+</generator-config>

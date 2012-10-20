@@ -1,0 +1,16 @@
+<target name="REST">		
+	<architecture-target name="REST architecture artifacts" description="REST architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"></plugin>
+
+	<template-target 
+    	name="REST java set"
+		libdir="lib/REST_LIB.vm"
+		outputdir=""
+		belongToPackage="true">
+	</template-target>
+  	         		
+</target>

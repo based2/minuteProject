@@ -1,0 +1,110 @@
+
+<!DOCTYPE digester-rules PUBLIC 
+        "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" 
+        "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<digester-rules>
+ <pattern value="technology-catalog">
+  <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.TechnologyCatalog"/>
+  <set-next-rule methodname="setTechnologyCatalog" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.TechnologyCatalog"/>
+  <set-properties-rule>
+   <alias prop-name="name" attr-name="name"/>
+   <alias prop-name="packageName" attr-name="package-name"/>
+  </set-properties-rule>
+  <pattern value="technologies">
+   <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.Technologies"/>
+   <set-next-rule methodname="setTechnologies" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.Technologies"/>
+   <set-properties-rule>
+    <alias prop-name="name" attr-name="name"/>
+    <alias prop-name="id" attr-name="id"/>
+    <alias prop-name="packageName" attr-name="package-name"/>
+   </set-properties-rule>
+   <pattern value="technology">
+    <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.Technology"/>
+    <set-next-rule methodname="setTechnology" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.Technology"/>
+    <set-properties-rule>
+     <alias prop-name="name" attr-name="name"/>
+     <alias prop-name="version" attr-name="version"/>
+     <alias prop-name="templateConfigFileName" attr-name="template-config-file-name"/>
+     <alias prop-name="templateDir" attr-name="template-dir"/>
+     <alias prop-name="defaultOutputdir" attr-name="default-outputdir"/>
+     <alias prop-name="dependsOnTargets" attr-name="depends-on-targets"/>
+     <alias prop-name="comment" attr-name="comment"/>
+     <alias prop-name="description" attr-name="description"/>
+     <alias prop-name="helper" attr-name="helper"/>
+     <alias prop-name="status" attr-name="status"/>
+     <alias prop-name="modelType" attr-name="model-type"/>
+     <alias prop-name="targetName" attr-name="target-name"/>
+     <alias prop-name="isGenerable" attr-name="is-generable"/>
+     <alias prop-name="packageName" attr-name="package-name"/>
+    </set-properties-rule>
+	<pattern value="property">
+		<object-create-rule classname="net.sf.minuteProject.configuration.bean.system.Property"/>		
+		<set-next-rule methodname="addProperty" paramtype="net.sf.minuteProject.configuration.bean.system.Property"/>	
+		<set-properties-rule>
+			<alias attr-name="name" prop-name="name" />
+			<alias attr-name="value" prop-name="value" />
+			<alias attr-name="tag" prop-name="tag" />
+		</set-properties-rule>
+	</pattern>    
+    <pattern value="frameworks">
+     <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.Frameworks"/>
+     <set-next-rule methodname="setFrameworks" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.Frameworks"/>
+     <set-properties-rule>
+      <alias prop-name="name" attr-name="name"/>
+      <alias prop-name="id" attr-name="id"/>
+      <alias prop-name="packageName" attr-name="package-name"/>
+     </set-properties-rule>
+     <pattern value="framework">
+      <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.Framework"/>
+      <set-next-rule methodname="setFramework" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.Framework"/>
+      <set-properties-rule>
+       <alias prop-name="name" attr-name="name"/>
+       <alias prop-name="type" attr-name="type"/>
+       <alias prop-name="version" attr-name="version"/>
+       <alias prop-name="packageName" attr-name="package-name"/>
+      </set-properties-rule>
+     </pattern>
+    </pattern>
+    <pattern value="limitations">
+     <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.Limitations"/>
+     <set-next-rule methodname="setLimitations" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.Limitations"/>
+     <set-properties-rule>
+      <alias prop-name="name" attr-name="name"/>
+      <alias prop-name="id" attr-name="id"/>
+      <alias prop-name="packageName" attr-name="package-name"/>
+     </set-properties-rule>
+     <pattern value="limitation">
+      <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.Limitation"/>
+      <set-next-rule methodname="setLimitation" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.Limitation"/>
+      <set-properties-rule>
+       <alias prop-name="name" attr-name="name"/>
+       <alias prop-name="type" attr-name="type"/>
+       <alias prop-name="isApplied" attr-name="is-applied"/>
+       <alias prop-name="packageName" attr-name="package-name"/>
+      </set-properties-rule>
+     </pattern>
+    </pattern>
+    <pattern value="conventions">
+     <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.Conventions"/>
+     <set-next-rule methodname="setConventions" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.Conventions"/>
+     <set-properties-rule>
+      <alias prop-name="name" attr-name="name"/>
+      <alias prop-name="id" attr-name="id"/>
+      <alias prop-name="packageName" attr-name="package-name"/>
+     </set-properties-rule>
+     <pattern value="convention">
+      <object-create-rule classname="net.sf.minuteProject.loader.catalog.technologycatalog.node.Convention"/>
+      <set-next-rule methodname="setConvention" paramtype="net.sf.minuteProject.loader.catalog.technologycatalog.node.Convention"/>
+      <set-properties-rule>
+       <alias prop-name="name" attr-name="name"/>
+       <alias prop-name="type" attr-name="type"/>
+       <alias prop-name="isApplied" attr-name="is-applied"/>
+       <alias prop-name="packageName" attr-name="package-name"/>
+      </set-properties-rule>
+     </pattern>
+    </pattern>
+   </pattern>
+  </pattern>
+ </pattern>
+
+</digester-rules>

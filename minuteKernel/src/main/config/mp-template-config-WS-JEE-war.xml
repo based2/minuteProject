@@ -1,0 +1,38 @@
+<target name="EBJ3">		
+	<architecture-target name="EBJ3" description="EBJ3 architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="PomXml.WS-JEE" templateFileName="PomXml.WS-JEE.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>	
+					
+	</template-target>	 
+	
+	 <template-target 
+    	name="EJB set"
+		libdir="lib/EJB_LIB.vm"
+		outputdir="src/main/webapp/WEB-INF"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="WebXml.WS-JEE" templateFileName="WebXml.WS-JEE.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="web" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>
+
+	</template-target>	
+  	         		
+</target>

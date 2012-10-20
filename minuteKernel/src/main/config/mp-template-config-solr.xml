@@ -1,0 +1,45 @@
+<target name="SOLR engine">		
+	<architecture-target name="solr"></architecture-target>	
+	<plugin name="osemUtils" className="net.sf.minuteProject.plugin.osem.OsemUtils"></plugin>
+	<plugin name="solrUtils" className="net.sf.minuteProject.plugin.osem.SolrUtils"></plugin>
+	
+  	<template-target 
+    	name="SOLR config"
+		outputdir="solr">
+			 
+		<template name="SolrXml" templateFileName="SolrXml.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="false"		
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="solr" 
+			model-specific="true">
+		</template>
+		
+		<template name="SolrconfigXml" templateFileName="SolrconfigXml.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="true"		
+			subdir="" outputsubdir="solr" technicalPackage="conf"
+			file-extension="xml" file-prefix="solrconfig" 
+			model-specific="true">
+		</template>
+		
+		<template name="SolrDataConfigXml" templateFileName="SolrDataConfigXml.vm" 
+			add-model-name="true" package-root=""
+			add-model-dir-name="true"		
+			subdir="" outputsubdir="" technicalPackage="conf"
+			file-extension="xml" file-suffix="-data-config" 
+			model-specific="true"
+			file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER" >
+		</template>
+						
+		<template name="SolrSchemaXml" templateFileName="SolrSchemaXml.vm" 
+			add-model-name="false" package-root=""
+			add-model-dir-name="true"		
+			subdir="" outputsubdir="" technicalPackage="conf"
+			file-extension="xml" file-suffix="schema" 
+			model-specific="true">
+		</template>
+										
+	</template-target>	
+
+</target>

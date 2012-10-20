@@ -1,0 +1,26 @@
+<target name="Documentation"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="mp-template-config.xsd">
+
+	<architecture-target name="Documentation" description="Documentation">
+	</architecture-target>	
+
+	<template-target 
+        name="doc"
+	    templatedir = "" 
+		tool="velocity"
+		package-root=""
+		libdir=""
+		outputdir="doc"
+		belongToPackage="true">
+			 
+		<template name="TemplateGenerationSummaryDoc" templateFileName="TemplateGenerationSummaryDoc.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="txt" file-prefix="" file-suffix="-doc" 
+			application-specific="true" add-model-name="true">			
+		</template>
+		
+	</template-target>		
+
+</target>

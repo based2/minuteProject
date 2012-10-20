@@ -1,0 +1,19 @@
+<target name="REST"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="mp-template-config.xsd">
+	<architecture-target name="REST architecture artifacts" description="REST architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="restUtils" className="net.sf.minuteProject.plugin.rest.RestUtils"></plugin>
+
+	<template-target 
+    	name="REST CXF"
+		libdir="lib/CXF_LIB.vm"
+		outputdir=""
+		belongToPackage="true">
+	</template-target>
+  	         		
+</target>

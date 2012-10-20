@@ -1,0 +1,18 @@
+<target name="Lib and plugin"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="mp-template-config.xsd">		
+	<architecture-target name="libraries" description="libraries"/>	
+	<plugin name="criteriaUtils" className="net.sf.minuteProject.utils.criteria.CriteriaUtils"></plugin>
+	<plugin name="schemaUtils" className="net.sf.minuteProject.plugin.database.SchemaUtils"></plugin>
+	<plugin name="referenceDataUtils" className="net.sf.minuteProject.plugin.data.ReferenceDataUtils"></plugin>
+	<plugin name="restrictedCodeUtils" 	className="net.sf.minuteProject.utils.code.RestrictedCodeUtils"></plugin>
+	<plugin name="mavenUtils" className="net.sf.minuteProject.plugin.maven.MavenUtils"></plugin>	
+	<template-target 
+		libdir="lib/BslaLibrary.vm,lib/Maven_LIB.vm,lib/JPA_LIB.vm"
+		tool="velocity"
+		outputdir="src/test/java"
+		belongToPackage="true">					
+	</template-target>		
+
+</target>	

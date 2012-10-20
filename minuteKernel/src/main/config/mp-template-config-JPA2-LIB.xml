@@ -1,0 +1,16 @@
+<target name="JPA2 LIB">		
+    <plugin name="hibernate3" className="net.sf.minuteProject.plugin.hibernate.Hibernate3"></plugin>
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="entitySecurityUtils" className="net.sf.minuteProject.utils.security.EntitySecurityUtils"/>
+	<plugin name="jpaUtils" className="net.sf.minuteProject.plugin.jpa.JpaUtils"/>
+
+	<template-target 
+    	name="JPA set"
+		libdir="lib/JPA2_LIB.vm"
+		outputdir="src"
+		belongToPackage="true">
+	
+    </template-target>		
+         		
+</target>

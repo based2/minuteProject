@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE digester-rules PUBLIC 
+        "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" 
+        "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<digester-rules>
+  <pattern value="target">
+	<object-create-rule classname="net.sf.minuteProject.configuration.bean.Target"/>		
+	<bean-property-setter-rule pattern="refname"/>	
+	<bean-property-setter-rule pattern="name"/>	
+	<bean-property-setter-rule pattern="description"/>	
+	<set-next-rule methodname="setTarget" paramtype="net.sf.minuteProject.configuration.bean.Target"/>	
+		<pattern value="architecture-target">
+			<object-create-rule classname="net.sf.minuteProject.configuration.bean.ArchitectureTarget"/>		
+			<set-next-rule methodname="setArchitectureTarget" paramtype="net.sf.minuteProject.configuration.bean.ArchitectureTarget"/>
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name" />
+			</set-properties-rule>
+		</pattern>	
+		<pattern value="target-params">
+			<object-create-rule classname="net.sf.minuteProject.configuration.bean.target.TargetParams"/>		
+			<set-next-rule methodname="setTargetParams" paramtype="net.sf.minuteProject.configuration.bean.target.TargetParams"/>	
+			<pattern value="target-params">
+				<object-create-rule classname="net.sf.minuteProject.configuration.bean.target.TargetParam"/>		
+				<set-next-rule methodname="setTargetParam" paramtype="net.sf.minuteProject.configuration.bean.target.TargetParam"/>	
+				<set-properties-rule>
+					<alias attr-name="name" prop-name="name" />
+					<alias attr-name="default-value" prop-name="defaultValue" />
+					<alias attr-name="required" prop-name="required" />
+					<alias attr-name="value" prop-name="value" />
+				</set-properties-rule>	
+			</pattern>	
+		</pattern>		
+		
+		<pattern value="import-targets">
+			<object-create-rule classname="net.sf.minuteProject.configuration.bean.target.ImportTargets"/>		
+			<set-next-rule methodname="setImportTargets" paramtype="net.sf.minuteProject.configuration.bean.target.ImportTargets"/>	
+			<pattern value="import-target">
+				<object-create-rule classname="net.sf.minuteProject.configuration.bean.target.ImportTarget"/>		
+				<set-next-rule methodname="addImportTarget" paramtype="net.sf.minuteProject.configuration.bean.target.ImportTarget"/>	
+				<set-properties-rule>
+					<alias attr-name="name" prop-name="name" />
+					<alias attr-name="action" prop-name="action" />
+					<alias attr-name="target-dir" prop-name="targetDir" />
+					<alias attr-name="target-name" prop-name="targetName" />
+				</set-properties-rule>				
+				<pattern value="target-params">
+					<object-create-rule classname="net.sf.minuteProject.configuration.bean.target.TargetParam"/>		
+					<set-next-rule methodname="setTargetParam" paramtype="net.sf.minuteProject.configuration.bean.target.TargetParam"/>	
+					<set-properties-rule>
+						<alias attr-name="name" prop-name="name" />
+						<alias attr-name="default-value" prop-name="defaultValue" />
+						<alias attr-name="required" prop-name="required" />
+						<alias attr-name="value" prop-name="value" />
+					</set-properties-rule>	
+				</pattern>	
+			</pattern>
+		</pattern>			
+		<pattern value="plugin">
+			<object-create-rule classname="net.sf.minuteProject.configuration.bean.system.Plugin"/>		
+			<set-next-rule methodname="addPlugin" paramtype="net.sf.minuteProject.configuration.bean.system.Plugin"/>
+			<set-properties-rule>
+				<alias attr-name="name" prop-name="name" />
+				<alias attr-name="className" prop-name="className" />
+			</set-properties-rule>
+		</pattern>			
+		<pattern value="template-target">
+			<object-create-rule classname="net.sf.minuteProject.configuration.bean.TemplateTarget"/>		
+			<set-next-rule methodname="addTemplateTarget" paramtype="net.sf.minuteProject.configuration.bean.TemplateTarget"/>	
+			<set-properties-rule/>	
+			<set-properties-rule>
+			    <alias attr-name="rootdir" prop-name="rootdir" />
+			    <alias attr-name="templatedir" prop-name="templatedir" />
+				<alias attr-name="package-root" prop-name="packageRoot" />
+				<alias attr-name="dir" prop-name="dir" />
+				<alias attr-name="libdir" prop-name="libdir" />
+				<alias attr-name="outputdir" prop-name="outputdir" />
+				<alias attr-name="tool" prop-name="tool" />
+				<alias attr-name="name" prop-name="name" />
+				<alias attr-name="belongToPackage" prop-name="belongToPackage" />
+			</set-properties-rule> 
+			<pattern value="property">
+				<object-create-rule classname="net.sf.minuteProject.configuration.bean.system.Property"/>		
+				<set-next-rule methodname="addProperty" paramtype="net.sf.minuteProject.configuration.bean.system.Property"/>	
+				<set-properties-rule>
+					<alias attr-name="name" prop-name="name" />
+					<alias attr-name="value" prop-name="value" />
+					<alias attr-name="tag" prop-name="tag" />
+				</set-properties-rule>
+			</pattern>	
+			<pattern value="template">
+				<object-create-rule classname="net.sf.minuteProject.configuration.bean.Template"/>		
+				<set-next-rule methodname="addTemplate" paramtype="net.sf.minuteProject.configuration.bean.Template"/>	
+				<set-properties-rule>
+					<alias attr-name="package-root" prop-name="packageRoot" />
+					<alias attr-name="add-model-name" prop-name="addModelName" />
+					<alias attr-name="add-model-dir-name" prop-name="addModelDirName" />
+					<alias attr-name="add-technical-dir-name" prop-name="addTechnicalDirName" />
+					<alias attr-name="add-business-package-dir-name" prop-name="addBusinessPackageDirName" />
+					<alias attr-name="add-entity-dir-name" prop-name="addEntityDirName" />
+					<alias attr-name="entity-dir-name-format" prop-name="entityDirNameFormat" />
+					<alias attr-name="entity-dir-name-prefix" prop-name="entityDirNamePrefix" />
+					<alias attr-name="entity-dir-name-suffix" prop-name="entityDirNameSuffix" />
+					<alias attr-name="append-end-package-dir" prop-name="appendEndPackageDir" />
+					<alias attr-name="add-scope-name" prop-name="addScopeName" />
+					<alias attr-name="templateFileName" prop-name="templateFileName" />
+					<alias attr-name="subdir" prop-name="subdir" />
+					<alias attr-name="outputsubdir" prop-name="outputsubdir" />
+					<alias attr-name="technicalPackage" prop-name="technicalPackage" />
+					<alias attr-name="file-extension" prop-name="fileExtension" />
+					<alias attr-name="file-prefix" prop-name="filePrefix" />
+					<alias attr-name="file-suffix" prop-name="fileSuffix" />
+					<alias attr-name="file-name-format" prop-name="fileNameFormat" />
+					<alias attr-name="field-specific" prop-name="fieldSpecific" />
+					<alias attr-name="entity-specific" prop-name="entitySpecific" />
+					<alias attr-name="package-specific" prop-name="packageSpecific" />
+					<alias attr-name="model-specific" prop-name="modelSpecific" />
+					<alias attr-name="view-specific" prop-name="viewSpecific" />
+					<alias attr-name="service-specific" prop-name="serviceSpecific" />
+					<alias attr-name="function-specific" prop-name="functionSpecific" />
+					<alias attr-name="component-specific" prop-name="componentSpecific" />
+					<alias attr-name="application-specific" prop-name="applicationSpecific" />
+					<alias attr-name="file-name-builder-plugin" prop-name="fileNameBuilderPlugin" />
+					<alias attr-name="file-name-builder-method" prop-name="fileNameBuilderMethod" />
+					<alias attr-name="extension-name-builder-plugin" prop-name="extensionNameBuilderPlugin" />
+					<alias attr-name="extension-name-builder-method" prop-name="extensionNameBuilderMethod" />
+					<alias attr-name="package-name-builder-plugin" prop-name="packageNameBuilderPlugin" />
+					<alias attr-name="package-name-builder-method" prop-name="packageNameBuilderMethod" />
+					<alias attr-name="node-attribute-name-specific" prop-name="nodeAttributeNameSpecific" />
+					<alias attr-name="node-attribute-name-value" prop-name="nodeAttributeNameValue" />
+					<alias attr-name="node-name-value" prop-name="nodeNameValue" />
+					<alias attr-name="is-template-to-generate-method" prop-name="isTemplateToGenerateMethod" />
+					<alias attr-name="check-template-to-generate" prop-name="checkTemplateToGenerate" />
+					<alias attr-name="scope-specific-value" prop-name="scopeSpecificValue" />
+					<alias attr-name="is-to-generate" prop-name="isToGenerateMethod" />
+					<alias attr-name="chmod" prop-name="chmod" />
+					<alias attr-name="description" prop-name="description" />
+					<!--<alias attr-name="is-updatable" prop-name="isUpdatable" />-->
+					<alias attr-name="has-updatable-nature" prop-name="hasUpdatableNature" />
+					<alias attr-name="convert-package-to-dir" prop-name="convertPackageToDir" />
+				</set-properties-rule> 	
+				<pattern value="property">
+					<object-create-rule classname="net.sf.minuteProject.configuration.bean.system.Property"/>		
+					<set-next-rule methodname="addProperty" paramtype="net.sf.minuteProject.configuration.bean.system.Property"/>	
+					<set-properties-rule>
+						<alias attr-name="name" prop-name="name" />
+						<alias attr-name="value" prop-name="value" />
+						<alias attr-name="tag" prop-name="tag" />
+					</set-properties-rule>
+				</pattern>				
+			</pattern>
+		</pattern>				  
+  </pattern>
+</digester-rules>

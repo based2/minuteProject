@@ -1,0 +1,78 @@
+<target name="spring security">		
+	<architecture-target name="spring security" description="spring security architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="entitySecurityUtils" className="net.sf.minuteProject.utils.security.EntitySecurityUtils"/>
+	<plugin name="authorizationUtils" className="net.sf.minuteProject.utils.security.AuthorizationUtils"/>
+	<plugin name="presentationUtils" className="net.sf.minuteProject.plugin.presentation.PresentationUtils"></plugin>
+	<plugin name="springSecurityUtils" className="net.sf.minuteProject.plugin.springframework.SpringSecurityUtils"/>
+	
+	<template-target 
+    	name="Spring security jsp"
+		outputdir="web"
+		package-root=""
+		belongToPackage="true">			
+
+		<template 
+			name="OXaccessDeniedJsp" templateFileName="OXaccessDeniedJsp.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="jsp" file-prefix="" file-suffix="accessDenied" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+    		
+		<template 
+			name="OXindexJsp" templateFileName="OXindexJsp.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="jsp" file-prefix="" file-suffix="index" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>			
+		
+    	<template 
+			name="OXloginJsp" templateFileName="OXloginJsp.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="jsp" file-prefix="" file-suffix="login" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+
+	</template-target>
+
+	<template-target 
+    	name="Spring security jsp"
+		outputdir="src"
+		package-root=""
+		belongToPackage="true">			
+
+		<template 
+			name="OXSpringApplicationContextSecurityXml" templateFileName="OXSpringApplicationContextSecurityXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="applicationContext-security" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+
+	</template-target>
+
+	<template-target 
+    	name="Spring security webxml"
+		outputdir="web/WEB-INF"
+		package-root=""
+		belongToPackage="true">			
+
+		<template 
+			name="OXSpringWebXmlListenerContextSnippet" templateFileName="SpringWebXmlListenerContextSnippet.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="listeners" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+    		
+		<template 
+			name="OXSpringWebXmlServletSnippet" templateFileName="SpringWebXmlServletSnippet.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="servlets" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>			
+		
+
+	</template-target>	
+</target>

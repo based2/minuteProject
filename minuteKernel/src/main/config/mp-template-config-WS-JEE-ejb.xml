@@ -1,0 +1,82 @@
+<target name="EBJ3">		
+	<architecture-target name="EBJ3" description="EBJ3 architecture">
+	</architecture-target>	
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+
+	<template-target 
+    	name="EJB set"
+		libdir="lib/EJB_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" /> 
+			 
+		<template name="EJB3DaoRemoteInterface" templateFileName="EJB3DaoRemoteInterface.vm" 
+			file-extension="java" technicalPackage="dao.face" file-suffix="DaoRemoteEJB" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		<template name="EJB3DaoImpl" templateFileName="EJB3DaoImpl.vm" 
+			file-extension="java" technicalPackage="dao.impl" file-suffix="DaoEJB" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+			<!--<property name="implement-interface" value="true"></property>-->
+		</template>		
+
+		<template name="EJB3FacadeRemoteInterface" templateFileName="EJB3FacadeRemoteInterface.vm" 
+			file-extension="java" technicalPackage="ws.face" file-suffix="Service" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+		
+		<template name="EJB3FacadeImpl" templateFileName="EJB3FacadeImpl.vm" 
+			file-extension="java" technicalPackage="ws.impl" file-suffix="WebService" 
+			entity-specific="true" has-updatable-nature="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="add-ws-annotation" value="stateless"></property>
+		</template>	
+		
+		<template name="EJB3ModelFacadeImpl" templateFileName="EJB3ModelFacadeImpl.vm" 
+			file-extension="java" technicalPackage="ws.impl" file-suffix="WebService" 
+			model-specific="true" has-updatable-nature="true">
+      		<property name="add-ws-annotation" value="stateless"></property>
+		</template>			
+		<!-- stored proc 
+		<template name="EJB3StoredProcedureDaoImpl" templateFileName="EJB3StoredProcedureDaoImpl.vm" 
+			file-extension="java" technicalPackage="dao.impl" file-suffix="SPDaoEJB" 
+			model-specific="true">
+		</template>		
+		-->
+    </template-target>		
+  	
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/BslaLibrary.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="PomXml.EJB3" templateFileName="PomXml.EJB3.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>	
+					
+	</template-target>	  	
+
+	 <template-target 
+    	name="EJB set"
+		libdir="lib/EJB_LIB.vm"
+		outputdir="src/main/resources/META-INF"
+		package-root=""
+		belongToPackage="true">
+
+		<template name="WS-JEE.BeanXml" templateFileName="WS-JEE.BeanXml.vm" 
+			file-extension="xml" technicalPackage="" file-suffix="beans" 
+			application-specific="true" add-model-name="false" >
+		</template>
+				
+	</template-target>	  	         		
+</target>

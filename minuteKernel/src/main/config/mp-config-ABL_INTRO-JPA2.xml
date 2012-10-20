@@ -1,0 +1,96 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="mp-config.xsd">
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>
+		<model name="busintro" version="1.0" package-root="buslogicintro">
+			<data-model>
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://127.0.0.1:3306/buslogic_intro</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<primaryKeyPolicy oneGlobal="false">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="orderentry">
+					<condition type="package" startsWith="DEP" result="hr"></condition>
+					<condition type="package" startsWith="EMP" result="hr"></condition>
+				</business-package>
+				<enrichment>
+					<conventions>
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+							pattern-to-strip="SYS,FIN" />
+						<column-naming-convention
+							type="apply-fix-primary-key-column-name-when-no-ambiguity"
+							default-value="ID" />
+						<reference-naming-convention
+							type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true"></reference-naming-convention>
+					</conventions>
+					<entity name="customer">
+					   <constraints>
+					       <constraint name="CreditLimit">
+					           <comment><![CDATA[fail if Balance > CreditLimit]]></comment>
+					           <value><![CDATA[@Constraint("balance <= creditLimit")]]></value>
+					       </constraint>
+					   </constraints>
+					</entity>
+					<entity name="employee_raise_service">
+						<actions>
+							<action name="giveRaiseToEmployee" is-to-implement="true">
+							<comment><![CDATA[
+							Insert to retrieve Employee (parent), increase salary by percentRaiseToGive.
+							]]>
+                            </comment>
+                            <value>@Action</value>
+                            </action>
+						</actions>
+					</entity>
+					<entity name="department">
+						<!-- <constraints> <constraint name="sumSubDepartmentBudget"> <value><![CDATA[@Constraint("balance 
+							<= creditLimit")]]></value> <comment><![CDATA[This is a comment]]></comment> 
+							</constraint> </constraints> <actions> <action name="bb"> <value>blabla</value> 
+							<comment>blabla</comment> </action> </actions> -->
+						<field name="SumSubDepartmentBudget">
+							<derivations>
+								<derivation>
+									<comment>blabla</comment>
+									<value><![CDATA[@Sum("departments.budgetWithSubDepartmentBudget")]]>
+									</value>
+								</derivation>
+							</derivations>
+						</field>
+					</entity>
+				</enrichment>
+			</business-model>
+		</model>
+		<targets>
+			<target refname="JPA2" name="JPA2" fileName="mp-template-config-JPA2.xml"
+				outputdir-root="../../dev/JPA2-ABL/busintro" templatedir-root="../../minuteTemplate/template/framework/jpa">
+				<property name="add-querydsl" value="2.1.2"></property>
+				<property name="add-automated-business-logic" value="2.1.4"></property>
+				<property name="add-jpa2-implementation" value="hibernate"></property>
+			</target>
+			<target refname="ABL" outputdir-root="../../dev/JPA2-ABL/busintro"
+				fileName="mp-template-config-ABL.xml" templatedir-root="../../minuteTemplate/template/framework/abl">
+			</target>
+			<target refname="LIB" fileName="mp-template-config-bsla-LIB-features.xml"
+				templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="CACHE-LIB" fileName="mp-template-config-CACHE-LIB.xml"
+				templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>
+			<target refname="COMMON-LIB" fileName="mp-template-config-COMMON-LIB.xml"
+				templatedir-root="../../minuteTemplate/template/framework/common">
+			</target>
+		</targets>
+	</configuration>
+</generator-config>

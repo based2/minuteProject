@@ -1,0 +1,129 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+	xs:noNamespaceSchemaLocation="mp-config.xsd">
+	<configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>
+		<model name="busintro" version="1.0" package-root="buslogicintro">
+			<data-model>
+				<driver name="mysql" version="5.1.16" groupId="mysql"
+					artifactId="mysql-connector-java"></driver>
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://127.0.0.1:3306/buslogic_intro</url>
+					<username>root</username>
+					<password>mysql</password>
+				</dataSource>
+				<primaryKeyPolicy oneGlobal="false">
+					<primaryKeyPolicyPattern name="autoincrementPattern"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<business-package default="orderentry">
+					<condition type="package" startsWith="DEP" result="hr"></condition>
+					<condition type="package" startsWith="EMP" result="hr"></condition>
+				</business-package>
+				<enrichment>
+					<conventions>
+					    <column-naming-convention type="apply-field-alias-based-on-camelcase"/>
+						<entity-naming-convention type="apply-strip-table-name-prefix"
+							pattern-to-strip="SYS,FIN" />
+						<column-naming-convention
+							type="apply-fix-primary-key-column-name-when-no-ambiguity-and-not-natural"
+							default-value="ID" />
+						<reference-naming-convention
+							type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true"></reference-naming-convention>
+						<semantic-reference-convention
+						    field-pattern="name,number,amount" field-pattern-type="contains" 
+						    force-default-semantic-reference-based-on-id-and-first-attribute-if-not-present="true"
+						    max-number-of-fields="5" 
+						/>
+						<stereotype-convention
+							field-pattern="amount,salary" field-pattern-type="endsWith"
+							stereotype="currency"
+						/>
+						<stereotype-convention
+							field-pattern="price,credit" field-pattern-type="contains"
+							stereotype="currency"
+						/>
+						<stereotype-convention
+							field-pattern="email" field-pattern-type="contains"
+							stereotype="email"
+						/>
+						<stereotype-convention
+							field-type="BLOB" field-pattern="image" field-pattern-type="contains" override="true"
+							stereotype="image"
+						/>
+						<stereotype-convention
+							field-type="CLOB" override="true"
+							stereotype="html-text" 
+						/>
+					</conventions>
+					<entity name="customer">
+					   <constraints>
+					       <constraint name="CreditLimit">
+					           <comment><![CDATA[fail if Balance > CreditLimit]]></comment>
+					           <value><![CDATA[@Constraint("balance <= creditLimit")]]></value>
+					       </constraint>
+					   </constraints> 
+					</entity>
+					<entity name="employee_raise_service">
+ 						<actions>
+							<action name="giveRaiseToEmployee" is-to-implement="true">
+							<comment><![CDATA[
+							Insert to retrieve Employee (parent), increase salary by percentRaiseToGive.
+							]]>
+                            </comment>
+                            <value>@Action</value>
+                            </action>
+						</actions> 
+					</entity>
+					<entity name="department">
+						<constraints> <constraint name="sumSubDepartmentBudget"> <value>
+						<![CDATA[@Constraint("balance <= creditLimit")]]></value> <comment><![CDATA[This is a comment]]></comment> 
+							</constraint> </constraints> <actions> <action name="bb"> <value>@Action</value> 
+							<comment>blabla</comment> </action> </actions> 
+						<field name="SumSubDepartmentBudget">
+							<derivations>
+								<derivation>
+									<comment>blabla</comment>
+									<value><![CDATA[@Sum("departments.budgetWithSubDepartmentBudget")]]>
+									</value>
+								</derivation>
+							</derivations>
+						</field> 
+					</entity>
+				</enrichment>
+			</business-model>
+		</model>
+		<targets 
+		  outputdir-root="D:/SRC/JAVA/OPENXAVA/openxava-4.5/openxava-4.5/workspace/busintro"
+		  templatedir-root="../../minuteTemplate">
+            <target refname="OpenXava" 
+               fileName="mp-template-config-openxava-last-features.xml" 
+               templatedir-root="../../minuteTemplate/template/framework/openxava">
+              <property name="add-automated-business-logic" value="2.1.4"></property> 
+              <!-- <property name="groovify" value="true"></property> -->
+            </target> 
+             <target refname="ABL" 
+                fileName="mp-template-config-ABL-OPENXAVA.xml" 
+                templatedir-root="../../minuteTemplate/template/framework/abl">
+            </target> 
+            <target refname="JPA2-LIB" 
+               fileName="mp-template-config-JPA2-LIB.xml" 
+               templatedir-root="../../minuteTemplate/template/framework/jpa">
+            </target>
+			<target refname="LIB" fileName="mp-template-config-bsla-LIB-features.xml"
+				templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="CACHE-LIB" fileName="mp-template-config-CACHE-LIB.xml"
+				templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>
+			<target refname="COMMON-LIB" fileName="mp-template-config-COMMON-LIB.xml"
+				templatedir-root="../../minuteTemplate/template/framework/common">
+			</target>
+		</targets>
+	</configuration>
+</generator-config>

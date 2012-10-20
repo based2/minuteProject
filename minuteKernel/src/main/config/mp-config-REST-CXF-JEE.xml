@@ -1,0 +1,118 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>	
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo">
+			
+			<data-model>
+			    <driver groupId="org.apache.derby" artifactId="derby" version="10.8.1.2"/>
+			    <fileSource name="petshop" dir="c:/MinuteProject/data">
+			    </fileSource>
+			    <!--
+			    <dataSource>	
+					<driverClassName>org.apache.derby.jdbc.ClientDriver</driverClassName>
+					<url>jdbc:derby://localhost:1527/sample</url>
+					<username>app</username>
+					<password>app</password>	
+				</dataSource>
+				<schema>app</schema>			    
+			    -->	
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>	
+											 
+				<primaryKeyPolicy oneGlobal="true">
+					<primaryKeyPolicyPattern name="autoincrementPattern"/>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+					<condition type="exclude" startsWith="ID_GEN"></condition>
+					<condition type="exclude" startsWith="SEQUENCE"></condition>
+				</generation-condition>		
+				<business-package default="pet">
+					<condition type="package" startsWith="PRODUCT" result="product"></condition>
+					<condition type="package" startsWith="ITEM" result="product"></condition>
+				</business-package>	
+				<enrichment>
+				   <conventions>
+				      <entity-naming-convention type="apply-strip-table-name-prefix" pattern-to-strip="SYS,FIN"/>
+				      <reference-naming-convention type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true"></reference-naming-convention>
+				   </conventions>
+				    <package name="product">
+				    	<entity-group entities="PRODUCT"></entity-group>
+				    	<entity-group entities="ITEM"></entity-group>
+				    </package>
+				    <entity name="TAG_ITEM" master-relationship-field="ITEMID"/>	
+					<entity name="PRODUCT" alias="MY_GOOD_PRODUCT" master-relationship-field="">				
+					</entity>				    
+					<entity name="ITEM" alias="MY_GOOD_ITEM" comment="my item table">
+						<field name="PRODUCTID" alias="THIS_IS_MY_PRODUCT" comment="my product field reference"></field>					
+					</entity>				    
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <semantic-reference>
+					     <sql-path path="NAME"/>
+					   </semantic-reference>					
+					</entity>
+				</enrichment>					
+			</business-model>
+		</model>	
+		<targets>
+
+			<target refname="JPA2" 
+			   name="JPA2" 
+			   fileName="mp-template-config-JPA2.xml" 
+			   outputdir-root="../../dev/cxf-jee/petshop/jpa2"
+			   templatedir-root="../../minuteTemplate/template/framework/jpa">
+               <property name="add-querydsl" value="2.1.2"></property>
+               <property name="add-jpa2-implementation" value="eclipselink"></property>	
+               <property name="add-xmlbinding" value="true"></property>	
+               <property name="add-xml-format" value="lowercase-hyphen"></property>		<!-- java-variable, uppercase-underscore, lowercase-hyphen, java-class -->   			   
+			</target>
+							
+			<target refname="LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="CACHE-LIB" 
+			   fileName="mp-template-config-CACHE-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>
+			<target refname="CXF-LIB" 
+			   fileName="mp-template-config-CXF-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/cxf">
+			</target>
+			<target 
+			   name="REST" 
+			   fileName="mp-template-config-REST-CXF-JEE.xml" 
+			   outputdir-root="../../dev/cxf-jee/petshop/rest"
+			   templatedir-root="../../minuteTemplate/template/framework/rest"
+			   templatedir-ref="../../minuteTemplate/template/framework/ejb,../../minuteTemplate/template/framework/cxf">	
+      			<property name="add-rest-implementation-cxf-version" value="2.2.3"></property>		   			   
+      			<property name="add-rest-implementation-jersey-version" value="1.9-ea03"></property>
+ 			</target>		
+
+			<target refname="MavenMaster" 
+			   name="maven" 
+			   fileName="mp-template-config-maven.xml" 
+			   outputdir-root="../../dev/cxf-jee/petshop"
+			   templatedir-root="../../minuteTemplate/template/framework/maven">
+			</target> 
+									
+			<target refname="Documentation" 
+			   fileName="mp-template-config-documentation.xml" 
+			   outputdir-root="../../dev/REST/petshop"
+			   templatedir-root="../../minuteTemplate/template/template">
+			</target>	
+			
+		</targets>
+	</configuration>
+</generator-config>

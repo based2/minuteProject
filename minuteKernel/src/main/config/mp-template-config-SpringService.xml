@@ -1,0 +1,57 @@
+<target name="Spring service">		
+	<architecture-target name="Spring service" description="Spring service architecture">
+	</architecture-target>	
+
+	<template-target 
+    	name="Spring service"
+		libdir="lib/SPRING_LIB.vm"
+		outputdir="src/main/java"
+		belongToPackage="true">
+		<property name="DomainEntityUMLTemplate" value="DomainEntityJPA2Annotation" />
+
+		<template name="SpringServiceInterface" templateFileName="SpringServiceInterface.vm" 
+			subdir="" outputsubdir="" technicalPackage="service.face"
+			file-extension="java" file-prefix="" file-suffix="Service" 
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many"
+			has-updatable-nature="true">
+		</template>	
+			
+		<!-- depends BslaDaoInterfaceExtendedUML -->	
+		<template name="SpringServiceImpl" templateFileName="SpringServiceImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="service.impl"
+			file-extension="java" file-prefix="" file-suffix="ServiceImpl" 
+			entity-specific="true" 
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many"
+			has-updatable-nature="true">
+		</template>		
+				
+
+
+        <!-- sdd -->
+        <template name="JSFSDDController" templateFileName="JSFSDDController.vm" 
+            subdir="" outputsubdir="" technicalPackage="controller"
+            file-extension="java" file-prefix="" file-suffix="Controller" 
+            scope-specific-value="query" has-updatable-nature="true"
+            check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+            <property name="add-backend-implementation" value="spring"></property>
+        </template>
+        
+        <!-- Take care the service and the DAO are the same so just one physical template -->
+		<template name="SDDServiceInterface" templateFileName="SDDDaoInterface.vm" 
+			subdir="" outputsubdir="" technicalPackage="service.face"
+			file-extension="java" file-prefix="" file-suffix="Service" 
+			scope-specific-value="query"
+			has-updatable-nature="true">
+		</template>	
+			
+		<!-- depends BslaDaoInterfaceExtendedUML -->	
+		<template name="SDDSpringServiceImpl" templateFileName="SDDSpringServiceImpl.vm" 
+			subdir="" outputsubdir="" technicalPackage="service.impl"
+			file-extension="java" file-prefix="" file-suffix="ServiceImpl" 
+			scope-specific-value="query"
+			has-updatable-nature="true">
+		</template>		
+				
+	</template-target>
+</target>

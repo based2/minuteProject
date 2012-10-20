@@ -1,0 +1,123 @@
+<target name="Rails">		
+	<architecture-target name="openxava" description="openxava architecture">
+	</architecture-target>	
+    <plugin name="hibernate3" className="net.sf.minuteProject.plugin.hibernate.Hibernate3"></plugin>
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="entitySecurityUtils" className="net.sf.minuteProject.utils.security.EntitySecurityUtils"/>
+	<plugin name="authorizationUtils" className="net.sf.minuteProject.utils.security.AuthorizationUtils"/>
+   	<plugin name="railsUtils" className="net.sf.minuteProject.plugin.ruby.RailsUtils"/>
+   	<plugin name="referenceUtils" className="net.sf.minuteProject.utils.ReferenceUtils"/>
+   	
+  	<template-target 
+    	name="Rails domain"
+		outputdir="app/model"
+		libdir="lib/Rails_LIB.vm">
+			 
+		<!--<template name="RailsDomainObject" templateFileName="RailsActiveRecord.vm" package-root=""
+			file-extension="rb" entity-specific="true"
+			add-model-name="false" add-model-dir-name="false" technicalPackage=""
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>-->	
+					
+		<template name="RailsDomainObject" templateFileName="RailsActiveRecord.vm" 
+			file-extension="rb"
+			entity-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+							
+	</template-target>
+	
+  	<template-target 
+    	name="Rails controllers"
+		outputdir="app/controllers">
+			 
+		<template name="RailsController" templateFileName="RailsController.vm" package-root=""
+			file-extension="rb"
+			entity-specific="true" file-suffix="_controller" 
+			add-model-name="false" add-model-dir-name="false" technicalPackage=""
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+					
+	</template-target>
+		
+  	<template-target 
+    	name="Rails config"
+		outputdir="grails-app/conf" >
+			
+		<template package-root=""
+			name="RailsBuildConfig" templateFileName="RailsBuildConfig.vm" 
+			add-model-name="false" add-model-dir-name="false"
+			file-extension="groovy" file-prefix="BuildConfig"
+			model-specific="true">
+		</template>	
+
+		<template package-root=""
+			name="RailsDataSource" templateFileName="RailsDataSource.vm" 
+			add-model-name="false" add-model-dir-name="false"
+			file-extension="groovy" file-prefix="DataSource"
+			model-specific="true">
+		</template>	
+											
+	</template-target>	
+
+  	<template-target 
+    	name="Rails scaffolding input"
+		outputdir="" >
+			
+		<template package-root=""
+			name="RailsScaffoldingCommandWindows" templateFileName="RailsScaffolding.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="cmd" file-prefix="scaffolding-" file-suffix="" 
+			application-specific="true">
+		</template>	
+	</template-target>
+				
+  	<template-target 
+    	name="Rails config"
+		outputdir="" >
+			
+		<template package-root=""
+			name="RailsBuildCommandWindows" templateFileName="RailsBuildCommandWindows.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="cmd" file-prefix="build-" file-suffix="" 
+			application-specific="true">
+		</template>	
+				
+		<template package-root=""
+			name="RailsBuildCommandBash" templateFileName="RailsBuildCommandBash.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="sh" file-prefix="build-" file-suffix="" 
+			application-specific="true">
+		</template>
+		
+		<template package-root=""
+			name="RailsBuildGrailsREPluginCommandWindows" templateFileName="RailsBuildGrailsREPluginCommandWindows.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="cmd" file-prefix="execute-grails-plugin-reverse-4-" file-suffix="" 
+			application-specific="true">
+		</template>	
+				
+		<template package-root=""
+			name="RailsBuildGrailsREPluginCommandBash" templateFileName="RailsBuildGrailsREPluginCommandBash.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="sh" file-prefix="execute-grails-plugin-reverse-4-" file-suffix="" 
+			application-specific="true">
+		</template>		
+		
+		<template package-root=""
+			name="RailsInstallReadMe" templateFileName="RailsInstallReadMe.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" 
+			add-model-dir-name="false"
+			file-extension="txt" file-prefix="README" file-suffix="" 
+			application-specific="true">
+		</template>			
+											
+	</template-target>				
+</target>

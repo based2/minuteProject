@@ -1,0 +1,46 @@
+<target name="SDD beans">		
+	<architecture-target name="SDD beans" description="Statement Driven Development beans">
+	</architecture-target>	
+
+	<template-target 
+    	name="SDD beans set"
+		libdir=""
+		outputdir="src/main/java"
+		belongToPackage="true">
+
+		<!-- SDD beans -->	
+		<template name="SDDInputBean" templateFileName="JavaBean.vm" 
+			subdir="" outputsubdir="" technicalPackage="sdd.in"
+			file-extension="java" file-prefix="" file-suffix="In" has-updatable-nature="true"
+			scope-specific-value="sdd-input-bean" >
+		</template>	
+
+		<template name="SDDOutputBean" templateFileName="JavaBean.vm" 
+			subdir="" outputsubdir="" technicalPackage="sdd.out"
+			file-extension="java" file-prefix="" file-suffix="Out" has-updatable-nature="true"
+			scope-specific-value="sdd-output-bean" >
+		</template>	
+
+		<template name="SDDOutputBeanCollection" templateFileName="JavaBeanCollection.vm" 
+			subdir="" outputsubdir="" technicalPackage="sdd.out"
+			file-extension="java" file-prefix="" file-suffix="OutList" has-updatable-nature="true"
+			scope-specific-value="sdd-output-bean" >
+			<property name="JavaBeanTemplate" value="SDDOutputBean" />
+		</template>	
+		
+		<!-- composite -->
+		<template name="SDDInputCompositeBean" templateFileName="JavaCompositeBean.vm" 
+			subdir="" outputsubdir="" technicalPackage="composite.in"
+			file-extension="java" file-prefix="" file-suffix="In" has-updatable-nature="true"
+			scope-specific-value="sdd-input-composite-bean" >
+		</template>
+			
+		<template name="SDDOutputCompositeBean" templateFileName="JavaCompositeBean.vm" 
+			subdir="" outputsubdir="" technicalPackage="composite.out"
+			file-extension="java" file-prefix="" file-suffix="Out" has-updatable-nature="true"
+			scope-specific-value="sdd-output-composite-bean" >
+		</template>	
+		
+    </template-target>
+
+</target>

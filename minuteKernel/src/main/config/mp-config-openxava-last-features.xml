@@ -1,0 +1,101 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+		</conventions>	
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo.ox">
+			<data-model>
+			    <fileSource name="petshop" dir="c:/MinuteProject/data">
+			    </fileSource>
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- 
+				<dataSource>
+					<driverClassName>org.sqlite.JDBC</driverClassName>
+					<url>jdbc:sqlite:C:/DATA/SQLITE/petshop.db</url>
+					<username></username>
+					<password></password>
+				</dataSource>				
+				<schema>petshop</schema>	
+				-->			 
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+					<condition type="exclude" startsWith="ID_GEN"></condition>
+				</generation-condition>		
+				<business-package default="pet">
+					<condition type="package" startsWith="PRODUCT" result="product"></condition>
+					<condition type="package" startsWith="ITEM" result="product"></condition>
+				</business-package>	
+				<enrichment>
+				    <package name="product">
+				    	<entity-group entities="PRODUCT"></entity-group>
+				    	<entity-group entities="ITEM"></entity-group>
+				    </package>
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <semantic-reference>
+					     <sql-path path="NAME"/>
+					   </semantic-reference>					
+					</entity>
+					<entity name="item">
+					   <field name="disabled" type-alias="BOOLEAN"></field>
+					</entity>
+				</enrichment>					
+			</business-model>
+			<statement-model>
+			    <queries>
+                     <query name="get addresses by criteria" id="c">
+                         <query-body><value>
+<![CDATA[select * from address where latitude between ? and ? and longitude between ? and ? and lcase(city) like ?]]>
+                            </value></query-body>
+                         <query-params>
+                             <query-param name="latitude_lower_limit" is-mandatory="false" type="DOUBLE" sample="37"></query-param>
+                             <query-param name="latitude_upper_limit" is-mandatory="false" type="DOUBLE" sample="38"></query-param>
+                             <query-param name="longitude_lower_limit" is-mandatory="false" type="DOUBLE" sample="-122"></query-param>
+                             <query-param name="longitude_upper_limit" is-mandatory="false" type="DOUBLE" sample="-123"></query-param>
+                             <query-param name="city" is-mandatory="false" type="STRING" sample="'S'"></query-param>
+                         </query-params>
+                     </query>
+			    </queries>
+			</statement-model>
+		</model>	
+		<targets>
+			<target refname="OpenXava" 
+			   name="OpenXava" 
+			   fileName="mp-template-config-openxava-last-features.xml" 
+			   outputdir-root="../../dev/openxava/petshop"
+			   templatedir-root="../../minuteTemplate/template/framework/openxava">
+			    <property name="add-automated-business-logic" value="x.y.z"></property>
+			    <property name="groovify" value="true"></property>
+			</target> 
+            <target refname="ABL-Openxava" 
+                outputdir-root="../../dev/openxava/petshop"
+                fileName="mp-template-config-ABL-OPENXAVA.xml" 
+                templatedir-root="../../minuteTemplate/template/framework/abl">
+            </target>
+			<target refname="JPA2-LIB" 
+			   fileName="mp-template-config-JPA2-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/jpa">
+			</target>
+			<target refname="CACHE-LIB" 
+			   fileName="mp-template-config-CACHE-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>
+			<target refname="LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+		</targets>
+	</configuration>
+</generator-config>

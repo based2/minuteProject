@@ -1,0 +1,19 @@
+<target name="WSDL first">		
+	<architecture-target name="WSDL first" description="starts from wsdl to generate maven jax-ws project"/>	
+	<plugin name="wsdlUtils" className="net.sf.minuteProject.utils.wsdl.WsdlUtils"></plugin>
+
+	<template-target 
+	    templatedir = "template" 
+		libdir="lib/WEBSERVICE_LIB.vm"
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		<template name="PomXml.WSDL-API" templateFileName="PomXml.WSDL-API.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>
+	</template-target>	
+	
+</target>	

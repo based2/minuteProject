@@ -1,0 +1,18 @@
+<target name="Maven master pom">		
+	<architecture-target name="maven" />	
+	<plugin name="mavenUtils" className="net.sf.minuteProject.plugin.maven.MavenUtils"></plugin>
+
+	<template-target 
+	    templatedir = "template" 
+		tool="velocity"
+		outputdir=""
+		package-root=""
+		belongToPackage="true">
+		<template name="MavenMasterPomXml" templateFileName="MavenMasterPomXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true" add-model-name="false">
+		</template>				
+	</template-target>		
+	
+</target>	

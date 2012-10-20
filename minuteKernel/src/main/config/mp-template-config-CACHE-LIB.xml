@@ -1,0 +1,18 @@
+<target name="EHCACHE"
+xmlns="http://minuteproject.sf.net/xsd/mp-template-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:schemaLocation="mp-template-config.xsd">
+		
+	<architecture-target name="ehcache" description="ehcache architecture">
+	</architecture-target>	
+	<plugin name="cacheUtils" className="net.sf.minuteProject.utils.cache.CacheUtils"></plugin>
+
+	<template-target 
+    	name="EHCACHE lib"
+		libdir="lib/CACHE_LIB.vm"
+		outputdir="src"
+		belongToPackage="true">
+	
+    </template-target>		
+         		
+</target>

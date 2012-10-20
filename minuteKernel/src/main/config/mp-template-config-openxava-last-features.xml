@@ -1,0 +1,486 @@
+<target name="OpenXava">		
+	<architecture-target name="openxava" description="openxava architecture">
+	</architecture-target>	
+    <plugin name="hibernate3" className="net.sf.minuteProject.plugin.hibernate.Hibernate3"></plugin>
+    <plugin name="enrichmentUtils" className="net.sf.minuteProject.utils.enrichment.EnrichmentUtils"></plugin>
+	<plugin name="i18nUtils" className="net.sf.minuteProject.plugin.format.I18nUtils"></plugin>	
+	<plugin name="javaUtils" className="net.sf.minuteProject.utils.java.JavaUtils"></plugin>	
+	<plugin name="entitySecurityUtils" className="net.sf.minuteProject.utils.security.EntitySecurityUtils"/>
+	<plugin name="authorizationUtils" className="net.sf.minuteProject.utils.security.AuthorizationUtils"/>
+	<plugin name="openXavaUtils" className="net.sf.minuteProject.plugin.openxava.OpenXavaUtils"></plugin>
+	<plugin name="presentationUtils" className="net.sf.minuteProject.plugin.presentation.PresentationUtils"></plugin>
+	<plugin name="extensionUtils" className="net.sf.minuteProject.utils.ExtensionUtils"></plugin>
+	
+	<template-target 
+    	name="JPA set"
+		libdir="lib/OX_LIB.vm"
+		outputdir="src"
+		belongToPackage="true">
+
+		<template name="OpenxavaDomainObjectUML" templateFileName="DomainObjectUMLJPAAnnotationOXAnnotationV4.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="" 
+			entity-specific="true" has-updatable-nature="true"
+			extension-name-builder-plugin="extensionUtils" extension-name-builder-method="getGroovyNature"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="convertClobToString" value="true"/>
+      		<property name="DomainEntityUMLTemplate" value="OpenxavaDomainObjectUML" ></property>	
+      		<property name="DomainEntityJPA2EmbeddedId" value="OpenxavaDomainEntityJPA2EmbeddedId" ></property>
+		</template>
+		
+		<template name="OpenXavaDomainEntityJPA2Metamodel" templateFileName="DomainEntityJPA2Metamodel.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="_" 
+			entity-specific="true" has-updatable-nature="true"
+            extension-name-builder-plugin="extensionUtils" extension-name-builder-method="getGroovyNature"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+      		<property name="DomainEntityUMLTemplate" value="OpenxavaDomainObjectUML" ></property>
+      		<property name="DomainEntityJPA2EmbeddedId" value="OpenxavaDomainEntityJPA2EmbeddedId" ></property>
+		</template>	
+		
+		<template name="OpenxavaDomainEntityJPA2EmbeddedId" templateFileName="DomainEntityJPA2EmbeddedId.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="Id" 
+			entity-specific="true"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnCompositePKNotMany2Many">
+      		<property name="DomainEntityUMLTemplate" value="OpenxavaDomainObjectUML" ></property>
+		</template>			
+
+        <!-- SDD beans -->  
+        <template name="SDDInputBean" templateFileName="DomainObjectUMLJPAAnnotationOXAnnotationV4.vm" 
+            subdir="" outputsubdir="" technicalPackage="sdd.in"
+            file-extension="java" file-prefix="" file-suffix="In" has-updatable-nature="true"
+            scope-specific-value="sdd-input-bean" >
+        </template> 	
+				
+		<template name="TransferDomainObjectUML" templateFileName="DomainObjectUMLJPAAnnotationOXAnnotationV4.vm" 
+			subdir="" outputsubdir="" technicalPackage="dto"
+			file-extension="java" file-prefix="" file-suffix="" has-updatable-nature="true"
+			scope-specific-value="transfer-entity" >
+      		<property name="convertClobToString" value="true"/>
+		</template>		
+
+		<template name="FunctionInputDomainObjectUML" templateFileName="DomainObjectUMLJPAAnnotationOXAnnotationV4.vm" 
+			subdir="" outputsubdir="" technicalPackage="function.in"
+			file-extension="java" file-prefix="" file-suffix="In" has-updatable-nature="true"
+			scope-specific-value="function-input-entity" >
+      		<property name="convertClobToString" value="true"/>
+		</template>	
+
+		<template name="FunctionOutputDomainObjectUML" templateFileName="DomainObjectUMLJPAAnnotationOXAnnotationV4.vm" 
+			subdir="" outputsubdir="" technicalPackage="function.out"
+			file-extension="java" file-prefix="" file-suffix="Out" has-updatable-nature="true"
+			scope-specific-value="function-output-entity" >
+      		<property name="convertClobToString" value="true"/>
+		</template>	
+		
+    </template-target>		
+  
+    <template-target 
+    	name="editor"
+		outputdir="web/xava/editors"
+		package-root=""
+		belongToPackage="true">
+		
+		<template name="OXComboListJSP" templateFileName="OXComboListJSP.vm" 
+			subdir="" outputsubdir="" technicalPackage="editor"
+			file-extension="jsp" file-prefix="" file-suffix="Combo" 
+			field-specific="true" 
+		      check-template-to-generate="true" 
+		      is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnTag"
+		      add-business-package-dir-name="false"
+		      add-model-dir-name="false"
+		      add-technical-dir-name="false"
+				>
+			<property name="generateForTag" value="checkconstraint"></property>
+		</template>
+    		
+	 </template-target>
+   	
+  	<template-target 
+    	name="JPA set"
+		outputdir="i18n"
+		package-root=""
+		belongToPackage="true">
+			 
+		<template name="OXi18nLabel" templateFileName="OXi18nLabel.vm" 
+			subdir="" outputsubdir="" technicalPackage=""
+			add-model-dir-name="false"
+			file-extension="properties" file-prefix="" file-suffix="-labels" 
+			application-specific="true" has-updatable-nature="true"
+     		file-name-format="FORMAT_LOWER_CASE_FIRST_LETTER">
+			<!--check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many"-->
+		</template>
+
+	</template-target>
+		<!--  OPENXAVA templates -->
+		
+		<!--  Menu OX templates -->
+	
+	<template-target 
+    	name="web-inf config"
+		outputdir="web"
+		belongToPackage="true">			
+
+		<template package-root="xava"
+			name="HomeMenu" templateFileName="HomeMenuOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="jsp" file-prefix="" file-suffix="homeMenu" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+    		
+		<template package-root="mp"
+			name="Menu" templateFileName="MenuOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="jsp" file-prefix="" file-suffix="menu" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>			
+    	<template package-root="mp"
+			name="Footer" templateFileName="FooterOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="jsp" file-prefix="" file-suffix="footer" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+
+	    <template package-root="WEB-INF"
+	  		name="OpenXavaSecurityWebXml" templateFileName="OpenXavaSecurityWebXml.vm" 
+	  		subdir="" outputsubdir="" technicalPackage="" add-model-name="false"
+	  		file-extension="xml" file-prefix="web" file-suffix="" 
+	  		entity-specific="false" package-specific="false" model-specific="false"
+	  		application-specific="true">
+	  		<property name="securityAuthenticationType" value="basic" />
+	  		<property name="mpUserRole" value="mpUser" />
+	  		<property name="applicationRealm" value="Application" />
+		</template>	
+		  
+	    <template package-root="WEB-INF/tags/common"
+	  		name="SecurityTagLib" templateFileName="SecurityTagLib.vm" 
+	  		subdir="" outputsubdir="" technicalPackage="" add-model-name="false"
+	  		file-extension="tag" file-prefix="isUserInRole" file-suffix="" 
+	  		entity-specific="false" package-specific="false" model-specific="false"
+	  		application-specific="true">
+		</template>			  
+  									
+  </template-target> 
+		<!--  Menu home.jsp belongs to architecture -->
+		
+<!--  Menu application.xml templates -->
+<!--  Menu config persistence.jdbc.jndi templates -->
+	<template-target 
+        name="other config"
+	    templatedir = "template-bsla1" 
+		libdir="lib/BslaLibrary.vm,lib/FrontEndLibrary.vm"
+		tool="velocity"
+		outputdir="other"
+		package-root=""
+		belongToPackage="true">			
+
+		<!--  Menu config tomcat jndi templates -->
+		<template package-root="tomcat.snippet"
+			name="TomcatJndiConnectionPoolSnippet" templateFileName="TomcatJndiConnectionPoolSnippet.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" add-model-dir-name="false"
+			file-extension="txt" file-prefix="" file-suffix="_jndi_for_tomcat_snippet" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>		
+		
+		<template package-root="tomcat.snippet"
+			name="TomcatContextXml" templateFileName="TomcatContextXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" 
+			add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="context" 
+			entity-specific="false" package-specific="false" model-specific="true">
+		</template>	
+
+		<template name="CheckConstraintSQL" templateFileName="CheckConstraintSQL.vm" 
+		    package-root="sql"
+			subdir="" outputsubdir="" technicalPackage="check"
+			file-extension="sql" file-prefix="" file-suffix="-check-constraints" 
+			add-model-name="true" add-model-dir-name="false"
+			model-specific="true" >
+		</template>
+	
+		<template name="SequenceSQL" templateFileName="SequenceSQL.vm" 
+		    package-root="sql"
+			subdir="" outputsubdir="" technicalPackage="sequence"
+			file-extension="sql" file-prefix="" file-suffix="" 
+			add-model-name="true" add-model-dir-name="false"
+			model-specific="true" >
+		</template>
+
+											
+  </template-target>
+  
+	<template-target 
+    	name="web-inf config"
+	  	templatedir = "template-bsla1" 
+		libdir="lib/BslaLibrary.vm,lib/FrontEndLibrary.vm"
+		tool="velocity"
+		outputdir="persistence"
+		belongToPackage="true">			
+
+		<template package-root="META-INF"
+			name="PersistenceXmlOX" templateFileName="JPA.persistence.xml.OX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="persistence" 
+			 has-updatable-nature="true" model-specific="true">
+		</template>
+
+		<template name="EhCacheXml" templateFileName="EhCache.Xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" has-updatable-nature="true"
+			file-extension="xml" file-prefix="ehcache" file-suffix="" 
+			application-specific="true" package-root=""
+			add-model-name="false">
+			<property name="DomainEntityUMLTemplate" value="OpenxavaDomainObjectUML" ></property>
+		</template>
+
+  	</template-target>
+
+<!-- 
+  mp.css, home.jsp, tags isUserInRole.tag
+-->
+
+	<template-target 
+    	name="openxava xml config"
+		outputdir="xava"
+		package-root=""
+		belongToPackage="true">	
+		
+    	<template
+			name="ApplicationXml" templateFileName="ApplicationXmlOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="application" 
+		    model-specific="true">
+		</template>		
+    
+    	<template 
+			name="ControllersXmlOX" templateFileName="ControllersXmlOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="controllers" 
+			model-specific="true">
+		</template>			
+ 
+		<template name="OXEditorXml" templateFileName="OXEditorXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" 
+			file-extension="xml" file-prefix="editors" file-suffix="" 
+			add-model-name="false" add-model-dir-name="false"
+			model-specific="true" >
+		</template>	
+				
+	</template-target>
+	
+	<template-target 
+    	name="hardcoded templates for the architecture"
+    	outputdir=""
+		package-root=""
+		belongToPackage="true">	
+		
+		<template package-root="web.xava"
+			name="HomeOX" templateFileName="HomeOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="jsp" file-prefix="" file-suffix="home" 
+			model-specific="true">
+		</template>	
+		
+		<template package-root="web.xava.style"
+			name="CssMpOX" templateFileName="CssMpOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="css" file-prefix="" file-suffix="mp" 
+			model-specific="true">
+		</template>			
+			
+	</template-target>	
+	
+	<template-target 
+    	name="portal portlets"
+    	outputdir=""
+		package-root=""
+		belongToPackage="true">	
+		
+		<template package-root="web.WEB-INF"
+			name="liferay-display" templateFileName="LiferayDisplay.xml.OX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="liferay-display" 
+			model-specific="true">
+		</template>	
+		
+		<template package-root="web.WEB-INF"
+			name="portlet" templateFileName="Portlet.xml.OX.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="portlet" 
+			model-specific="true">
+		</template>		
+
+		<template package-root="src" 
+		    name="PortletProperties" templateFileName="Portlet.properties.OX.vm" 
+			subdir="" outputsubdir="" technicalPackage="portlets"
+			file-extension="properties" file-prefix="" file-suffix="" 
+			entity-specific="true" add-model-dir-name="false" add-business-package-dir-name="false"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>	
+						
+	</template-target>
+	
+	<template-target 
+    	name="commands"
+    	outputdir=""
+		package-root="">	
+		
+		<template package-root=""
+			name="OXProjectSetupScript" templateFileName="OXProjectSetupScript.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" add-model-dir-name="false"
+			file-extension="sh" file-prefix="ant-setup-" file-suffix="" 
+			application-specific="true">
+		</template>	
+
+		<template package-root=""
+			name="OXProjectSetupScript" templateFileName="OXProjectSetupScript.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" add-model-dir-name="false"
+			file-extension="cmd" file-prefix="ant-setup-" file-suffix="" 
+			application-specific="true">
+		</template>	
+				
+		<template package-root=""
+			name="BuildCommandWindows" templateFileName="BuildCommandWindows.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="cmd" file-prefix="build-" file-suffix="" 
+			application-specific="true">
+		</template>	
+				
+		<template package-root=""
+			name="BuildCommandBash" templateFileName="BuildCommandBash.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="sh" file-prefix="build-" file-suffix="" 
+			application-specific="true">
+		</template>
+				
+		<template package-root=""
+			name="ResetCommandWindows" templateFileName="ResetCommandWindows.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="cmd" file-prefix="reset-" file-suffix="" 
+			application-specific="true">
+		</template>			
+
+		<template package-root=""
+			name="ResetCommandBash" templateFileName="ResetCommandBash.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="true" 
+			add-model-dir-name="false"
+			file-extension="sh" file-prefix="reset-" file-suffix="" 
+			application-specific="true">
+		</template>	
+				
+		<template package-root=""
+			name="OXBuildXml" templateFileName="OXBuildXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" 
+			add-model-dir-name="false"
+			file-extension="xml" file-prefix="mp4openxava-build" file-suffix="" 
+			application-specific="true">
+		</template>	
+				
+		<template package-root=""
+			name="OX.PomXml" templateFileName="OX.pom.xml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" 
+			add-model-dir-name="false" has-updatable-nature="true"
+			file-extension="xml" file-prefix="pom" file-suffix="" 
+			application-specific="true">
+		</template>			
+						
+	</template-target>	
+	
+	<template-target 
+    	name="OpenXava helper"
+    	outputdir="web"
+		package-root="">	
+		<!-- 
+		<template package-root=""
+			name="OXHelper" templateFileName="OXHelper.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="jsp" file-prefix="Helper" file-suffix="" 
+			entity-specific="true">
+		</template>	
+ -->
+		<template name="OXHelper" templateFileName="OXHelper.vm" 
+			subdir="" outputsubdir="" technicalPackage="xava.help"
+			file-extension="jsp" file-prefix="" file-suffix="_en" 
+			add-model-dir-name="false" add-business-package-dir-name="false"
+			entity-specific="true" package-specific="false" model-specific="false"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+
+		<template name="OXHelper" templateFileName="OXHelper.vm" 
+			subdir="" outputsubdir="" technicalPackage="xava.help"
+			file-extension="jsp" file-prefix="" file-suffix="_fr" 
+			add-model-dir-name="false" add-business-package-dir-name="false"
+			entity-specific="true" package-specific="false" model-specific="false"
+      		check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnNotMany2Many">
+		</template>
+						
+	</template-target>	
+	
+	<template-target 
+    	name="OpenXava properties"
+    	outputdir="properties"
+		package-root="">	
+
+		<template package-root=""
+			name="OpenXavaProperties" templateFileName="OpenXavaProperties.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="properties" file-prefix="xava" file-suffix="" 
+			application-specific="true">
+		</template>	
+								
+	</template-target>	
+	
+	<template-target 
+    	name="OpenXava action"
+    	outputdir="src">	
+
+		<template
+			name="ActionOX" templateFileName="ActionOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="action" 
+			file-extension="java" file-prefix="" file-suffix="Action" 
+			has-updatable-nature="true"
+			scope-specific-value="action">
+		</template>	
+
+		<template
+			name="ActionOX.stored.proc" templateFileName="ActionOX.vm" 
+			subdir="" outputsubdir="" technicalPackage="action" 
+			file-extension="java" file-prefix="" file-suffix="Action" 
+			has-updatable-nature="true"
+			scope-specific-value="function">
+			<property name="isAction" value="false"></property>
+		</template>									
+
+		<template
+			name="ActionOX.SDD.query" templateFileName="ActionOX.SDD.query.vm" 
+			subdir="" outputsubdir="" technicalPackage="sdd.action" 
+			file-extension="java" file-prefix="" file-suffix="Action" 
+			has-updatable-nature="true"
+			scope-specific-value="query">
+			<property name="isAction" value="false"></property>
+		</template>	
+								
+	</template-target>	
+	
+	<template-target 
+    	name="Spring security integration"
+		outputdir="web/WEB-INF"
+		package-root=""
+		belongToPackage="true">			
+
+		<template 
+			name="OXservletSpringSecurityXml" templateFileName="OXservletSpringSecurityXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="" add-model-name="false" add-model-dir-name="false"
+			file-extension="xml" file-prefix="" file-suffix="servlets" 
+			entity-specific="false" package-specific="false" model-specific="true"
+			check-template-to-generate="true" is-template-to-generate-method="enrichmentUtils.isToGenerateBasedOnTargetPresence">
+			>
+			<property name="target-presence" value="add-spring-security"></property>
+		</template>	
+
+	</template-target>		
+
+</target>

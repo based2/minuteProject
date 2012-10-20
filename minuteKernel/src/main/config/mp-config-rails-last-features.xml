@@ -1,0 +1,72 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo.grails">
+			<data-model>
+				<driver name="hsqldb" version="1.8.0.7" groupId="hsqldb"
+					artifactId="hsqldb"></driver>
+				<!--
+					<dataSource>
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username> <password></password> </dataSource> for
+					Oracle and DB2 please set the schema <schema> </schema>
+				
+				<dataSource>
+					<driverClassName>org.gjt.mm.mysql.Driver</driverClassName>
+					<url>jdbc:mysql://localhost:3306/petshop</url>
+					<username>root</username>
+					<password></password>
+				</dataSource>
+				
+				<dataSource>
+					<driverClassName>org.sqlite.JDBC</driverClassName>
+					<url>jdbc:sqlite:C:/DATA/SQLITE/petshop.db</url>
+					<username></username>
+					<password></password>
+				</dataSource>
+				-->
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>								
+
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix=""
+						name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy>
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+					<condition type="exclude" startsWith="ID_GEN"></condition>
+				</generation-condition>
+				<business-package default="">
+				</business-package>
+				<enrichment>
+					<entity name="CATEGORY" content-type="reference-data">
+						<semantic-reference>
+							<sql-path path="NAME" />
+						</semantic-reference>
+					</entity>
+					<conventions>
+						<version-convention default-value="VERSION">
+						</version-convention>
+					</conventions>
+				</enrichment>
+			</business-model>
+		</model>
+		<targets>
+			<target name="Rails" fileName="mp-template-config-rails-last-features.xml"
+				outputdir-root="../../DEV/output/rails" templatedir-root="../../minuteTemplate/template/framework/rails">
+			</target>
+			<target refname="LIB" fileName="mp-template-config-bsla-LIB-features.xml"
+				templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+		</targets>
+	</configuration>
+</generator-config>

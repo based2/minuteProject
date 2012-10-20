@@ -1,0 +1,84 @@
+<xs:schema id="target" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://minuteproject.sf.net/xsd/mp-template-config"
+	targetNamespace="http://minuteproject.sf.net/xsd/mp-template-config"
+	elementFormDefault="qualified">
+
+	<xs:element name="target" type="target">
+	</xs:element>
+
+	<xs:complexType name="target">
+		<xs:sequence>
+			<xs:element name="architecture-target" type="architecture-target"
+				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+			<xs:element name="plugin" type="plugin" minOccurs="0"
+				maxOccurs="unbounded">
+			</xs:element>
+			<xs:element name="template-target" type="template-target"
+				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="architecture-target">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="description" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="plugin">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="className" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="property">
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="tag" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="template">
+		<xs:sequence>
+			<xs:element name="property" type="property" minOccurs="0"
+				maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="templateFileName" type="xs:string" />
+		<xs:attribute name="subdir" type="xs:string" />
+		<xs:attribute name="outputsubdir" type="xs:string" />
+		<xs:attribute name="technicalPackage" type="xs:string" />
+		<xs:attribute name="add-model-name" type="xs:string" />
+		<xs:attribute name="add-model-dir-name" type="xs:string" />
+		<xs:attribute name="file-extension" type="xs:string" />
+		<xs:attribute name="file-prefix" type="xs:string" />
+		<xs:attribute name="file-suffix" type="xs:string" />
+		<xs:attribute name="entity-specific" type="xs:string" />
+		<xs:attribute name="package-specific" type="xs:string" />
+		<xs:attribute name="model-specific" type="xs:string" />
+		<xs:attribute name="check-template-to-generate" type="xs:string" />
+		<xs:attribute name="is-template-to-generate-method" type="xs:string" />
+		<xs:attribute name="field-specific" type="xs:string" />
+		<xs:attribute name="file-name-builder-plugin" type="xs:string" />
+		<xs:attribute name="file-name-builder-method" type="xs:string" />
+		<xs:attribute name="application-specific" type="xs:string" />
+		<xs:attribute name="package-root" type="xs:string" />
+		<xs:attribute name="add-technical-dir-name" type="xs:string" />
+		<xs:attribute name="add-business-package-dir-name=" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="template-target">
+		<xs:sequence>
+			<xs:element name="template" type="template" minOccurs="0"
+				maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="libdir" type="xs:string" />
+		<xs:attribute name="tool" type="xs:string" />
+		<xs:attribute name="outputdir" type="xs:string" />
+		<xs:attribute name="package-root" type="xs:string" />
+		<xs:attribute name="belongToPackage" type="xs:string" />
+		<xs:attribute name="templatedir" type="xs:string" />
+	</xs:complexType>
+
+</xs:schema>

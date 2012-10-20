@@ -1,0 +1,111 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+        <conventions>
+	        <target-convention type="enable-updatable-code-feature">
+	        </target-convention>
+        </conventions>
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo.jpa2">
+			<data-model>
+			    <driver name="hsqldb" version="1.8.0.7" groupId="hsqldb" artifactId="hsqldb"></driver>
+			    <fileSource name="petshop" dir="c:/MinuteProject/data">
+			    </fileSource>
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema 
+				<schema> </schema>
+				 -->
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+ 				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+ 					<condition type="exclude" endsWith="_GEN"></condition>
+				</generation-condition> 	
+				<business-package default="pet">
+					<condition type="package" startsWith="PRODUCT" result="product"></condition>
+					<condition type="package" startsWith="ITEM" result="product"></condition>
+				</business-package>	
+				<enrichment>
+				   <conventions>
+				      <entity-naming-convention type="apply-strip-table-name-prefix" pattern-to-strip="SYS,FIN"/>
+				      <column-naming-convention type="apply-fix-primary-key-column-name-when-no-ambiguity" default-value="ID"/>
+				      <reference-naming-convention type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true"></reference-naming-convention>
+				   </conventions>
+				    <package name="product">
+				    	<entity-group entities="PRODUCT"></entity-group>
+				    	<entity-group entities="ITEM"></entity-group>
+				    </package>	    
+					<entity name="ITEM" alias="MY_GOOD_ITEM" comment="my item table">
+						<field name="PRODUCTID" alias="THIS_IS_MY_PRODUCT" comment="my product field reference"></field>					
+					</entity>				    
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <semantic-reference>
+					     <sql-path path="NAME"/>
+					   </semantic-reference>
+					</entity>
+                    <entity name="Product" alias="MY_GOOD_PRODUCT">
+                        <constraints>
+                            <constraint name="checkCredit">
+                                <value><![CDATA[@Constraint("balance <= creditLimit")]]></value>
+                                <comment><![CDATA[This is a comment]]></comment>
+                            </constraint>
+                        </constraints>
+                        <actions>
+                            <action name="bb">
+                                <value>blabla</value>
+                                <comment>blabla</comment>
+                            </action>
+                        </actions>
+                        <field name="NAME">
+                            <derivations>
+                                
+                                <derivation name="name">
+                                <comment>blabla</comment>
+                                <value><![CDATA[@Sum("purchaseorders.amountUnPaid where isReady = true")]]>
+                                    </value>
+                                </derivation>
+                            </derivations>
+                        </field>
+                     </entity>
+				</enrichment>					
+			</business-model>
+		</model>	
+		<targets>
+			<target refname="JPA2"
+			   name="JPA2" 
+			   fileName="mp-template-config-JPA2.xml" 
+			   outputdir-root="../../dev/JPA2-ABL/petshop"
+			   templatedir-root="../../minuteTemplate/template/framework/jpa">
+               <property name="add-querydsl" value="2.1.2"></property>
+               <property name="add-automated-business-logic" value="2.1.4"></property>
+               <property name="add-jpa2-implementation" value="hibernate"></property>			   			   
+			</target>	
+            <target refname="ABL" 
+                outputdir-root="../../dev/JPA2-ABL/petshop"
+                fileName="mp-template-config-ABL.xml" 
+                templatedir-root="../../minuteTemplate/template/framework/abl">
+            </target>
+			<target refname="LIB" 
+			   fileName="mp-template-config-bsla-LIB-features.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+			</target>
+			<target refname="CACHE-LIB" 
+			   fileName="mp-template-config-CACHE-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>			
+			<target refname="COMMON-LIB" 
+			   fileName="mp-template-config-COMMON-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/common">
+			</target>			
+		</targets>
+	</configuration>
+</generator-config>

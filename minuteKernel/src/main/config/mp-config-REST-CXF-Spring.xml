@@ -1,0 +1,211 @@
+<!DOCTYPE root>
+<generator-config xmlns="http://minuteproject.sf.net/xsd/mp-config" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" 
+xs:noNamespaceSchemaLocation="mp-config.xsd">
+    <configuration>
+		<conventions>
+			<target-convention type="enable-updatable-code-feature" />
+			<package-convention type="disable-business-package-for-entity-template" />
+		</conventions>	
+		<model name="petshop" version="1.0" package-root="net.sf.mp.demo.jpa2">
+			<data-model>
+			    <driver name="hsqldb" version="1.8.0.7" groupId="hsqldb" artifactId="hsqldb"></driver>
+			    <fileSource name="petshop" dir="c:/MinuteProject/data">
+			    </fileSource>
+			    <dataSource>	
+					<driverClassName>org.hsqldb.jdbcDriver</driverClassName>
+					<url>jdbc:hsqldb:hsql://127.0.0.1:9001/petshop</url>
+					<username>sa</username>
+					<password></password>	
+				</dataSource>
+				<!-- for Oracle and DB2 please set the schema 
+				<schema> </schema>
+				 -->
+				<primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+					<condition type="exclude" startsWith="ID_GEN"></condition>
+				</generation-condition>		
+				<business-package default="pet">
+					<condition type="package" startsWith="PRODUCT" result="product"></condition>
+					<condition type="package" startsWith="ITEM" result="product"></condition>
+				</business-package>	
+				<enrichment>
+				   <conventions>
+				      <entity-naming-convention type="apply-strip-table-name-prefix" pattern-to-strip="SYS,FIN"/>
+				      <column-naming-convention type="apply-fix-primary-key-column-name-when-no-ambiguity" default-value="ID"/>
+				      <reference-naming-convention type="apply-referenced-alias-when-no-ambiguity" is-to-plurialize="true"></reference-naming-convention>
+				   </conventions>
+				    <package name="product">
+				    	<entity-group entities="PRODUCT"></entity-group>
+				    	<entity-group entities="ITEM"></entity-group>
+				    </package>
+					<entity name="PRODUCT" alias="MY_GOOD_PRODUCT">
+					</entity>				    
+					<entity name="ITEM" alias="MY_GOOD_ITEM" comment="my item table">
+						<field name="PRODUCTID" alias="THIS_IS_MY_PRODUCT" comment="my product field reference"></field>					
+					</entity>				    
+					<entity name="CATEGORY" content-type="reference-data" >
+					   <semantic-reference>
+					     <sql-path path="NAME"/>
+					   </semantic-reference>					
+					</entity>
+				</enrichment>
+			</business-model>
+            <statement-model>
+            	 <composites>
+            	 	<composite id="a and b" name="address misc" execution-type="parallel/sequence">
+            	 		<query refid="a"/>
+            	 		<query refid="b"/>
+            	 	</composite>
+            	 </composites>
+                 <queries>
+                     <query name="get address street alpha" id="a">
+                         <query-body name="address info"><value>
+                         <![CDATA[
+                         select * from address 
+                         where addressid > ? 
+                         and addressid < ? order by addressid
+                         ]]></value></query-body>
+                         <query-params id="a" name="address filter">
+                             <query-param name="identifier_Address" is-mandatory="true" type="INT" sample="1"></query-param>
+                             <query-param name="identifier_Address2" is-mandatory="false" type="INT" sample="1">
+                             	<query-param-optional-sections>
+                             		<query-param-optional-section name="optional1">
+                             			<query-param-area belongs-to="where/what/how/order/group">
+                             		<value><![CDATA[and addressid < ?]]></value>
+                             		</query-param-area>
+                             		</query-param-optional-section>
+                             	</query-param-optional-sections>
+                             </query-param>
+                         </query-params>
+                     </query>
+                     <query name="get address street 2" id="b">
+                         <query-body><value>
+                         <![CDATA[
+                         select * from address 
+                         where addressid between ? 
+                         and ? order by addressid
+                         ]]></value></query-body>
+                         <query-params id="b" refid="a" name="test"/>
+                     </query>
+                     <query name="get addresses by criteria" id="c">
+                         <query-body><value>
+<![CDATA[select * from address where latitude between ? and ? and longitude between ? and ? and lcase(city) like ?]]>
+                            </value></query-body>
+                         <query-what><value></value></query-what>
+                         <query-where><value></value></query-where>
+                         <query-params>
+                             <query-param name="latitude_lower_limit" is-mandatory="false" type="DOUBLE" sample="37"></query-param>
+                             <query-param name="latitude_upper_limit" is-mandatory="false" type="DOUBLE" sample="38"></query-param>
+                             <query-param name="longitude_lower_limit" is-mandatory="false" type="DOUBLE" sample="-122"></query-param>
+                             <query-param name="longitude_upper_limit" is-mandatory="false" type="DOUBLE" sample="-123"></query-param>
+                             <query-param name="city" is-mandatory="false" type="STRING" sample="'S'"></query-param>
+                         </query-params>
+                     </query>
+                     <query name="get address street">
+                         <query-body><value><![CDATA[select * from address where addressid between ? and ?]]></value></query-body>
+                         <query-what><value></value></query-what>
+                         <query-where><value></value></query-where>
+                         <query-params>
+                             <query-param name="identifier_Address" is-mandatory="false" type="INT" sample="1"></query-param>
+                             <query-param name="identifier_Address2" is-mandatory="false" type="INT" sample="1"></query-param>
+                         </query-params>
+                     </query>
+                     <query name="get simple address street">
+                         <query-body><value><![CDATA[select * from address where addressid between ? and ?]]></value></query-body>
+                         <query-what><value></value></query-what>
+                         <query-where><value></value></query-where>
+                         <query-params>
+                             <query-param name="identifier_Address" is-mandatory="false" type="INT" sample="1"></query-param>
+                             <query-param name="identifier_Address2" is-mandatory="false" type="INT" sample="1"></query-param>
+                         </query-params>
+                     </query>
+                     <query name="get address">
+                         <query-body><value>
+                            <![CDATA[select * from address where lcase(city) like ?]]>
+                            </value></query-body>
+                         <query-what><value></value></query-what>
+                         <query-where><value></value></query-where>
+                         <query-params>
+                             <query-param name="city" is-mandatory="false" type="STRING" sample="'S'"></query-param>
+                         </query-params>
+                     </query>
+                 </queries>
+            </statement-model>
+		</model>	
+		<targets>
+		
+			<target refname="REST-CXF-BSLA" 
+			   name="default" 
+			   fileName="mp-template-config-REST-CXF-Spring.xml" 
+			   outputdir-root="../../DEV/cxf/petshop/rest"
+			   templatedir-root="../../minuteTemplate/template/framework/cxf">
+			</target>
+
+			<target refname="BackendOnBsla" 
+			   name="default" 
+			   fileName="mp-template-config-JPA2-bsla.xml" 
+			   outputdir-root="../../DEV/cxf/petshop/bsla"
+			   templatedir-root="../../minuteTemplate/template/framework/bsla">
+				<property name="add-cache-implementation" value="ehcache"></property>
+			</target> 
+
+			<target refname="JPA2" 
+			   name="JPA2" 
+			   fileName="mp-template-config-JPA2.xml" 
+			   outputdir-root="../../DEV/cxf/petshop/jpa2"
+			   templatedir-root="../../minuteTemplate/template/framework/jpa">
+               <property name="add-querydsl" value="2.1.2"></property>
+               <property name="add-jpa2-implementation" value="hibernate"></property>
+               <property name="add-cache-implementation" value="ehcache"></property>
+               <property name="add-domain-specific-method" value="true"></property>
+               <property name="add-xmlbinding" value="true"></property>	
+               <property name="add-xml-format" value="lowercase-hyphen"></property>		<!-- java-variable, uppercase-underscore, lowercase-hyphen, java-class -->
+               <property name="environment" value="local"></property>		<!-- java-variable, uppercase-underscore, lowercase-hyphen, java-class -->
+			</target>
+			
+            <target refname="SDD-beans" 
+                outputdir-root="../../DEV/cxf/petshop/jpa2"
+               fileName="mp-template-config-SDD-beans.xml" 
+               templatedir-root="../../minuteTemplate/template/framework/bean">
+               <property name="add-xmlbinding" value="true"></property>	
+               <property name="add-xml-format" value="lowercase-hyphen"></property>
+            </target>
+            
+            <target refname="jQuerySDD" 
+                outputdir-root="../../DEV/cxf/petshop/rest"
+               fileName="mp-template-config-REST-client.xml" 
+               templatedir-root="../../minuteTemplate/template/framework/jquery">
+            </target>
+            
+            <target refname="COMMON-LIB" 
+               fileName="mp-template-config-COMMON-LIB.xml" 
+               templatedir-root="../../minuteTemplate/template/framework/common">
+            </target>   
+			<target refname="CACHE-LIB" 
+			   fileName="mp-template-config-CACHE-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/cache">
+			</target>
+			<target refname="REST-LIB" 
+			   fileName="mp-template-config-REST-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/rest">
+			</target>
+			<target refname="SPRING-LIB" 
+			   fileName="mp-template-config-SPRING-LIB.xml" 
+			   templatedir-root="../../minuteTemplate/template/framework/spring">
+			</target>
+			<target refname="MavenMaster" 
+			   name="maven" 
+			   fileName="mp-template-config-maven.xml" 
+			   outputdir-root="../../DEV/cxf/petshop"
+			   templatedir-root="../../minuteTemplate/template/framework/maven">
+			</target>
+			
+		</targets>
+	</configuration>
+</generator-config>
