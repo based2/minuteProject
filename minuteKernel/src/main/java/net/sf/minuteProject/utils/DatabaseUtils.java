@@ -6,21 +6,24 @@ import net.sf.minuteProject.configuration.bean.model.data.Table;
 import net.sf.minuteProject.configuration.bean.strategy.datamodel.PrimaryKeyPolicy;
 import net.sf.minuteProject.configuration.bean.strategy.datamodel.PrimaryKeyPolicyPattern;
 import net.sf.minuteProject.configuration.bean.strategy.datamodel.PrimaryKeyPolicyPatternEnum;
+import net.sf.minuteProject.configuration.bean.enumeration.DATABASEenum;
 
 public class DatabaseUtils {
 	
-	public static String providePrimaryKeyLookUpString (Table table) {
-		Database database = table.getDatabase();
-		if (database.getType().equals("DB2")){
-			return "SELECT NEXTVAL FOR "+provideSequence(table)+" AS ID FROM SYSIBM.SYSDUMMY1";
-		} else if (database.getType().equals("ORACLE")){
-			return "SELECT "+provideSequence(table)+".NEXTVAL AS ID FROM DUAL";
-		} else if (database.getType().equals("MYSQL")){
+	public static String providePrimaryKeyLookUpString(final Table table) {
+        DATABASEenum type = table.getDatabase().getType();
+        String sequence = provideSequence(table);
+		if (DATABASEenum.DB2==type){
+			return "SELECT NEXTVAL FOR " + sequence +" AS ID FROM SYSIBM.SYSDUMMY1";
+		} else if (DATABASEenum.ORACLE==type || DATABASEenum.H2==type) {
+			return "SELECT " + sequence +".NEXTVAL AS ID FROM DUAL";
+		} else if (DATABASEenum.MYSQL==type){
 			return "SELECT LAST_INSERT_ID() AS value";
-		}
-		else if (database.getType().equals("HSQLDB")){
-			return "SELECT NEXT VALUE FOR "+provideSequence(table)+" AS ID FROM DUAL";
-		} else
+		} else if (DATABASEenum.HSQLDB==type){
+			return "SELECT NEXT VALUE FOR " + sequence +" AS ID FROM DUAL";
+		} else if (DATABASEenum.POSTGRESQL==type){
+            return "SELECT nextval('" + sequence + "')";
+        }
 		return "ERROR_ON_LOOK_UP for PK";
 	}
 	

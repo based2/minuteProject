@@ -7,6 +7,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import net.sf.minuteProject.configuration.bean.DataModel;
+import net.sf.minuteProject.configuration.bean.enumeration.DATABASEenum;
 /**
  * It is inspired by the DDLUtils Database Class
  * Represents the database model, ie. the tables in the database. It also
@@ -27,7 +28,7 @@ public interface Database extends Serializable, Cloneable
 	 * get the type (Oracle, DB2, Sybase, Mysql ...) of the database
 	 * @return String
 	 */
-	public String getType();
+	public DATABASEenum getType();
 	
 	// Standard sql methods
     /**
@@ -89,9 +90,9 @@ public interface Database extends Serializable, Cloneable
 
 
     /**
-     * Adds a table.
+     * Adds a view.
      * 
-     * @param table The table to add
+     * @param view The table to add
      */
     public void addView(View view);
 

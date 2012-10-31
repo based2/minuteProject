@@ -32,6 +32,7 @@ import org.apache.ddlutils.platform.db2.Db2Platform;
 import org.apache.ddlutils.platform.db2.Db2v8Platform;
 import org.apache.ddlutils.platform.derby.DerbyPlatform;
 import org.apache.ddlutils.platform.firebird.FirebirdPlatform;
+import org.apache.ddlutils.platform.h2.H2Platform;
 import org.apache.ddlutils.platform.hsqldb.HsqlDbPlatform;
 import org.apache.ddlutils.platform.interbase.InterbasePlatform;
 import org.apache.ddlutils.platform.maxdb.MaxDbPlatform;
@@ -188,12 +189,13 @@ public class PlatformFactory
     private static void registerPlatforms()
     {
         addPlatform(_platforms, Sqlite3Platform.DATABASENAME,     Sqlite3Platform.class);
-   	  addPlatform(_platforms, AxionPlatform.DATABASENAME,       AxionPlatform.class);
+   	    addPlatform(_platforms, AxionPlatform.DATABASENAME,       AxionPlatform.class);
         addPlatform(_platforms, CloudscapePlatform.DATABASENAME,  CloudscapePlatform.class);
         addPlatform(_platforms, Db2Platform.DATABASENAME,         Db2Platform.class);
         addPlatform(_platforms, Db2v8Platform.DATABASENAME,       Db2v8Platform.class);
         addPlatform(_platforms, DerbyPlatform.DATABASENAME,       DerbyPlatform.class);
         addPlatform(_platforms, FirebirdPlatform.DATABASENAME,    FirebirdPlatform.class);
+        addPlatform(_platforms, H2Platform.DATABASENAME,          H2Platform.class);
         addPlatform(_platforms, HsqlDbPlatform.DATABASENAME,      HsqlDbPlatform.class);
         addPlatform(_platforms, InterbasePlatform.DATABASENAME,   InterbasePlatform.class);
         addPlatform(_platforms, MaxDbPlatform.DATABASENAME,       MaxDbPlatform.class);

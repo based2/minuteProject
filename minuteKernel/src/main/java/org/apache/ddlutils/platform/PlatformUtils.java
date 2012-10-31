@@ -33,6 +33,7 @@ import org.apache.ddlutils.platform.cloudscape.CloudscapePlatform;
 import org.apache.ddlutils.platform.db2.Db2Platform;
 import org.apache.ddlutils.platform.derby.DerbyPlatform;
 import org.apache.ddlutils.platform.firebird.FirebirdPlatform;
+import org.apache.ddlutils.platform.h2.H2Platform;
 import org.apache.ddlutils.platform.hsqldb.HsqlDbPlatform;
 import org.apache.ddlutils.platform.interbase.InterbasePlatform;
 import org.apache.ddlutils.platform.mckoi.MckoiPlatform;
@@ -152,6 +153,7 @@ public class PlatformUtils
         jdbcSubProtocolToPlatform.put(PlatformUtils.JDBC_SUBPROTOCOL_INET_DB2,                  Db2Platform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(DerbyPlatform.JDBC_SUBPROTOCOL,                           DerbyPlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(FirebirdPlatform.JDBC_SUBPROTOCOL,                        FirebirdPlatform.DATABASENAME);
+        jdbcSubProtocolToPlatform.put(H2Platform.JDBC_SUBPROTOCOL,                              H2Platform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(HsqlDbPlatform.JDBC_SUBPROTOCOL,                          HsqlDbPlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(InterbasePlatform.JDBC_SUBPROTOCOL,                       InterbasePlatform.DATABASENAME);
         jdbcSubProtocolToPlatform.put(SapDbPlatform.JDBC_SUBPROTOCOL,                           SapDbPlatform.DATABASENAME);

@@ -9,9 +9,11 @@ Create maven root pom with modules
 
 Test build with Oracle database export with JPA2
 
-Sync with http://minuteproject.svn.sourceforge.net/viewvc/minuteproject/trunk/
+ReSync with http://minuteproject.svn.sourceforge.net/viewvc/minuteproject/trunk/
 
 H2 Java Database integration
+    https://issues.apache.org/jira/browse/DDLUTILS-185
+
 Tapestry Integration + JPA2
 
 License?

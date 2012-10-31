@@ -19,6 +19,7 @@ import org.apache.ddlutils.PlatformFactory;
 import org.apache.ddlutils.io.DatabaseIO;
 import org.apache.ddlutils.platform.cloudscape.CloudscapePlatform;
 import org.apache.ddlutils.platform.db2.Db2Platform;
+import org.apache.ddlutils.platform.h2.H2Platform;
 import org.apache.ddlutils.platform.hsqldb.HsqlDbPlatform;
 import org.apache.ddlutils.platform.mssql.MSSqlPlatform;
 import org.apache.ddlutils.platform.mysql.MySqlPlatform;
@@ -27,6 +28,7 @@ import org.apache.ddlutils.platform.postgresql.PostgreSqlPlatform;
 import org.apache.ddlutils.platform.sapdb.SapDbPlatform;
 import org.apache.ddlutils.platform.sqlite.Sqlite3Platform;
 import org.apache.ddlutils.platform.sybase.SybasePlatform;
+import net.sf.minuteProject.configuration.bean.enumeration.DATABASEenum;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,7 +44,7 @@ public class DatabaseDDLUtils implements Database
 	private static Logger logger = Logger.getLogger(DatabaseDDLUtils.class);
 
 	private org.apache.ddlutils.model.Database database;
-	private String type;
+	private DATABASEenum type;
 	private List<Table> tables;
 	private List<View> views;
 	private DataModel dataModel;
@@ -366,7 +368,7 @@ public class DatabaseDDLUtils implements Database
 	 * get the type (Oracle, DB2, Sybase, Mysql ...) of the database
 	 * @return String
 	 */
-	public String getType() {
+	public DATABASEenum getType() {
 		return type;
 	}
 	
@@ -374,31 +376,33 @@ public class DatabaseDDLUtils implements Database
 	 * get the type (Oracle, DB2, Sybase, Mysql ...) of the database
 	 * @return String
 	 */
-	private void setType(String type) {
+	private void setType(DATABASEenum type) {
 		this.type = type;
 	}
 	
-	private void setType (Platform platform) {
+	private void setType(Platform platform) {
 		if (platform instanceof Db2Platform) 
-			setType("DB2");
+			setType(DATABASEenum.DB2);
 		else if (platform instanceof Oracle8Platform)
-			setType("ORACLE");
+			setType(DATABASEenum.ORACLE);
 		else if (platform instanceof MySqlPlatform)
-			setType("MYSQL");
+			setType(DATABASEenum.MYSQL);
 		else if (platform instanceof SybasePlatform)
-			setType("SYBASE");
+			setType(DATABASEenum.SYBASE);
 		else if (platform instanceof PostgreSqlPlatform)
-			setType("POSTGRESQL");
+			setType(DATABASEenum.POSTGRESQL);
 		else if (platform instanceof MSSqlPlatform)
-			setType("MSSQL");
+			setType(DATABASEenum.MSSQL);
 		else if (platform instanceof HsqlDbPlatform)
-			setType("HSQLDB");		
+			setType(DATABASEenum.HSQLDB);
 		else if (platform instanceof SapDbPlatform)
-			setType("SAPDB");	
+			setType(DATABASEenum.SAPDB);
 		else if (platform instanceof CloudscapePlatform)
-			setType("CLOUDSCAPE");		
+			setType(DATABASEenum.CLOUDSCAPE);
 		else if (platform instanceof Sqlite3Platform)
-			setType("SQLITE");			
+			setType(DATABASEenum.SQLITE);
+        else if (platform instanceof H2Platform)
+            setType(DATABASEenum.H2);
 	}
 
 	public void addView(View view) {
