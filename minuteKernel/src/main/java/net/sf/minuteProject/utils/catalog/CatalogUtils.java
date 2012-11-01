@@ -34,6 +34,7 @@ public class CatalogUtils {
 		try {
 			return getTechnologyCatalogLoader(name).load();
 		} catch (Exception e) {
+            logger.info("Failed to load with path:" + name + ", retrying...", e);
 			return new TechnologycatalogHolder();
 		}
 	}
@@ -54,7 +55,7 @@ public class CatalogUtils {
 		try {
 			return getDatabaseCatalogLoader(name).load();
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error("Failed to load with path:" + name + ", retrying...", e);
 			return new DatabasecatalogHolder();
 		}
 	}

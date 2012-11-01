@@ -8,9 +8,9 @@ import net.sf.minuteProject.loader.catalog.databasecatalog.DatabasecatalogHolder
 import net.sf.minuteProject.configuration.bean.AbstractConfigurationLoader;
 import net.sf.minuteProject.configuration.bean.Template;
 
-public class PrimaryKeyPolicy extends AbstractConfigurationLoader{
+public class PrimaryKeyPolicy extends AbstractConfigurationLoader {
 
-    private String _packageName;
+   private String _packageName;
    private DatabaseCatalog _databaseCatalog;
    private String _type;
    private String _suffix;

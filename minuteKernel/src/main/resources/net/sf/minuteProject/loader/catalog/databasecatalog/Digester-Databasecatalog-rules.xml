@@ -1,0 +1,58 @@
+
+<!DOCTYPE digester-rules PUBLIC 
+        "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" 
+        "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<digester-rules>
+ <pattern value="database-catalog">
+  <object-create-rule classname="net.sf.minuteProject.loader.catalog.databasecatalog.node.DatabaseCatalog"/>
+  <set-next-rule methodname="setDatabaseCatalog" paramtype="net.sf.minuteProject.loader.catalog.databasecatalog.node.DatabaseCatalog"/>
+  <set-properties-rule>
+   <alias prop-name="name" attr-name="name"/>
+   <alias prop-name="packageName" attr-name="package-name"/>
+  </set-properties-rule>
+  <pattern value="databases">
+   <object-create-rule classname="net.sf.minuteProject.loader.catalog.databasecatalog.node.Databases"/>
+   <set-next-rule methodname="setDatabases" paramtype="net.sf.minuteProject.loader.catalog.databasecatalog.node.Databases"/>
+   <set-properties-rule>
+    <alias prop-name="name" attr-name="name"/>
+    <alias prop-name="id" attr-name="id"/>
+    <alias prop-name="packageName" attr-name="package-name"/>
+   </set-properties-rule>
+   <pattern value="database">
+    <object-create-rule classname="net.sf.minuteProject.loader.catalog.databasecatalog.node.Database"/>
+    <set-next-rule methodname="setDatabase" paramtype="net.sf.minuteProject.loader.catalog.databasecatalog.node.Database"/>
+    <set-properties-rule>
+     <alias prop-name="name" attr-name="name"/>
+     <alias prop-name="version" attr-name="version"/>
+     <alias prop-name="entityNameMaxLength" attr-name="entity-name-max-length"/>
+     <alias prop-name="hibernateDialect" attr-name="hibernate-dialect"/>
+     <alias prop-name="useSchema" attr-name="use-schema"/>
+     <alias prop-name="driverclassname" attr-name="driverClassName"/>
+     <alias prop-name="defaultUrlStructure" attr-name="default-url-structure"/>
+     <alias prop-name="packageName" attr-name="package-name"/>
+    </set-properties-rule>
+    <pattern value="primary-key-policy">
+     <object-create-rule classname="net.sf.minuteProject.loader.catalog.databasecatalog.node.PrimaryKeyPolicy"/>
+     <set-next-rule methodname="setPrimaryKeyPolicy" paramtype="net.sf.minuteProject.loader.catalog.databasecatalog.node.PrimaryKeyPolicy"/>
+     <set-properties-rule>
+      <alias prop-name="type" attr-name="type"/>
+      <alias prop-name="suffix" attr-name="suffix"/>
+      <alias prop-name="prefix" attr-name="prefix"/>
+      <alias prop-name="packageName" attr-name="package-name"/>
+     </set-properties-rule>
+    </pattern>
+    <pattern value="maven-artifact">
+     <object-create-rule classname="net.sf.minuteProject.loader.catalog.databasecatalog.node.MavenArtifact"/>
+     <set-next-rule methodname="setMavenArtifact" paramtype="net.sf.minuteProject.loader.catalog.databasecatalog.node.MavenArtifact"/>
+     <set-properties-rule>
+      <alias prop-name="mvnArtifactId" attr-name="mvn-artifact-id"/>
+      <alias prop-name="mvnGroupId" attr-name="mvn-group-id"/>
+      <alias prop-name="mvnVersion" attr-name="mvn-version"/>
+      <alias prop-name="packageName" attr-name="package-name"/>
+     </set-properties-rule>
+    </pattern>
+   </pattern>
+  </pattern>
+ </pattern>
+
+</digester-rules>

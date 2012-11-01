@@ -8,9 +8,9 @@ import net.sf.minuteProject.loader.catalog.databasecatalog.DatabasecatalogHolder
 import net.sf.minuteProject.configuration.bean.AbstractConfigurationLoader;
 import net.sf.minuteProject.configuration.bean.Template;
 
-public class Databases extends AbstractConfigurationLoader{
+public class Databases extends AbstractConfigurationLoader {
 
-    private String _packageName;
+   private String _packageName;
    private DatabaseCatalog _databaseCatalog;
    private String _name;
    private String _id;

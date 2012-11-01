@@ -1,0 +1,33 @@
+
+<!DOCTYPE digester-rules PUBLIC 
+        "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" 
+        "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<digester-rules>
+ <pattern value="configuration">
+  <object-create-rule classname="net.sf.minuteProject.loader.init.node.Configuration"/>
+  <set-next-rule methodname="setConfiguration" paramtype="net.sf.minuteProject.loader.init.node.Configuration"/>
+  <set-properties-rule/>
+  <bean-property-setter-rule  propertyname="name" pattern="name"/>
+  <pattern value="definition">
+   <object-create-rule classname="net.sf.minuteProject.loader.init.node.Definition"/>
+   <set-next-rule methodname="setDefinition" paramtype="net.sf.minuteProject.loader.init.node.Definition"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <bean-property-setter-rule  propertyname="refname" pattern="refname"/>
+   <bean-property-setter-rule  propertyname="dir" pattern="dir"/>
+   <bean-property-setter-rule  propertyname="filename" pattern="filename"/>
+  </pattern>
+  <pattern value="targetLocation">
+   <object-create-rule classname="net.sf.minuteProject.loader.init.node.Targetlocation"/>
+   <set-next-rule methodname="setTargetlocation" paramtype="net.sf.minuteProject.loader.init.node.Targetlocation"/>
+   <set-properties-rule/>
+   <bean-property-setter-rule  propertyname="name" pattern="name"/>
+   <bean-property-setter-rule  propertyname="id" pattern="id"/>
+   <bean-property-setter-rule  propertyname="refname" pattern="refname"/>
+   <bean-property-setter-rule  propertyname="dir" pattern="dir"/>
+   <bean-property-setter-rule  propertyname="filename" pattern="filename"/>
+  </pattern>
+ </pattern>
+
+</digester-rules>

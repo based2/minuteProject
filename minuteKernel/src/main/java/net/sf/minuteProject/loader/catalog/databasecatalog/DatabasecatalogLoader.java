@@ -1,14 +1,10 @@
 package net.sf.minuteProject.loader.catalog.databasecatalog;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URL;
+
 import java.util.Date;
 
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.xmlrules.DigesterLoader;
 import org.apache.log4j.Logger;
+import net.sf.minuteProject.loader.XMLRulesLoader;
 
 import net.sf.minuteProject.loader.catalog.databasecatalog.DatabasecatalogHolder;
 
@@ -16,74 +12,35 @@ import net.sf.minuteProject.loader.catalog.databasecatalog.DatabasecatalogHolder
  * @author Florian Adler
  *
  */
-public class DatabasecatalogLoader {
+public class DatabasecatalogLoader extends XMLRulesLoader {
+
 	private static Logger logger = Logger.getLogger(DatabasecatalogLoader.class);
+
+    private final static String PATH_CONFIG = "net/sf/minuteProject/loader/catalog/databasecatalog/Digester-Databasecatalog-rules.xml";
 	
-	private String config;
-	private String configDir;
-	
-	public DatabasecatalogLoader (String config) {
-	   setConfig(config);
+	public DatabasecatalogLoader(String config){
+        super(config, PATH_CONFIG);
 	}
 	
-	public DatabasecatalogLoader (String configDir, String config) {
-		setConfig(config);
-		setConfigDir(configDir);
-	}
-	
-	public String getDigesterRule() {
-		return "net/sf/minuteProject/loader/catalog/databasecatalog/Digester-Databasecatalog-rules.xml";
+	public DatabasecatalogLoader(String configDir, String config) {
+		super(config, configDir, PATH_CONFIG);
 	}
 
-	public DatabasecatalogHolder load() throws Exception{
+	public DatabasecatalogHolder load() throws Exception {
 		if (getConfigDir()==null)
 			return load(getConfig(), getDigesterRule());
 		return load(getConfigDir(), getConfig(), getDigesterRule());
 	}
 	
-	public DatabasecatalogHolder load (String configuration, String rules) throws Exception{
+	public DatabasecatalogHolder load(String configuration, String rules) throws Exception {
 		DatabasecatalogHolder Databasecatalogholder = new DatabasecatalogHolder();
-		loadDigester(Databasecatalogholder, getInputStream(configuration), rules);
+		loadDigester(Databasecatalogholder, configuration, rules);
         return Databasecatalogholder;		
 	}
 	
-	public DatabasecatalogHolder load (String fileDirName, String fileName, String rules) throws Exception{
-		DatabasecatalogHolder Databasecatalogholder = new DatabasecatalogHolder();
-		loadDigester(Databasecatalogholder, getInputStream(fileDirName, fileName), rules);
-        return Databasecatalogholder;		
+	public DatabasecatalogHolder load(String fileDirName, String fileName, String rules) throws Exception {
+        return load(fileDirName + "/" +fileName, rules);
 	}
-	
-	private InputStream getInputStream (String fileName) {
-		return getClass().getClassLoader().getSystemResourceAsStream(fileName);
-	}
-	
-	private InputStream getInputStream (String fileDirName, String fileName)  throws Exception{
-		return new FileInputStream (new File (fileDirName+"/"+fileName));
-	}
-
-	private void loadDigester (Object object, InputStream input, String rules) throws Exception {
-        URL rulesURL = getClass().getClassLoader().getResource(rules);
-        Digester digester = DigesterLoader.createDigester(rulesURL);
-        digester.push(object);
-        digester.parse(input);
-	}
-	
-	public String getConfig() {
-		return config;
-	}
-
-	public void setConfig(String config) {
-		this.config = config;
-	}
-	
-	public String getConfigDir() {
-		return configDir;
-	}
-	
-	public void setConfigDir(String configDir) {
-		this.configDir = configDir;
-	}
-
 
     public static void main(String args[]) throws Exception {
         if (args.length < 1) {

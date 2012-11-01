@@ -176,6 +176,8 @@ public class ConsoleSample extends JFrame {
 	}
 	
 	public void init(String catalogDir) {
+        System.setProperty("jaxp.debug", "1");
+        System.setProperty("javax.xml.parsers.SAXParserFactory", "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl");
 		initCatalogs(catalogDir);
 		initComponents();
 	}

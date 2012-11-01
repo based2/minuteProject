@@ -133,25 +133,6 @@ public class ModelGenerator extends AbstractGenerator {
 	public String getPropertyConfigurationRulesFile() {
 		return GENERATOR_MODEL_PROPERTY_RULES;
 	}
-	
-	public static void main(String args[]) {
-		String config;
-		if (args.length < 1) {
-			System.exit(1);
-		}
-		config = args[0];
-		Date startDate = new Date();
-	    logger.info("start time = "+new Date());
-		ModelGenerator generator = new ModelGenerator(config);
-		try {
-			generator.generate();
-		} catch (MinuteProjectException e) {
-			generator.exit ("");
-		}
-		Date endDate = new Date();
-		logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
-	}
-
 
 	public void generate() throws MinuteProjectException {
 		Configuration configuration = (Configuration) load();
@@ -594,6 +575,25 @@ public class ModelGenerator extends AbstractGenerator {
 	public void setModel(Model model) {
 		this.model = model;
 	}
+
+
+    public static void main(String args[]) {
+        String config;
+        if (args.length < 1) {
+            System.exit(1);
+        }
+        config = args[0];
+        Date startDate = new Date();
+        logger.info("start time = "+new Date());
+        ModelGenerator generator = new ModelGenerator(config);
+        try {
+            generator.generate();
+        } catch (MinuteProjectException e) {
+            generator.exit ("");
+        }
+        Date endDate = new Date();
+        logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
+    }
 
 	
 }

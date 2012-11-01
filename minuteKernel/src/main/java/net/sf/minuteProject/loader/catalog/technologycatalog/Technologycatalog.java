@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
 
+import net.sf.minuteProject.loader.XMLRulesLoader;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.digester.xmlrules.DigesterLoader;
 import org.apache.log4j.Logger;
@@ -16,24 +17,18 @@ import net.sf.minuteProject.loader.catalog.technologycatalog.TechnologycatalogHo
  * @author Florian Adler
  *
  */
-public class Technologycatalog {
+public class Technologycatalog extends XMLRulesLoader {
 	private static Logger logger = Logger.getLogger(Technologycatalog.class);
-	
-	private String config;
-	private String configDir;
-	
-	public Technologycatalog (String config) {
-	   setConfig(config);
-	}
-	
-	public Technologycatalog (String configDir, String config) {
-		setConfig(config);
-		setConfigDir(configDir);
-	}
-	
-	public String getDigesterRule() {
-		return "net/sf/minuteProject/loader/catalog/technologycatalog/Digester-Technologycatalog-rules.xml";
-	}
+
+    private final static String PATH_CONFIG = "net/sf/minuteProject/loader/catalog/technologycatalog/Digester-Technologycatalog-rules.xml";
+
+    public Technologycatalog(String config) {
+        super(config, PATH_CONFIG);
+    }
+
+    public Technologycatalog(String configDir, String config) {
+        super(config, configDir, PATH_CONFIG);
+    }
 	
 	public TechnologycatalogHolder load() throws Exception{
 		if (getConfigDir()==null)
@@ -41,47 +36,14 @@ public class Technologycatalog {
 		return load(getConfigDir(), getConfig(), getDigesterRule());
 	}
 	
-	public TechnologycatalogHolder load (String configuration, String rules) throws Exception{
+	public TechnologycatalogHolder load(String configuration, String rules) throws Exception {
 		TechnologycatalogHolder Technologycatalogholder = new TechnologycatalogHolder();
-		loadDigester(Technologycatalogholder, getInputStream(configuration), rules);
+		loadDigester(Technologycatalogholder, configuration, rules);
         return Technologycatalogholder;		
 	}
 	
-	public TechnologycatalogHolder load (String fileDirName, String fileName, String rules) throws Exception{
-		TechnologycatalogHolder Technologycatalogholder = new TechnologycatalogHolder();
-		loadDigester(Technologycatalogholder, getInputStream(fileDirName, fileName), rules);
-        return Technologycatalogholder;		
-	}
-	
-	private InputStream getInputStream (String fileName) {
-		return getClass().getClassLoader().getSystemResourceAsStream(fileName);
-	}
-	
-	private InputStream getInputStream (String fileDirName, String fileName)  throws Exception{
-		return new FileInputStream (new File (fileDirName+"/"+fileName));
-	}
-
-	private void loadDigester (Object object, InputStream input, String rules) throws Exception {
-        URL rulesURL = getClass().getClassLoader().getResource(rules);
-        Digester digester = DigesterLoader.createDigester(rulesURL);
-        digester.push(object);
-        digester.parse(input);
-	}
-	
-	public String getConfig() {
-		return config;
-	}
-
-	public void setConfig(String config) {
-		this.config = config;
-	}
-	
-	public String getConfigDir() {
-		return configDir;
-	}
-	
-	public void setConfigDir(String configDir) {
-		this.configDir = configDir;
+	public TechnologycatalogHolder load(String fileDirName, String fileName, String rules) throws Exception {
+        return load(fileDirName + "/" + fileName, rules);
 	}
 
     public static void main(String args[]) throws Exception {

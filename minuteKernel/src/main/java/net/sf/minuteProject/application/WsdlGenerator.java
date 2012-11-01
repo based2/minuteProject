@@ -131,25 +131,6 @@ public class WsdlGenerator extends AbstractGenerator {
 	public String getPropertyConfigurationRulesFile() {
 		return GENERATOR_MODEL_PROPERTY_RULES;
 	}
-	
-	public static void main(String args[]) {
-		String config;
-		if (args.length < 1) {
-			System.exit(1);
-		}
-		config = args[0];
-		Date startDate = new Date();
-	    logger.info("start time = "+new Date());
-		WsdlGenerator generator = new WsdlGenerator(config);
-		try {
-			generator.generate();
-		} catch (MinuteProjectException e) {
-			generator.exit ("");
-		}
-		Date endDate = new Date();
-		logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
-	}
-
 
 	public void generate() throws MinuteProjectException {
 		Configuration configuration = (Configuration) load();
@@ -433,7 +414,24 @@ public class WsdlGenerator extends AbstractGenerator {
 	/* 
 	 * private getter of the context object 
 	 */
-	
-	
+
+
+    public static void main(String args[]) {
+        String config;
+        if (args.length < 1) {
+            System.exit(1);
+        }
+        config = args[0];
+        Date startDate = new Date();
+        logger.info("start time = "+new Date());
+        WsdlGenerator generator = new WsdlGenerator(config);
+        try {
+            generator.generate();
+        } catch (MinuteProjectException e) {
+            generator.exit ("");
+        }
+        Date endDate = new Date();
+        logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
+    }
 	
 }
