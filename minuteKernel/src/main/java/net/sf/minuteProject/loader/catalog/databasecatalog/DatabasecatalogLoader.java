@@ -34,19 +34,7 @@ public class DatabasecatalogLoader {
 	public String getDigesterRule() {
 		return "net/sf/minuteProject/loader/catalog/databasecatalog/Digester-Databasecatalog-rules.xml";
 	}
-	
-	public static void main(String args[]) throws Exception {
-		if (args.length < 1) {
-			System.exit(1);
-		}
-		Date startDate = new Date();
-	    logger.info("start time = "+new Date());
-	    DatabasecatalogLoader loader = new DatabasecatalogLoader(args[0]);
-		DatabasecatalogHolder Databasecatalogholder = loader.load();
-		Date endDate = new Date();
-		logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
-	}
-	
+
 	public DatabasecatalogHolder load() throws Exception{
 		if (getConfigDir()==null)
 			return load(getConfig(), getDigesterRule());
@@ -95,5 +83,18 @@ public class DatabasecatalogLoader {
 	public void setConfigDir(String configDir) {
 		this.configDir = configDir;
 	}
+
+
+    public static void main(String args[]) throws Exception {
+        if (args.length < 1) {
+            System.exit(1);
+        }
+        Date startDate = new Date();
+        logger.info("start time = "+new Date());
+        DatabasecatalogLoader loader = new DatabasecatalogLoader(args[0]);
+        DatabasecatalogHolder Databasecatalogholder = loader.load();
+        Date endDate = new Date();
+        logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
+    }
 	
 }

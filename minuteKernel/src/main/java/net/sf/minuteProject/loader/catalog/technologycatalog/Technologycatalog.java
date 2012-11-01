@@ -35,18 +35,6 @@ public class Technologycatalog {
 		return "net/sf/minuteProject/loader/catalog/technologycatalog/Digester-Technologycatalog-rules.xml";
 	}
 	
-	public static void main(String args[]) throws Exception {
-		if (args.length < 1) {
-			System.exit(1);
-		}
-		Date startDate = new Date();
-	    logger.info("start time = "+new Date());
-	    Technologycatalog loader = new Technologycatalog(args[0]);
-		TechnologycatalogHolder Technologycatalogholder = loader.load();
-		Date endDate = new Date();
-		logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
-	}
-	
 	public TechnologycatalogHolder load() throws Exception{
 		if (getConfigDir()==null)
 			return load(getConfig(), getDigesterRule());
@@ -95,5 +83,17 @@ public class Technologycatalog {
 	public void setConfigDir(String configDir) {
 		this.configDir = configDir;
 	}
+
+    public static void main(String args[]) throws Exception {
+        if (args.length < 1) {
+            System.exit(1);
+        }
+        Date startDate = new Date();
+        logger.info("start time = "+new Date());
+        Technologycatalog loader = new Technologycatalog(args[0]);
+        TechnologycatalogHolder Technologycatalogholder = loader.load();
+        Date endDate = new Date();
+        logger.info("time taken : "+(endDate.getTime()-startDate.getTime())/1000+ "s.");
+    }
 	
 }

@@ -73,6 +73,37 @@ public class JavaUtils {
 		if (javaClass==null) return "ERROR_JAVA_CLASS_IS_NULL";
 		return (isReservedWord(javaClass.toLowerCase()))?javaClass+"Name":javaClass;
 	}
+
+    /**
+     * A common method for all enums since they can't have another base class
+     *
+     * from: http://stackoverflow.com/questions/604424/java-convert-string-to-enum
+     * <pre>
+     *     public static MyEnum fromString(String name)
+     *    {
+     *        return getEnumFromString(MyEnum.class, name);
+     *    }
+     * </pre>
+     *
+     * @param <T> Enum type
+     * @param c enum type. All enums must be all caps.
+     * @param string case insensitive
+     * @return corresponding enum, or null
+     */
+    public static <T extends Enum<T>> T getEnumFromString(Class<T> c, String string)
+    {
+        if( c != null && string != null )
+        {
+            try
+            {
+                return Enum.valueOf(c, string.trim().toUpperCase());
+            }
+            catch(IllegalArgumentException ex)
+            {
+            }
+        }
+        return null;
+    }
 	
 }
 	

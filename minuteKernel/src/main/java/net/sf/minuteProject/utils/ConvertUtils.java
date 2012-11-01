@@ -1,5 +1,6 @@
 package net.sf.minuteProject.utils;
 
+import net.sf.minuteProject.configuration.bean.enumeration.DATABASEenum;
 import net.sf.minuteProject.configuration.bean.model.data.Column;
 
 import org.apache.commons.lang.StringUtils;
@@ -7,6 +8,17 @@ import org.apache.log4j.Logger;
 
 import net.sf.minuteProject.db.type.FieldType;
 
+/**
+ * Database types / Java types conversions
+ *
+ * http://docs.oracle.com/javase/6/docs/api/java/sql/package-summary.html
+ * http://docs.oracle.com/javase/7/docs/api/java/sql/package-summary.html
+ *
+ * http://mindprod.com/jgloss/jdbc.html#DATATYPES
+ * http://docs.jboss.org/hibernate/orm/3.6/reference/en-US/html/types.html
+ * http://cayenne.apache.org/doc/api/org/apache/cayenne/access/types/package-summary.html
+ * http://db.apache.org/ojb/docu/guides/jdbc-types.html
+ */
 public class ConvertUtils {
 	
 	public static final String DB_TYPE_ORACLE                   	=   "ORACLE";
@@ -70,7 +82,7 @@ public class ConvertUtils {
 		return DB_STRING_TYPE;
 	}
 	
-	public static String getUMLTypeFromDBFullType (String type) {
+	public static String getUMLTypeFromDBFullType(String type) {
 		if (type==null) return DB_STRING_TYPE;
 		type = StringUtils.upperCase(type);
 		if (DB_STRING_TYPE.equals(type)) return UML_STRING_TYPE;
@@ -90,7 +102,7 @@ public class ConvertUtils {
 //		return (type==null)?DB_STRING_TYPE:type.toUpperCase();
 	}	
 	
-	public static String getJavaTypeFromDBFullType (String dBType, int size, String databaseType) {
+	public static String getJavaTypeFromDBFullType(String dBType, int size, String databaseType) {
 		String retStr=null;
 		if (dBType.equals("BOOLEAN"))
 			return  JAVA_BOOLEAN_TYPE;
@@ -161,16 +173,19 @@ public class ConvertUtils {
 	public static String getJavaTypeFromDBFullType (Column column) {
 		if (column==null)
 			return null;
-		String type=(column.getTable()!=null 
-				     && column.getTable().getDatabase()!=null)?
-				    		 column.getTable().getDatabase().getType():null;
+        DATABASEenum type = null;
+        if (column.getTable()!=null
+                && column.getTable().getDatabase()!=null) {
+		 type=column.getTable().getDatabase().getType();
+        }
+
 		return getJavaTypeFromDBFullType(column.getTypeAlias(), //column.getType(), 
 				column.getSizeAsInt(), 
 				column.getScale(), 
 				type);
 	}
 	
-	public static String getJavaDefaultMask (Column column) {
+	public static String getJavaDefaultMask(Column column) {
 		String type = getJavaTypeFromDBFullType(column);
 		if (JAVA_BOOLEAN_TYPE.equals(type)) return "new Boolean(\"false\")";					
 		if (JAVA_LONG_TYPE.equals(type)) return "Long.valueOf(-1)";
@@ -185,35 +200,35 @@ public class ConvertUtils {
 		return "null";
 	}
 	
-	public static String getJavaTypeFromDBFullType (String dBType, int size, int scale, String databaseType) {
-		String retStr=getJavaTypeFromDBFullType (dBType, size, databaseType);		
+	public static String getJavaTypeFromDBFullType(String dBType, int size, int scale, DATABASEenum databaseType) {
+		//String retStr = getJavaTypeFromDBFullType(dBType, size, databaseType);
 		if (dBType.equals("DECIMAL")) {
 			if (scale==0)
 				return JAVA_LONG_TYPE;
 			else
-				return  JAVA_BIGDECIMAL_TYPE;
+				return JAVA_BIGDECIMAL_TYPE;
 		}
 //		if (dBType.equals("NUMBER")  || dBType.equals("REAL") ) {
 //			if (databaseType.equals(DB_TYPE_ORACLE) && size==1 )
 //				return JAVA_BOOLEAN_TYPE;
 //			return  JAVA_LONG_TYPE;
 //		}	
-		return retStr;		
+		return null;
 	}
 
 	public static String getJavaTypeClassFromDBType (Column column) {
 		return getJavaTypeClassFromDBType(column.getType(), column.getScale(), getDatabaseType(column));
 	}
 	
-	private static String getDatabaseType (Column column) {
-		String databaseType=null;
+	private static DATABASEenum getDatabaseType (Column column) {
+        DATABASEenum databaseType = DATABASEenum.UNKNOWN;
 		if (column.getTable()!=null &&
 			column.getTable().getDatabase() != null)
 			databaseType = column.getTable().getDatabase().getType();
 		return databaseType;
 	}
 	
-	public static String getJavaTypeClassFromDBType (String dBType, int scale, String databaseType) {
+	public static String getJavaTypeClassFromDBType (String dBType, int scale, DATABASEenum databaseType) {
 		if (dBType==null){
 			String s = "ERROR column dBType is null";
 			logger.error(s);
@@ -304,12 +319,12 @@ public class ConvertUtils {
 		return "String";		
 	}	
 
-	public static String getJavaTypeFromDBType (Column column) {
+	public static String getJavaTypeFromDBType(Column column) {
 		return getJavaTypeFromDBType(column.getTypeAlias(),//column.getType(),
 				column.getScale(), getDatabaseType(column));
 	}
 
-	public static String getJavaTypeFromDBTypeOnly (String dBType, int scale) {
+	public static String getJavaTypeFromDBTypeOnly(String dBType, int scale) {
 		String retStr=getJavaTypeFromDBType (dBType);	
 		if (dBType==null) return retStr;
 		if (dBType.equals("DECIMAL") || dBType.equals("NUMERIC") ) {
@@ -321,7 +336,7 @@ public class ConvertUtils {
 		return retStr;		
 	}
 	
-	public static String getJavaTypeFromDBType (String dBType, int scale, String databaseType) {
+	public static String getJavaTypeFromDBType(String dBType, int scale, DATABASEenum databaseType) {
 		String retStr=getJavaTypeFromDBType (dBType);	
 		if (dBType==null) return retStr;
 		if (dBType.equals("DECIMAL")) {
@@ -348,23 +363,23 @@ public class ConvertUtils {
 		return "no type found";
 	}
 
-	public static boolean isStringType (String dBType) {
+	public static boolean isStringType(String dBType) {
 		return (getJavaTypeFromDBType(dBType).equals("String"))?true:false;
 	}
 	
-	public static boolean isDateType (String dBType) {
+	public static boolean isDateType(String dBType) {
 		return (FieldType.DATE.toString().equals(dBType) ||
                 FieldType.TIMESTAMP.toString().equals(dBType) ||
                 FieldType.TIME.toString().equals(dBType))?true:false;
 	}	
 
-	public static boolean isNumberType (String dBType) {
+	public static boolean isNumberType(String dBType) {
 		return (FieldType.BIGINT.toString().equals(dBType) ||
                 FieldType.DECIMAL.toString().equals(dBType) ||
                 FieldType.INTEGER.toString().equals(dBType))?true:false;
 	}
 	
-	public static boolean isBooleanType (String dBType) {
+	public static boolean isBooleanType(String dBType) {
 		return (FieldType.BOOLEAN.toString().equals(dBType)||
                 FieldType.BIT.toString().equals(dBType))?true:false;
 	}

@@ -4,8 +4,12 @@ import net.sf.minuteProject.loader.catalog.databasecatalog.Databasecatalog;
 import net.sf.minuteProject.loader.catalog.databasecatalog.DatabasecatalogHolder;
 import net.sf.minuteProject.loader.catalog.technologycatalog.Technologycatalog;
 import net.sf.minuteProject.loader.catalog.technologycatalog.TechnologycatalogHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CatalogUtils {
+
+    private static Logger logger = LoggerFactory.getLogger(CatalogUtils.class);
 
 	private static TechnologycatalogHolder technologycatalogHolder;
 	private static DatabasecatalogHolder databasecatalogHolder;
@@ -50,7 +54,7 @@ public class CatalogUtils {
 		try {
 			return getDatabaseCatalogLoader(name).load();
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("", e);
 			return new DatabasecatalogHolder();
 		}
 	}
