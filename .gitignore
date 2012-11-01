@@ -4,9 +4,9 @@ minuteFitNesse/
 minuteFoundation/
 minuteRelease/
 minuteSample/
-minuteTemplate/
-out/
+minuteTemplate2/
 target/
+.idea
 .classpath
 .project
 *.iml
