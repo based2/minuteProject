@@ -92,7 +92,6 @@ public class ModelAccessPanel extends JPanel implements FillBasicConfiguration{
 	}
 
 	private String getDefaultUrlStructureTf() {
-		// TODO Auto-generated method stub
 		return databases.get(0).getDefaultUrlStructure();
 	}
 

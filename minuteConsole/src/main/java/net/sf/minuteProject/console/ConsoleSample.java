@@ -30,10 +30,15 @@ import net.sf.minuteProject.loader.catalog.databasecatalog.DatabasecatalogHolder
 import net.sf.minuteProject.loader.catalog.databasecatalog.node.Database;
 import net.sf.minuteProject.loader.catalog.technologycatalog.TechnologycatalogHolder;
 import net.sf.minuteProject.utils.catalog.CatalogUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class ConsoleSample extends JFrame{
 
-	private JTabbedPane tabbedPane;//, tabbedCommon;
+public class ConsoleSample extends JFrame {
+
+    private static Logger logger = LoggerFactory.getLogger(ConsoleSample.class);
+
+    private JTabbedPane tabbedPane;//, tabbedCommon;
 	private ModelAccessPanel modelAccessPanel;
 	private WebServiceAccessPanel webServiceAccessPanel;
 	private ModelCommonPanel modelCommonPanel;
@@ -94,13 +99,13 @@ public class ConsoleSample extends JFrame{
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error("",e);
 		} catch (InstantiationException e) {
-			e.printStackTrace();
+            logger.error("",e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+            logger.error("",e);
 		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
+            logger.error("",e);
 		}
 	}
 
@@ -170,7 +175,6 @@ public class ConsoleSample extends JFrame{
 		return new MigLayout("ins 20", "[para]0[][100lp, fill][80lp][125lp, fill]", "");
 	}
 	
-	
 	public void init(String catalogDir) {
 		initCatalogs(catalogDir);
 		initComponents();
@@ -182,17 +186,7 @@ public class ConsoleSample extends JFrame{
 //		webserviceTechnologycatalogHolder = CatalogUtils.getPublishedTechnologyCatalogHolder(catalogDir, "webservice");
 	}
 
-	public static void main(String args[]) {
-		if (args.length>0)
-			templateRootDir=args[0];
-		if (args.length>1)
-			catalogDir=args[1];		
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				new ConsoleSample("MinuteProject console 0.8.2 - beta -", catalogDir).setVisible(true);
-			}
-		});
-	}
+
 
 	public void fill(BasicIntegrationConfiguration bic) {
 		bic.setTemplateRootDir(templateRootDir);
@@ -264,7 +258,17 @@ public class ConsoleSample extends JFrame{
 		getTechConventionsTab ();
 		technologyInfoTab.repaint();
 	}
-	
-	
+
+    public static void main(String args[]) {
+        if (args.length>0)
+            templateRootDir=args[0];
+        if (args.length>1)
+            catalogDir=args[1];
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new ConsoleSample("MinuteProject console 0.9 - beta -", catalogDir).setVisible(true);
+            }
+        });
+    }
 	
 }

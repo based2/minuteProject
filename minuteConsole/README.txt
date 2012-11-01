@@ -1,6 +1,3 @@
-
-todo add logs http://www.slf4j.org/legacy.html, Ant removal for common logging and log4j
-
 Current error: ? lib in extra?   -
 
 
