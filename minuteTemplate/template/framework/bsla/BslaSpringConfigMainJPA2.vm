@@ -1,0 +1,34 @@
+#exposeVariableModelSpecific()
+#exposeArchitectureParams()
+#exposeSpringJPAArchitectureParams()
+#exposeJPASpecifics()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- Dao JPA -->
+    <import resource="classpath:${pathDaoJPA}.xml"/>    
+
+#exposeModelUpdatedAreas("${JPAFactoryName}")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    <!-- hibernate config to put in an appart config file-->
+    <bean id="$JPAFactoryName" autowire="byName"
+        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<!-- all connection information are retrieve from the persistence file-->
+		<!--
+			<property name="dataSource" ref="..."/>
+			<property name="persistenceUnitName" value="..."/>
+		-->
+        <property name="persistenceXmlLocation" value="$persistenceXmlLocation" />
+    </bean>
+#end
+$!updatedAreaEnd
+    <!-- Database -->
+    <import resource="classpath:${databaseConfig}.xml"/>    
+
+</beans>
+

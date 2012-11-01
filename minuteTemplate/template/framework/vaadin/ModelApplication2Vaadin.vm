@@ -1,0 +1,242 @@
+#exposeVariableModelDetailSpecific()
+package $packageName;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+
+import com.vaadin.Application;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.*;
+import com.vaadin.ui.UriFragmentUtility.FragmentChangedEvent;
+import com.vaadin.ui.UriFragmentUtility.FragmentChangedListener;
+/*
+16
+17 * CONCLUSIONS:
+18 * OK TESTED - FIRST TAB OF SESSION IS http://localhost:8080/VaadinHistoryTest AND CLICKED ALL LINKS
+19 * OK TESTED - FIRST TAB OF SESSION IS http://localhost:8080/VaadinHistoryTest#screen2 AND CLICKED ALL LINKS
+20 * OK TESTED - FIRST TAB OF SESSION IS http://localhost:8080/VaadinHistoryTest, then open new tab with http://localhost:8080/VaadinHistoryTest#screen2
+21 *     -> But click links in first tab, and header links disappear!
+22 *
+23 * NOT WORKING, FIRST TAB OF SESSION IS http://localhost:8080/VaadinHistoryTest#screen2, then open new tab http://localhost:8080/VaadinHistoryTest
+24 *     -> But click links in first tab, and header links disappear!   
+25 *     -> new tab uri not changing in browser bar, content not set
+26 *
+27 *
+28 */
+
+public class $className extends Application {
+   
+    public static final String _mainScreen = "main";
+#foreach ($table in $model.businessModel.businessPackage.entities)
+#if ($vaadinPlugin.isVaadinApplication($table))
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+    public static final String _$domainObjectComponentClass = "$domainObjectComponentClass";
+#end
+#end    
+    public static final String _uriHash = "#";
+   
+    protected Component header = null;
+       
+    @Override
+    public void init() {   
+       header = this.buildHeader();
+        Window w = new MyAppWindow();
+        setMainWindow(w);       
+        System.out.println("SET MAIN WINDOW IN init()");
+    }
+   
+   
+    public static String buildUriToken(String frag){
+        return _uriHash+frag;
+    }
+   
+   
+    public Window getWindow(String windowName) {
+        System.out.println("getWindow("+windowName+")");
+        Window w = super.getWindow(windowName);       
+        if (w!=null){            
+            String token = ((MyAppWindow)w).getUriFragmentUtility().getFragment();
+            System.out.println("-> Found window, token "+token);
+            if (token == null){
+                /*
+61                 * Setting the fragment here does the following:
+62                 * +GOOD: http://localhost:8080/VaadinHistoryTest on second tab will resolve properly to http://localhost:8080/VaadinHistoryTest#main and set content appropriately
+63                 *     > NOTE: Without it, http://localhost:8080/VaadinHistoryTest on second tab doesn't get url as http://localhost:8080/VaadinHistoryTest#main and content is empty (assuming default content is not set with window creation)
+64                 * -BAD: http://localhost:8080/VaadinHistoryTest#screen2 on second tab will first show main view, then replace it with screen2
+65                 */
+                //((MyAppWindow)w).getUriFragmentUtility().setFragment(buildUriToken(_mainScreen));
+                //System.out.println("--> Found window, Forced uriToken to = "+((MyAppWindow)w).getUriFragmentUtility());
+           }            
+        }
+        else {
+            w = new MyAppWindow();
+            w.setName(windowName);
+            System.out.println("-> Created new window "+w.getName());
+            addWindow(w);            
+        }       
+        return w;       
+    }
+   
+   
+    private Component buildHeader(){
+        final HorizontalLayout hLayout = new HorizontalLayout();
+        hLayout.setSpacing(true);
+       
+        URL url = null;
+        try {            
+            url = new URL(getURL().toString().substring(0, getURL().toString().length()-1));
+        } catch (MalformedURLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            url = getURL();
+        }
+       
+        Link homeLink = new Link("Home",new ExternalResource(url+"#"+_mainScreen));  
+#foreach ($table in $model.businessModel.businessPackage.entities)
+#if ($vaadinPlugin.isVaadinApplication($table))
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+        Link screen1Link = new Link("Screen1",new ExternalResource(url+"#"+_screen1));
+    public static final String _$domainObjectComponentClass = "$domainObjectComponentClass";
+#end
+#end 
+        Link screen1Link = new Link("Screen1",new ExternalResource(url+"#"+_screen1));
+        Link screen2Link = new Link("Screen2",new ExternalResource(url+"#"+_screen2));
+        hLayout.addComponent(homeLink);
+        hLayout.addComponent(screen1Link);
+        hLayout.addComponent(screen2Link);
+        return hLayout;
+    }
+   
+    private Component buildMainScreen(){
+        VerticalLayout vLayout = new VerticalLayout();
+        Label l = new Label("This is the MAIN content");
+        vLayout.addComponent(l);       
+        return vLayout;
+    }
+   
+    private Component buildScreen1(){
+        VerticalLayout vLayout = new VerticalLayout();
+        Label l = new Label("This is the SCREEN 1 content");
+        vLayout.addComponent(l);       
+        return vLayout;
+    }
+   
+    private Component buildScreen2(){
+        VerticalLayout vLayout = new VerticalLayout();
+        Label l = new Label("This is the SCREEN 2 content");
+        vLayout.addComponent(l);       
+        return vLayout;
+    }
+   
+    class MyAppWindow extends Window {       
+        VerticalLayout mainView = new VerticalLayout();
+        UriFragmentUtility uriUtil = new UriFragmentUtility();
+               
+        MyAppWindow(){
+            this.addComponent(header);            
+            this.addComponent(mainView);       
+
+            /*
+132             * Setting content here causes problems:
+133             * -BAD: http://localhost:8080/VaadinHistoryTest#screen2 initially renders with Main content and then replaces it with Screen 1 content.
+134             * It only happens with new tabs, not when http://localhost:8080/VaadinHistoryTest#screen2 is the first tab of the session
+135             */            
+            //setMainContent(buildMainScreen());
+            
+            uriUtil.addListener(new FragmentChangedListener() {
+                public void fragmentChanged(FragmentChangedEvent source) {
+                        String frag = source.getUriFragmentUtility().getFragment();
+                        System.out.println("*** In Window-level UriFragmentUtility, fragmentChanged to "+frag);
+                        
+                        // Actually manipulate the contents of the Window here                        
+                        if (frag!=null && !"".equals(frag.trim())){                           
+                            String[] params = frag.split("/");
+                            String currentScreen = params[0];
+                            removeSubwindows();
+                            if (_screen1.equals(currentScreen)){
+                                setMainContent(buildScreen1());
+                            }
+                            else if (_screen2.equals(currentScreen)){
+                                setMainContent(buildScreen2());
+                            }
+                            else{
+                                setMainContent(buildMainScreen());
+                            }
+                        }   
+                        else {
+                            /*
+                             * Setting the fragment here will do the following for either first tab of session or second tab:
+161                             * +GOOD: Changes uri frag in browser bar from http://localhost:8080/VaadinHistoryTest to http://localhost:8080/VaadinHistoryTest#%23main
+162                             */
+                            uriUtil.setFragment(buildUriToken(_mainScreen));                           
+                            /*
+165                             * This is needed so that: (Tested with and without setFragment on getWindow)
+166                             * +GOOD: First tab of session with http://localhost:8080/VaadinHistoryTest will resolve properly to http://localhost:8080/VaadinHistoryTest#main and set content appropriately
+167                             */
+                            setMainContent(buildMainScreen());
+                        }
+                    }
+            });
+
+            /*
+174             * Setting the fragment here causes problems:
+175             * -BAD: First tab of session, http://localhost:8080/VaadinHistoryTest#screen2 initially renders with main content then gets replaced with Screen2 content
+176             * -BAD: IF setFragment IS NOT DONE IN getWindow, http://localhost:8080/VaadinHistoryTest#screen2 as second tab also initially renders with main content then gets replaced with Screen2 content
+177             *
+178             * Setting the fragment here resolves a problem:
+179             * +GOOD: IF setFragment IS NOT DONE IN getWindow, http://localhost:8080/VaadinHistoryTest on second tab will resolve properly to http://localhost:8080/VaadinHistoryTest#main and set content appropriately
+180             *
+181             *
+182             */
+            //System.out.println("--- Newly created window uriFrag is "+uriUtil.getFragment());
+            //uriUtil.setFragment(buildUriToken(_mainScreen));
+            //System.out.println("--- Created window with uri fragment auto-set to main");
+            
+            
+            this.addComponent(uriUtil);
+            System.out.println("CREATED A NEW WINDOW");
+        }
+            
+        public UriFragmentUtility getUriFragmentUtility(){
+            return this.uriUtil;
+        }
+       
+       
+        public void setMainContent(Component mainComponent){            
+            this.mainView.removeAllComponents();
+            this.mainView.addComponent(mainComponent);
+        }
+       
+        public void removeSubwindows() {
+            Collection<Window> wins = getChildWindows();
+            if (null != wins) {
+                for (Window w : wins) {
+                    removeWindow(w);
+                }
+            }
+        }
+       
+        public DownloadStream handleURI(URL context, String relativeUri){
+            System.out.println("~~~ In Window handleURI, path = "+context.getPath()+", relativeUri = "+relativeUri);
+            
+            String token = uriUtil.getFragment();
+            System.out.println("~~~ In Window handleURI, fragment = "+uriUtil.getFragment());
+            if (token == null || "".equals(token.trim())) {
+
+                /*
+219                 *  This does the following:
+220                 * +GOOD: First tab of session http://localhost:8080/VaadinHistoryTest#screen2 avoids setting main content prior to rendering Screen2 content                
+221                 * +GOOD: First tab of session http://localhost:8080/VaadinHistoryTest properly resolves to http://localhost:8080/VaadinHistoryTest#%23main
+222                 */
+                uriUtil.setFragment(buildUriToken(_mainScreen), false);               
+                System.out.println("~~~ Forced uriToken to = "+uriUtil.getFragment());
+            }
+            return super.handleURI(context, relativeUri);
+        }
+    }
+
+}

@@ -1,0 +1,103 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#putGrailsTemplateDefinition()
+#exposeImportGrailsParamParamsUML ($table)
+#set($tableLabel=$i18nUtils.getI18nFromDBObject(${domainClassName}))
+#set($tableLabels=$i18nUtils.plurialize(${tableLabel}))
+package $packageName
+
+import grails.converters.*
+
+import $importDomainObjectUML
+
+class ${className} {
+
+     def scaffold = $domainClassName
+     
+	 def xmlShow = {
+		 def $domainVariableName = ${domainClassName}.get(params.id)
+		 if ($domainVariableName)
+		 	renderXml$domainClassName ($domainVariableName)
+		 else {
+		    response.status = 404 //Not Found
+		    render "${params.id} not found."
+	 	 }
+	 }
+	 
+	 def jsonShow = {
+		 def $domainVariableName = ${domainClassName}.get(params.id)
+		 if ($domainVariableName)
+		 	renderJson$domainClassName ($domainVariableName)
+		 else {
+		    response.status = 404 //Not Found
+		    render "${params.id} not found."
+	 	 }
+	 }
+	 	 
+	 def xmlList = {
+		 def list = ${domainClassName}.list()
+		 render(contentType:"text/xml"){
+		   "$tableLabels"{
+			 for($domainVariableName in list){
+			   renderXml${domainClassName} $domainVariableName
+			 }
+		   }
+		}
+	 }
+	   
+	 def jsonList = {
+		 def list = ${domainClassName}.list()
+		 render(contentType:"text/json"){
+		   "$tableLabels"{
+			 for($domainVariableName in list){
+			   renderJson${domainClassName} $domainVariableName
+			 }
+		   }
+		}
+	 }	   
+	 
+	 private String renderXml${domainClassName}($domainClassName ${domainVariableName}ToRender) {
+		 render(contentType:"text/xml"){
+			"${domainVariableName}" (
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+                #if ($velocityCount>1),#end"$columnVar":${domainVariableName}ToRender.id
+#end
+             ){
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+                "$columnVar"(${domainVariableName}ToRender.${columnVar})
+#end			
+			 }
+		 }
+	 }  
+	 
+	 private String renderJson${domainClassName}($domainClassName ${domainVariableName}ToRender) { // unfortunately can not use variable $domainVariableName use ${domainVariableName}ToRender instead (Grails 1.3.5) 
+		 def json = [${domainVariableName}:[[               // otherwise error for rendering this line
+#set($cpt = 0)
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+                #if ($cpt>0),#end"$columnVar":${domainVariableName}ToRender.id
+#set($cpt=$cpt+1)
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+                #if ($cpt>0),#end"$columnVar":${domainVariableName}ToRender.${columnVar}
+#set($cpt=$cpt+1)                
+#end
+			    ]]]
+		 render json as JSON
+	 }  
+
+#set ($searchXmlDOFilePath = $commonUtils.getLevelTemplateFullClassPath($table, $template, $templateGrailsJQueryXmlSearchDOHtml))
+#set ($searchJsonDOFilePath = $commonUtils.getLevelTemplateFullClassPath($table, $template, $templateGrailsJQueryJsonSearchDOHtml))
+
+	 def searchXml = {
+	   render(view:"$searchXmlDOFilePath") 
+     }
+
+	 def searchJson = {
+	   render(view:"$searchJsonDOFilePath")
+     }
+     
+}

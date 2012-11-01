@@ -1,0 +1,568 @@
+#exposeVariableEntitySpecific()
+#putJPA2TemplateDefinition()
+#exposeEntityCache()
+#exposeEnvironmentParams()
+#exposeJPA2Specifics()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+#if($addDomainSpecificMethod)
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import net.sf.minuteProject.architecture.bsla.domain.AbstractDomainObject;
+#end
+import java.io.Serializable;
+import javax.persistence.*;
+#if($addXmlBinding)
+import javax.xml.bind.annotation.*;
+#end
+#exposeJPA2Import()
+#exposeJPA2CompositeKeyImport()
+#exposeJPA2EnumImport()
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ */
+@Entity (name="${className}")
+@Table (name="${table.name}")
+@NamedQueries({
+#set($selectChunk="SELECT $domainVariableName FROM ${className} $domainVariableName")
+	 @NamedQuery(name="${className}.findAll", query="$selectChunk")
+#foreach ($column in ${table.attributes})
+#putColumnParamNaming()
+	,@NamedQuery(name="${className}.findBy$columnClass", query="$selectChunk WHERE ${domainVariableName}.$columnVar = :$columnVar")
+#if($convertUtils.isStringType($column.type))
+	,@NamedQuery(name="${className}.findBy${columnClass}Containing", query="$selectChunk WHERE ${domainVariableName}.$columnVar like :$columnVar")
+#end
+#addArea ("custom-queries")
+#end
+})
+#if($addXmlBinding)
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(namespace="$packageName", name = "${className}")
+@XmlRootElement(namespace="$packageName")
+#end
+#if($hasCache && $isCacheEnabled)
+#if($jpa2ImplementationIsHibernate)
+@org.hibernate.annotations.Cache(usage = org.hibernate.annotations.CacheConcurrencyStrategy.READ_WRITE)
+#end
+#if($jpa2ImplementationIsEclipseLink)
+//eclipseLink configuration missing? Please contribute by providing the snippet
+#end
+#end
+#addArea("custom-annotations")
+#if($addDomainSpecificMethod)
+public class ${className} extends AbstractDomainObject {
+#else
+public class ${className} implements Serializable {
+#end
+    private static final long serialVersionUID = 1L;
+	
+    public static final String FIND_ALL = "${className}.findAll";
+#foreach ($column in ${table.attributes})
+#putColumnParamNaming()
+#set($columnCap = $formatUtils.upperCase(${columnClass}))
+    public static final String FIND_BY_$columnCap = "${className}.findBy$columnClass";
+#if($convertUtils.isStringType($column.type))
+    public static final String FIND_BY_${columnCap}_CONTAINING ="${className}.findBy${columnClass}Containing";
+#end
+#end	
+	
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    @EmbeddedId
+    private ${embeddedIdClass} $embeddedIdVariable;
+    
+#else
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    @SequenceGenerator(name = "${table.name}SEQ", sequenceName ="$sequenceName", allocationSize=1 )
+#end
+#end
+    @Id @Column(name="$column.name" #if($isLengthPrecisionColumn),length=$column.size#end)
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="${table.name}SEQ") 
+#elseif ($databaseUtils.isPrimaryKeyPolicyIncrement($table))
+    @GeneratedValue(strategy = GenerationType.AUTO)
+#end
+#end
+#end
+#end
+#if($addXmlBinding)
+#exposeXmlElementValue()
+    @XmlElement $!xmlElementValue
+#end
+    private $columnType $columnVar;
+
+#end
+#end
+#foreach ($column in ${table.attributes})
+#fieldAnnotationAddedAreas()
+#updatedColumnAttributeAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+#putColumnParamNaming()
+#if($isEnum)
+#set($columnType=$enumClassName)
+    @Enumerated #if($convertUtils.isStringType($column.type))(EnumType.STRING)
+    @Column(name="$column.name")
+#end    
+#else
+#if ($isView)
+    @Column(name="$column.name",  #if($isLengthPrecisionColumn)length=$column.size,#end #if($column.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true,#else unique=false,#end insertable=false, updatable=false)
+#else
+    @Column(name="$column.name",  #if($isLengthPrecisionColumn)length=$column.size,#end #if($column.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true#else unique=false#end)
+#end
+#if ($column.isLob())
+    @Lob @Basic(fetch=FetchType.LAZY)  //$column.type
+#exposeLobProperties()
+#end
+#end
+#if($addXmlBinding)
+#exposeXmlElementValue()
+    @XmlElement $!xmlElementValue
+#end
+#if($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+    @Temporal(TemporalType.${column.type})
+#end
+    private $columnType $columnVar; 
+#end
+$!updatedAreaEnd
+
+#end
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#if ($referenceUtils.isReferenceInPrimaryKey($reference) && $tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    @MapsId ("$localColumnName")
+#end
+#set($fetchType=$jpa2Utils.getFetchType($template, $reference))
+    @ManyToOne (fetch=FetchType.$fetchType #if ($isMandatory && !$table.isLinkEntity()), optional=false#end)
+    @JoinColumn(name="$localColumnName", referencedColumnName = "$reference.foreignColumnName", #if($localColumn.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true #else unique=false #end) 
+#exposeRelationship($table, $reference)
+#set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
+    private $linkedTableClass ${colVar};  
+
+#set($column = $reference.localColumn)
+#putColumnParamNaming()
+#if($addXmlBinding)
+#exposeXmlElementValue()
+    @XmlAttribute $!xmlElementValue
+#end
+    @Column(name="$column.name", #if($isLengthPrecisionColumn)length=$column.size,#end #if($column.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true,#else unique=false,#end insertable=false, updatable=false)
+    private $columnType ${columnVar}_;
+
+#end	
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#exposeEntityUpdatedAreas("${childrenListVariable}-field")
+#if(!$linktableDB.isManyToMany())
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#set ($importDomainObjectForeignTable = $commonUtils.getEntityLevelTemplateFullPath($model, $linktableDB, $template, $templateJPA2DomainObject))
+#set ($targetEntityClass="${importDomainObjectForeignTable}.class")
+#exposeEnrichedPk(${reference.column})
+#if (!$isEnrichedPk)
+#set ($foreignColumnVar = $formatUtils.getJavaNameVariable($columnDB.name))
+#else
+#set ($foreignColumnVar = $domainVariableName)
+#end
+#if($addXmlBinding)
+    @XmlElement (name="$i18nUtils.singularize($childrenListVariable)")
+#end
+    @OneToMany (targetEntity=$targetEntityClass, fetch=FetchType.LAZY, mappedBy="$linkedColumnVariable"#if (!$reference.column.isRequired() || $reference.table.isLinkEntity()), cascade=CascadeType.REMOVE#end)//, cascade=CascadeType.ALL)
+    private Set <$linkedTableClass> $childrenListVariable = new HashSet<$linkedTableClass>(); 
+
+#end
+#end
+#if(!$linktableDB.isManyToMany())
+$!updatedAreaEnd
+#end
+#end
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeEntityUpdatedAreas("m2m-$childrenListVariable")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+#if($addXmlBinding)
+#if($isMasterRelationship)
+    @XmlElement (name="$i18nUtils.singularize($childrenListVariable)")
+#else
+    @XmlTransient
+#end
+#end
+    @ManyToMany
+    @JoinTable(name="$linkedTableDBName", 
+        joinColumns=@JoinColumn(name="$targetColumn.name"), 
+        inverseJoinColumns=@JoinColumn(name="$linkReference.localColumnName") 
+    )
+    private Set <$targetTableName> $childrenListVariable = new HashSet <$targetTableName> ();
+
+#end
+#updatedAreaEnd()
+#end
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+
+	/**
+	* All field constructor 
+	*/
+    public ${className}(
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+#if ($column.isLob())
+#exposeLobProperties()
+#elseif($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+#end
+       $columnType $columnVar#if ($velocityCount!=$table.columnCount),
+#end
+#end	
+) {
+       //primary keys
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+       this.$embeddedIdVariable = new ${embeddedIdClass}();  	
+#foreach($column in $tableUtils.getPrimaryKeyNotForeignKeyColumns($table))
+#putColumnParamNaming()
+#set($locColumn=$columnUtils.getColumn($table, $column.name))
+#set($fieldVar=$formatUtils.getJavaNameVariable($locColumn.alias))
+       this.${embeddedIdVariable}.set$columnClass ($fieldVar);
+#end
+#else
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+       set$columnClass ($columnVar);
+#end
+#end	
+       //attributes
+#foreach ($column in ${table.attributes})
+#putColumnParamNaming()
+#if($isEnum)
+       set$columnClass (${enumClassName}.fromValue($columnVar));
+#else
+       set$columnClass ($columnVar);
+#end
+#end
+       //parents
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#columnJavaNaming()
+#exposeRelationship($table, $reference)
+#set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
+##set($colVar=$formatUtils.getJavaNameVariable($referenceUtils.getColumnAlias(${reference.foreignTable}, ${reference.foreignColumn})))
+       this.${colVar} = new $linkedTableClass();
+#if($localColumnType==$linkedColumnType)   
+## setter is the one of the linked table
+#set($columnClass=$referenceUtils.getColumnClassNameForLinkTable($database, $linkedColumn))
+#set($locColumn=$columnUtils.getColumn($table, $localColumn.name))
+#set($fieldVar=$formatUtils.getJavaNameVariable($locColumn.alias))
+#columnJavaNaming()
+       this.${colVar}.set$columnClass($fieldVar); //${reference.foreignColumn.alias}
+#else
+       // the datamodel type of foreignkey and primary are not equals, please adapt
+#end
+#end
+    }
+
+	public ${className} flat() {
+	   return new ${className}(
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+#if ($columnUtils.belongsToCompositePrimaryKeyNotMany2Many($column))
+#set($columnClass=$columnUtils.getPrimaryKeyClassName($table, $column.name))
+		  get${embeddedIdClass}().get$columnClass()#if ($velocityCount!=$table.columnCount),
+#end
+#else
+#if($column.isPrimaryKey())
+#set($columnClass=$columnUtils.getPrimaryKeyClassName($table,$column.name))
+#elseif($columnUtils.isForeignKey($column))
+#set($reference=$referenceUtils.getReference($column))
+#set($columnClass = $commonUtils.getColumnAliasClassName($table, $reference))
+#set($columnClass="${columnClass}_")
+#end
+#if($isEnum)
+          get$columnClass().toString()#if ($velocityCount!=$table.columnCount),
+#end
+#else
+          get$columnClass()#if ($velocityCount!=$table.columnCount),
+#end
+#end
+#end
+#end
+
+	   );
+	}
+
+#####
+#if($addDomainSpecificMethod)
+    /**
+    * toString implementation
+    */
+	public String toString() {
+		return toString(this);
+	}
+
+	public ToStringBuilder getToStringBuilder(Object object) {
+	 	return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+            .append("$columnVar", $columnVar)
+#end	 	
+	 	    ;
+	} 
+		
+	public String toString(Object object) {
+	 	return getToStringBuilder(object).toString();
+	} 
+	
+	public String toStringWithParents() {
+	    ToStringBuilder toStringBuilder = getToStringBuilder(this);
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#columnJavaNaming()
+#set($colVar = $commonUtils.getColumnAliasVariable($table, $reference))
+        if ($colVar!=null)
+            toStringBuilder.append("${colVar}", ${colVar}.toStringWithParents());
+#end
+	 	return toStringBuilder.toString();	
+	}
+	/**
+    * hashCode implementation
+    */
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(flat());
+	}
+	
+	/**
+    * equals implementation
+
+	public boolean equals(Object object) {
+		return super.toEquals(flat(), object);
+	}
+    */
+	public boolean equals(Object object) {
+		if (object == null) return false;	
+		if (object == this) return true;
+		if (!(object instanceof ${className})) return false;
+		${className} ${variableName} = (${className}) object;
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+		if (${variableName}.${columnVar}==null || !${variableName}.${columnVar}.equals(${columnVar})) return false;
+#end
+		return true;
+	}    
+
+	public ${className} clone() {
+        ${className} ${variableName} = flat();
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeRelationship($table, $reference)
+#set($localColumnVariable = $commonUtils.getColumnAliasVariable($table, $reference))
+#set($localColumnClass = $commonUtils.getColumnAliasClass($table, $reference))
+        if (get${localColumnClass}()!=null) 
+            ${variableName}.set${localColumnClass} (get${localColumnClass}().clone());   
+#end	   
+        return ${variableName};
+	}
+	
+	public void copy (${className} ${variableName}) {
+		if (${variableName}!=null) {
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+			set$columnClass (${variableName}.get$columnClass());
+#end
+		}
+	}
+	
+	public static ${className} fullMask() {
+		return new ${className}(
+#foreach ($column in ${table.columns})
+#putDefaultMaskColumnValue()
+			$defaultMask #if ($velocityCount!=$table.columnCount),
+#end
+#end
+
+		);	    
+	}
+
+#end
+###
+#if ($isMany2Many)
+    public ${className} get${className} () {
+    	return this;
+    }
+
+    public void set${className} (${className} ${variableName}) {
+    	new ${className}(
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       ${variableName}.get_${columnVar}()#if ($velocityCount!=$table.columnCount),
+#end
+#end 		
+		);
+    }
+    
+#end   
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    public $embeddedIdClass get$embeddedIdClass() {
+		if ($embeddedIdVariable==null) $embeddedIdVariable = new $embeddedIdClass();
+        return $embeddedIdVariable;
+    }
+	
+    public void set$embeddedIdClass ($embeddedIdClass $embeddedIdVariable) {
+        this.$embeddedIdVariable =  $embeddedIdVariable;
+    }
+    
+#else 
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+    public $columnType get$columnClass() {
+        return $columnVar;
+    }
+	
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar =  $columnVar;
+    }
+    
+#end
+#end
+#foreach ($column in ${table.attributes})
+#updatedColumnGetterSetterAreas()
+$!updatedAreaBegin
+#if($isUpdated)
+$updatedAreaSnippet
+#else
+#putColumnParamNaming()
+#if ($column.isLob())
+#exposeLobProperties()
+##if ($convertClobToString=="true")
+##set($columnType="String")
+##end
+#end
+#if($isEnum)
+#set($columnType=$enumClassName)
+#end
+#if($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+#end
+    public $columnType get$columnClass() {
+        return $columnVar;
+    }
+	
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar =  $columnVar;
+    }    
+#end
+$!updatedAreaEnd
+
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeRelationship($table, $reference)
+#set($localColumnVariable = $commonUtils.getColumnAliasVariable($table, $reference))
+#set($localColumnClass = $commonUtils.getColumnAliasClass($table, $reference))
+    public $linkedTableClass get$localColumnClass () {
+    	return ${localColumnVariable};
+    }
+	
+    public void set${localColumnClass} ($linkedTableClass ${localColumnVariable}) {
+    	this.${localColumnVariable} = ${localColumnVariable};
+    }
+
+#set($column = $reference.localColumn)
+#putColumnParamNaming()
+    public $columnType get${columnClass}_() {
+        return ${columnVar}_;
+    }
+	
+    public void set${columnClass}_ ($columnType $columnVar) {
+        this.${columnVar}_ =  $columnVar;
+    }
+	
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#exposeEntityUpdatedAreas("${childrenListVariable}-getter")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#if(!$linktableDB.isManyToMany())
+##if($addXmlBinding)
+##    @XmlElement(name="$childrenListVariable")
+##end
+    public Set<$linkedTableClass> get${childrenListClass}() {
+        if (${childrenListVariable} == null){
+            ${childrenListVariable} = new HashSet<$linkedTableClass>();
+        }
+        return ${childrenListVariable};
+    }
+
+    public void set${childrenListClass} (Set<$linkedTableClass> ${childrenListVariable}) {
+        this.${childrenListVariable} = ${childrenListVariable};
+    }	
+    
+    public void add${childrenListClass} ($linkedTableClass ${linkedTableVariable}) {
+    	    get${childrenListClass}().add($linkedTableVariable);
+    }
+    
+#end    
+#end
+$!updatedAreaEnd
+#end
+
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+    public Set<$targetTableName> get${childrenListClass}() {
+        if (${childrenListVariable} == null){
+            ${childrenListVariable} = new HashSet<$targetTableName>();
+        }
+        return ${childrenListVariable};
+    }
+
+    public void set${childrenListClass} (Set<$targetTableName> ${childrenListVariable}) {
+        this.${childrenListVariable} = ${childrenListVariable};
+    }
+    	
+    public void add${childrenListClass} ($targetTableName ${childrenListVariable}) {
+        get${childrenListClass}().add($childrenListVariable);
+    }	    
+#end
+
+#putJPA2TriggerSnippet()
+
+$!updatedAreaImplementation
+
+}

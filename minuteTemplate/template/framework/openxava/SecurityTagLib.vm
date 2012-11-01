@@ -1,0 +1,28 @@
+<%@ attribute name="role" required="true" %>
+
+<%!
+
+    public boolean hasRole(javax.servlet.http.HttpServletRequest request, String role) {
+        return request.isUserInRole(role) || 
+        	   request.isUserInRole(role.toUpperCase()) || 
+        	   request.isUserInRole("ROLE_"+role.toUpperCase());
+    }
+%>
+
+<%
+     String [] roles = role.split(",");
+     int length = roles.length;
+     boolean isInRole = false;
+     for (int i = 0; i < length;i++) {
+    	 String role = (roles[i]);
+         if(hasRole(request, role)) {
+             isInRole = true;
+             break;
+         }   
+     }
+    if(isInRole) {
+%>
+        <jsp:doBody/>
+<%        
+    }
+%>

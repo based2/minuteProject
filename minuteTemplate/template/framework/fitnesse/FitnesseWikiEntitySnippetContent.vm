@@ -1,0 +1,37 @@
+#exposeVariableEntitySpecific()
+#exposeJdbc()
+#set ($datasource = $model.dataModel.basicDataSource)
+#set ($templateFitnesseSelectTableFixture = "FitnesseSelectTableFixture")
+#set ($importSelectFixtureClass = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateFitnesseSelectTableFixture))
+!contents -R2 -g -p -f -h
+
+
+!3 Datasource connection information
+
+!|net.sf.minuteproject.fitnesse.fixture.DbConnectionFixture|
+|username| password| url| driverClassName|
+|$datasource.username| $datasource.password| $datasource.url | $datasource.driverClassName|
+
+
+!3 Select $tableDB.name snippet
+
+Field row represents the columns to search on.
+Expression contains for each columns the search filter operand. ('=','>','<','>=','<=','contains','startWith' are supported)
+
+!|${importSelectFixtureClass}|
+|General Info Input|table|$tableDB.name|
+|Fields |#foreach ($column in ${table.columns}) #putColumnParams() $column.name | #end 
+
+|Expression |#foreach ($column in ${table.columns})  | #end 
+ 
+|Value |#foreach ($column in ${table.columns}) | #end 
+
+|Order |#foreach ($column in ${table.columns}) | #end 
+
+|general Info Output|numberOfRow|3| 
+|row#1 |#foreach ($column in ${table.columns}) | #end 
+
+|row#2 |#foreach ($column in ${table.columns}) | #end 
+
+|row#3 |#foreach ($column in ${table.columns}) | #end 
+

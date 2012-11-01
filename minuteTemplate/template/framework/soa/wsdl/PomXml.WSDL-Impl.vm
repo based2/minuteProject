@@ -1,0 +1,53 @@
+#exposeMaven()
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  	<groupId>${rootPackage}.${model.name}</groupId>
+  	<artifactId>${model.name}WebServiceImpl</artifactId>
+	<name>${model.name}WebServiceImpl</name>
+  	<packaging>war</packaging>
+  	<version>${version}-SNAPSHOT</version>
+  	<description>$DbApiName Web service implementation</description>
+    <url>http://maven.apache.org</url>
+	
+	<dependencies>
+#addArea("custom-dependencies")
+		<dependency>
+			<groupId>${rootPackage}.${model.name}</groupId>
+			<artifactId>${model.name}WebServiceApi</artifactId>
+			<version>${version}-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${rootPackage}.${model.name}</groupId>
+			<artifactId>${model.name}Service</artifactId>
+			<version>${version}-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+#addArea("custom-plugins")
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<configuration>
+					<wtpversion>2.0</wtpversion>
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+             </plugin>			
+		</plugins>
+	</build>
+	<dependencyManagement>
+		<dependencies>
+		</dependencies>
+	</dependencyManagement>
+#addArea("custom-pomization")
+</project>

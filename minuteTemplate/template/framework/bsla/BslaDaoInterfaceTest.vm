@@ -1,0 +1,257 @@
+#exposeVariableEntitySpecific()
+##putImportParams()
+#exposeConnectionSpecific()
+#exposeTestAdapter()
+#distinctEntityProperty()
+#exposeEntityDependencies()
+package $packageName;
+
+#distinctBEImport()
+import $importDomainObject;
+import $importDaoInterface;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
+import $testAdapterImport;
+#foreach ($linktableDB in $distinctDependencies)
+#putDependencies()
+import $dependentImportDaoInterface;
+import $dependentImportDomainClassName;
+#end
+
+public class $className extends $testAdapterClassName {
+
+	@Autowired @Qualifier("$daoInterfaceVariableName")
+	protected $daoInterfaceClassName $daoInterfaceVariableName;
+#foreach ($linktableDB in $distinctDependencies)
+#if ($linktableDB.name!=$table.name)
+#putDependencies()
+	@Autowired @Qualifier("$dependentDaoInterfaceVariableName")
+	protected $dependentDaoInterfaceClassName $dependentDaoInterfaceVariableName;
+#end    
+#end
+	
+	/*
+	* Do the insert first.
+	* To do the insert do on all mandatory fields;
+	* If a mandatory field is a fk => insert the mandatory entity and give the entity value to populate the fk.
+	* Then perform load update, delete, loadfirstlevel
+	*/
+    	
+	@Test
+	public void testInsert$domainClassName () {
+	    $domainClassName ${domainVariableName} = insert$domainClassName ();
+	    assertNotNull(${domainVariableName});
+	}
+	
+	@Test	
+    public void testLoad$domainClassName () {
+    	$domainClassName ${domainVariableName} = insert$domainClassName();
+    	$domainClassName ${domainVariableName}2 = load$domainClassName(${domainVariableName});
+       // assertion
+#foreach ($column in $table.columns) 
+#putColumnParams()
+#if (!$isForeignKey)
+     	assertTrue(${domainVariableName}.get$columnClass().equals(${domainVariableName}2.get$columnClass()));
+#else
+#set ($parentTable = $columnUtils.getForeignTable($column))
+#if (${parentTable.name}!=${table.name})
+     	assertTrue(${domainVariableName}.get$columnClass().equals(${domainVariableName}2.get$columnClass()));
+#end
+#end
+#end
+	}	
+		
+	@Test		
+	public void testDelete$domainClassName () {
+    	$domainClassName ${domainVariableName} = insert$domainClassName();
+    	${daoInterfaceVariableName}.delete$domainClassName(${domainVariableName});
+    	$domainClassName ${domainVariableName}2 = load${domainClassName}(${domainVariableName});
+        assertNull (${domainVariableName}2);
+    }
+	
+	@Test	
+	public void testUpdate$domainClassName () {
+    	$domainClassName ${domainVariableName} = insert$domainClassName();
+    	$domainClassName ${domainVariableName}2 = load$domainClassName(${domainVariableName});  	
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if (!$column.isPrimaryKey() && !$isForeignKey)
+        ${domainVariableName}.set$columnClass ($testUtils.getTestPopulateFieldMethod($column,2));
+#end
+#end	
+	    ${daoInterfaceVariableName}.update${domainClassName}(${domainVariableName});
+    	$domainClassName ${domainVariableName}3 = load${domainClassName}(${domainVariableName});
+        // assertion
+##foreach ($column in $table.columns) 
+##putColumnParams()
+##    	assertTrue(${domainVariableName}.get$columnClass().equals(${domainVariableName}3.get$columnClass()));
+##end
+#foreach ($column in $table.columns) 
+#putColumnParams()
+#if (!$isForeignKey)
+     	assertTrue(${domainVariableName}.get$columnClass().equals(${domainVariableName}3.get$columnClass()));
+#else
+#set ($parentTable = $columnUtils.getForeignTable($column))
+#if (${parentTable.name}!=${table.name})
+     	assertTrue(${domainVariableName}.get$columnClass().equals(${domainVariableName}3.get$columnClass()));
+#end
+#end
+#end
+	}
+/* updateNotNull is not on both interface	
+	public void testUpdateNotNull$domainClassName () {
+    	$domainClassName ${domainVariableName} = insert$domainClassName();
+    	//$domainClassName ${domainVariableName}2 = load$domainClassName(${domainVariableName});  	
+		$domainClassName ${domainVariableName}2 = new $domainClassName();
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+        ${domainVariableName}2.set$columnClass(${domainVariableName}.get$columnClass());
+#end
+#foreach ($column in $table.columns)
+#putColumnParams()
+#if (!$column.isPrimaryKey() && !$isForeignKey)
+#if ($velocityCount%2==0)
+        ${domainVariableName}2.set$columnClass ($testUtils.getTestPopulateFieldMethod($column,2));
+#end
+#end
+#end	
+	    ${daoInterfaceVariableName}.updateNotNullOnly${domainClassName}(${domainVariableName}2);
+    	$domainClassName ${domainVariableName}3 = load${domainClassName}(${domainVariableName});
+        // assertion
+#foreach ($column in $table.columns) 
+#putColumnParams()
+#if (!$column.isPrimaryKey() && !$isForeignKey && $velocityCount%2==0)
+     	assertTrue(${domainVariableName}3.get$columnClass().equals(${domainVariableName}2.get$columnClass()));
+#else
+     	assertTrue(${domainVariableName}3.get$columnClass().equals(${domainVariableName}.get$columnClass()));
+#end
+#end
+	}	
+*/   
+ 
+	//@Test	
+    public void testPagination () {
+    	// set something to paginate
+    	// TODO
+    	$domainClassName ${domainVariableName} = populateFirstNonPkField$domainClassName ();
+    	PaginationCriteria paginationCriteria = new PaginationCriteria();
+    	paginationCriteria.setNumberOfRowsReturned(10);
+    	List<$domainClassName> list = ${daoInterfaceVariableName}.loadPaginated$domainClassName(${domainVariableName}, paginationCriteria);
+    	assertNotNull (list);
+    }
+ 
+    public $domainClassName insert$domainClassName () {
+        $domainClassName ${domainVariableName} = populate$domainClassName ();   	
+    	${daoInterfaceVariableName}.insert${domainClassName}(${domainVariableName});
+    	return ${domainVariableName};
+	}
+
+    public $domainClassName load$domainClassName ($domainClassName ${domainVariableName}) {
+#if($isMany2Many)
+    	return ${daoInterfaceVariableName}.load${domainClassName}(${domainVariableName});
+#else     
+    	return ${daoInterfaceVariableName}.load${domainClassName}(${domainVariableName}.get$primaryKeyJavaNameClass());
+#end    
+	}	
+
+    public $domainClassName populate$domainClassName () {
+        $domainClassName $domainVariableName = new $domainClassName();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if (!$column.isPrimaryKey() && !$isForeignKey)
+        ${domainVariableName}.set$columnClass ($testUtils.getTestPopulateFieldMethod($column,1));
+#elseif ($column.isPrimaryKey() && $isPkUserProvided)
+        ${domainVariableName}.set$columnClass ($testUtils.getTestPopulateFieldMethod($column,1));
+#end
+#end
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#if (${table}!=${linktableDB}) ##prevents recursivity
+#exposeLinkedEntityDependencies()
+#set ($primaryKeyJavaNameClass = $formatUtils.getJavaName($commonUtils.getPK($linktableDB)))
+#set ($primaryKeyJavaNameTypeOnly = $commonUtils.getPrimaryKeyTypeOnly($linktableDB))
+#putDependencies()
+#set ($nb = $velocityCount)
+        $dependentDomainClassName $localColumnVariable$nb = inject$dependentDomainClassName();	
+        //$localColumnTypeOnly $primaryKeyJavaNameTypeOnly
+#if ($localColumnTypeOnly==$primaryKeyJavaNameTypeOnly)
+        ${domainVariableName}.set$localColumnClass(${localColumnVariable}${nb}.get$primaryKeyJavaNameClass());
+#else
+        ${domainVariableName}.set$localColumnClass(convert${primaryKeyJavaNameTypeOnly}To${localColumnTypeOnly}(${localColumnVariable}${nb}.get$primaryKeyJavaNameClass()));
+#end
+
+#end 
+#end
+        return $domainVariableName;
+    }
+
+#foreach ($linktableDB in $distinctDependencies)
+#putDependencies()
+#set ($masterDependentDomainVariableName = $dependentDomainVariableName)
+#set ($masterLinktableDB = $linktableDB)
+    // dependency $dependentDomainClassName injection
+    public $dependentDomainClassName inject$dependentDomainClassName () {
+        $dependentDomainClassName $dependentDomainVariableName = populate$dependentDomainClassName ();
+        ${dependentDaoInterfaceVariableName}.insert$dependentDomainClassName ($dependentDomainVariableName);
+        return $dependentDomainVariableName;
+    }
+
+#if ($linktableDB.name!=$table.name)  
+    public $dependentDomainClassName populate$dependentDomainClassName () {
+        $dependentDomainClassName $dependentDomainVariableName = new $dependentDomainClassName();
+#foreach ($column in ${linktableDB.columns})
+#putColumnParams()
+#if (!$column.isPrimaryKey() && !$isForeignKey)
+        ${dependentDomainVariableName}.set$columnClass ($testUtils.getTestPopulateFieldMethod($column,1));
+#elseif ($column.isPrimaryKey() && $isPkUserProvided)
+        ${dependentDomainVariableName}.set$columnClass ($testUtils.getTestPopulateFieldMethod($column,1));
+#end
+#end
+#foreach ($reference in $linktableDB.parents)
+#putReferenceParams2()
+#if (${masterLinktableDB}!=${linktableDB}) ##prevents recursivity
+#exposeLinkedEntityDependencies()
+#set ($primaryKeyJavaNameClass = $formatUtils.getJavaName($commonUtils.getPK($linktableDB)))
+#set ($primaryKeyJavaNameTypeOnly = $commonUtils.getPrimaryKeyTypeOnly($linktableDB))
+#putDependencies()
+#set ($nb = $velocityCount)
+        $dependentDomainClassName $dependentDomainVariableName$nb = inject$dependentDomainClassName();
+        //$localColumnTypeOnly $primaryKeyTypeOnly    $primaryKeyJavaNameTypeOnly    	
+#if ($localColumnTypeOnly==$primaryKeyJavaNameTypeOnly)
+        ${masterDependentDomainVariableName}.set$localColumnClass(${dependentDomainVariableName}${nb}.get$primaryKeyJavaNameClass());
+#else
+        ${masterDependentDomainVariableName}.set$localColumnClass(convert${primaryKeyJavaNameTypeOnly}To${localColumnTypeOnly}(${dependentDomainVariableName}${nb}.get$primaryKeyJavaNameClass()));
+#end
+#end 
+#end 
+        return $masterDependentDomainVariableName;
+    }   
+#end
+#end
+     
+    public $domainClassName populateFirstNonPkField$domainClassName () {
+       // works if the table does not contain only pk
+       $domainClassName $domainVariableName = new $domainClassName();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if (!$column.isPrimaryKey() && !($velocityCount>1))
+       ${domainVariableName}.set$columnClass ($testUtils.getTestPopulateFieldMethod($column,1));
+#end
+#end
+       return $domainVariableName;
+    }
+        
+}

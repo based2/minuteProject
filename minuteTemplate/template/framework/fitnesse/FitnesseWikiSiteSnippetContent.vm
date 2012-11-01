@@ -1,0 +1,25 @@
+#exposeVariableModelDetailSpecific()
+!contents -R2 -g -p -f -h
+
+
+!1 This is $model.name test suite
+
+#foreach ($package in ${businessPackages})
+
+!3 Package $package.name
+
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecific()
+>$tableVariableName
+#end
+#end
+#foreach ($package in ${businessPackageViews})
+
+!3 Package $package.name
+
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecific()
+>$tableVariableName
+#end
+#end
+

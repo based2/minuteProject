@@ -1,0 +1,61 @@
+#exposeJSFModelSpecific()
+#exposeJSFAppFwkSpecific()
+<?xml version="1.0" encoding="utf-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd"
+	version="2.0">
+
+	<application>
+#if($isSpringBackend)
+	    <variable-resolver>org.springframework.web.jsf.DelegatingVariableResolver</variable-resolver>
+#end
+		<resource-bundle>
+			<base-name>$modelI18nJSFImport</base-name>
+			<var>i18n</var>
+		</resource-bundle>
+##		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>		
+	</application>
+
+    <managed-bean>
+        <managed-bean-name>$modelBeanManagerMenuJSFVariable</managed-bean-name>
+        <managed-bean-class>$modelBeanManagerMenuJSFImport</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+	
+#foreach ($table in $model.businessModel.businessPackage.entities)	
+#if (!$table.isManyToMany())
+#exposeJSFEntitySpecific()	
+#if(!$isSpringBackend)
+    <managed-bean>
+        <managed-bean-name>$entityControllerJSFVariable</managed-bean-name>
+        <managed-bean-class>$entityControllerJSFImport</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+#end
+	<navigation-rule>
+		<from-view-id>${entityListJSFLocation}</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>${entityCreateJSFLocation}</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	
+	<navigation-rule>
+		<from-view-id>${entityCreateJSFLocation}</from-view-id>
+		<navigation-case>
+			<from-outcome>success</from-outcome>
+			<to-view-id>${entityListJSFLocation}</to-view-id>
+			<redirect/>
+		</navigation-case>
+	</navigation-rule>	
+	
+#end	
+#end
+
+##	<converter>
+##		<converter-id>dateTsConverter</converter-id>
+##		<converter-class>$dateTsConverterImport</converter-class>
+##	</converter>
+	
+</faces-config>

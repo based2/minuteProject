@@ -1,0 +1,20 @@
+#exposeVariableModelSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- Import Service definitions for business components -->
+
+#foreach ($package in ${businessPackages})
+#exposePackageServiceParam()
+   <!-- $package.name -->
+   <import resource="classpath:${servicePackagePath}.xml"/>
+#end
+#foreach ($package in ${businessPackageViews})
+#exposePackageServiceParam()
+   <!-- $package.name -->
+   <import resource="classpath:${servicePackagePath}.xml"/>
+#end
+
+</beans>

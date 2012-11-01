@@ -1,0 +1,150 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#exposeSeparator()
+#exposePrimefacesConfig()
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace">
+<ui:composition template="$modelDecoratorJSFImport">
+	<ui:define name="title">
+		<h:outputText value="#{i18n.listTitle} of ${tableClassName}" />
+	</ui:define>
+	<ui:define name="heading">
+		<h:outputText value="#{i18n.listHeading}" />
+	</ui:define>
+<ui:define name="body">
+		
+ <h:form id="form${tableClassName}">  
+  
+    <p:dataTable var="${domainVariableName}" value="#{${entityControllerJSFVariable}.findAll()}" paginator="true" rows="10"  
+                selection="#{${entityControllerJSFVariable}.selected${tableClassName}}" selectionMode="single" rowKey="#{${domainVariableName}}"
+                onRowSelectUpdate="display" onRowSelectComplete="${domainVariableName}Dialog.show()" 
+                dynamic="true"  resizableColumns="true"
+                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                rowsPerPageTemplate="5,10,15"> 
+        <f:facet name="header">  
+            List of #{i18n.${tableVariableName}s}  
+        </f:facet>  
+		<p:column style="width:16px">  
+			<p:rowToggler/>  
+		</p:column>
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+        <p:column sortBy="#{${domainVariableName}.${columnVar}}" filterBy="#{${domainVariableName}.${columnVar}}">  
+            <f:facet name="header">  
+                <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}" />  
+            </f:facet>  
+            <h:outputText value="#{${domainVariableName}.${columnVar}}" />  
+        </p:column> 
+#end
+#end		
+#foreach ($column in $table.attributes)
+#putColumnParams()
+#columnJavaNaming()	
+        <p:column sortBy="#{${domainVariableName}.${columnVar}}" filterBy="#{${domainVariableName}.${columnVar}}">  
+            <f:facet name="header">  
+                <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}" />  
+            </f:facet>  
+            <h:outputText value="#{${domainVariableName}.${columnVar}}" />  
+        </p:column>  
+#end
+		<f:facet name="footer"> 
+			<p:commandButton id="viewButton" value="View" icon="ui-icon-search"  
+                    update=":form${tableClassName}:display" oncomplete="${domainVariableName}Dialog.show()"/>  	
+##			<p:commandButton title="New #{i18n.$tableVariableName}" value="New #{i18n.$tableVariableName}" action="#{${entityControllerJSFVariable}.displayInput}" />
+            <h:button value="New #{i18n.$tableVariableName}" outcome="${entityCreateJSFLocation}" class="Automatic reply: ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>
+            <p:commandButton title="Delete #{i18n.$tableVariableName}" value="Delete #{i18n.$tableVariableName}" action="#{${entityControllerJSFVariable}.delete}" />
+		</f:facet> 	
+		
+		<p:rowExpansion>  
+			<p:fieldset legend="${domainVariableName} Details">  
+				 <p:toolbar>  
+					<p:toolbarGroup align="left"> 
+						<p:commandButton type="button" title="Edit" icon="ui-icon-folder-open"/>  
+						<p:separator />          
+						<p:commandButton type="button" title="Save" icon="ui-icon-disk"/>  
+						<p:separator />  
+						<p:commandButton type="button" title="Cancel" icon="ui-icon-trash"/> 
+					</p:toolbarGroup>  
+				</p:toolbar>
+				<h:panelGrid columns="2" cellpadding="5"  styleClass="list_display_table_TR_even">
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+#end  
+#foreach ($column in $table.attributes)
+#putColumnParams()
+#columnJavaNaming()	
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+				</h:panelGrid>
+			</p:fieldset> 
+##<!--
+##			<p:fieldset legend="agentRole's Summary">
+##				<p:toolbar id="agentRoleToolBar">  
+##					<p:toolbarGroup align="left"> 
+##						<p:commandButton type="button" title="Add agentRole"  actionListener="#{agentRoleController.displayInput}" icon="ui-icon-document" update="evtsForm"/>         
+##					</p:toolbarGroup>
+##				</p:toolbar> 
+##					<h:panelGrid columns="3" cellpadding="5"  styleClass="list_display_table_TR_even">
+##						<c:forEach  var="evt" items="#{agentRoleController.selectedAgentRole.events}" varStatus="result" >
+##								<p:column>
+##									<h:outputText value="#{evt.typeEvent.label}" />  
+##								</p:column> 
+##								<p:column> 
+##									<h:commandLink action="#{eventDetailsHistoryAction.displayEventDetails}">
+##										<p:graphicImage value="/img/search.png"/> 
+##										<f:param name="selectedEventUid" value="#{evt.uid}"/>
+##									</h:commandLink>
+##								</p:column> 
+##								<p:column>  
+##									<h:commandLink action="#{eventDetailsHistoryAction.deleteEvent}">
+##										<p:graphicImage value="/img/delete_element.gif"/> 
+##										<f:param name="selectedEventUid" value="#{evt.uid}"/>
+##									</h:commandLink>
+##								</p:column>  
+##						</c:forEach> 
+##					</h:panelGrid>
+##			</p:fieldset> 
+##-->
+		</p:rowExpansion>  
+		
+    </p:dataTable>  
+  
+    <p:dialog header="$domainVariableName detail" widgetVar="${domainVariableName}Dialog" 
+		resizable="true" id="${domainVariableName}DialogId" 
+        width="400" showEffect="clip" hideEffect="fold">  
+  
+        <h:panelGrid id="display" columns="2" cellpadding="4">  
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+#end  
+#foreach ($column in $table.attributes)
+#putColumnParams()
+#columnJavaNaming()	
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+
+        </h:panelGrid>  
+    </p:dialog>  
+  
+</h:form> 
+
+</ui:define>
+</ui:composition>
+</html>

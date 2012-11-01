@@ -1,0 +1,102 @@
+#exposeSpringConfig()
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package ${packageName};
+
+import java.io.Serializable;
+import java.util.Random;
+import java.util.List;
+
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.vaadin.data.util.BeanItemContainer;
+
+import ${importDomainObjectUML};
+import ${importDaoInterfaceUML};
+
+@SuppressWarnings("serial")
+public class ${className} extends BeanItemContainer<${domainClassName}> implements Serializable {
+
+    private $daoInterfaceClassNameUML $daoInterfaceVariableNameUML;
+
+	public ${className}() {
+		super(${domainClassName}.class);
+		ClassPathXmlApplicationContext bf = new ClassPathXmlApplicationContext("classpath:$springMainHibernatePath");
+		$daoInterfaceVariableNameUML = ($daoInterfaceClassNameUML)bf.getBean("$daoInterfaceVariableNameUML");
+	}    
+	
+	/**
+	 * Natural property order for Person bean. Used in tables and forms.
+	 */
+	public static final Object[] NATURAL_COL_ORDER = new Object[] {
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey && $columnUtils.isPkUserProvided($column))
+       "$columnVar",
+#end
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+	   "$columnVar"#if ($velocityHasNext), 
+#end
+#end
+	};	 
+
+	/**
+	 * "Human readable" captions for properties in same order as in
+	 * NATURAL_COL_ORDER.
+	 */
+	public static final String[] COL_HEADERS_ENGLISH = new String[] {
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey && $columnUtils.isPkUserProvided($column))
+#set($columnLabel=$i18nUtils.getI18nFromDBObject($column))
+       "$columnLabel",
+#end
+#end
+#foreach($column in $table.attributes)
+#putColumnParams()
+#set($columnLabel=$i18nUtils.getI18nFromDBObject($column))
+       "$columnLabel"#if ($velocityHasNext), 
+#end
+#end
+	};
+
+	public ${className} getAll(Integer size) {
+		${className} ${variableName} = new ${className}();
+		PaginationCriteria pc = new PaginationCriteria();
+		pc.setPageNumber(size);		
+		List<${domainClassName}> list = ${daoInterfaceVariableNameUML}.loadPaginated${domainClassName} (new ${domainClassName}(), pc);
+		// search${domainClassName}OnCriteria (DOCriteria, orderCriteria, limitCriteria);
+		/*
+		  orderCriteria within DOCriteria, asc/desc(position by default next)
+		
+		  handle projection query
+		   => convert projection into hql and not criteria api.
+		
+		  generation sp & 4 sp / trigger & 4 trigger (creation date field, update field, track user)
+		*/
+		for (${domainClassName} ${domainVariableName} : list) {
+		   ${variableName}.addItem(${domainVariableName});
+		}
+		return ${variableName};
+	}
+	
+	public void saveAndUpdateList (${importDomainObjectUML} $domainVariableName) {
+	   save ($domainVariableName);
+	   getAll(100);
+	}
+	
+	public void save (${importDomainObjectUML} $domainVariableName) {
+	   ${daoInterfaceVariableNameUML}.save$domainClassName ($domainVariableName);
+	}
+
+	public void delete (${importDomainObjectUML} $domainVariableName) {
+	   ${daoInterfaceVariableNameUML}.delete$domainClassName ($domainVariableName);
+	}
+		
+#parse("PARSER_daoInterfaceUMLGetterSetter.vm")
+    
+}

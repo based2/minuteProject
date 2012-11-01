@@ -1,0 +1,11 @@
+package controllers;
+
+import play.mvc.Controller;
+
+public class Rest extends Controller{
+
+	public static void rest() {
+		render();
+	}
+	
+}

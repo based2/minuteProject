@@ -1,0 +1,32 @@
+test
+
+element = $element.text - $element.name
+
+#foreach ($attribute in $element.attributes)
+att name = $attribute.name
+att value = $attribute.value
+--
+#end
+
+
+--
+#foreach ($node in $element.nodes)
+att name = $node.name
+att value = $node.value
+--
+#end
+
+-- sequence type
+#foreach ($node in $element.sequenceElement)
+#if ($node.isComplexType())
+type = $node.getSequenceType()
+#end
+--
+#end
+
+--
+#foreach ($seq in $element.sequenceElement)
+type: $seq.getType() $seq.getAttributeValue("name")
+--
+#end
+

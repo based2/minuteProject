@@ -1,0 +1,11 @@
+#exposeVariableEntitySpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="$view.alias"> // to pregenerate
+#foreach(column in $view.columns)
+  <attribute name="$column.name">
+	##<belong to entity (entity type path) (entity type namescape) via (entity variable)/>
+	  <entity-bean-path entity-type-path="$entityTypePath" entity-type-namescape="$entityTypeNamespace" entity-variable-path="$entityVariablePath"/>
+  	</attribute>
+	#end
+	</component>
+	

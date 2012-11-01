@@ -1,0 +1,82 @@
+	public $tableClassName affect$tableClassName ($tableClassName $tableVariableName) {
+	    return refer$tableClassName ($tableVariableName, null, false);		    
+	}
+		
+	/**
+	 * Assign the first $tableVariableName retrieved corresponding to the $tableVariableName criteria.
+	 * Blank criteria are mapped to null.
+	 * If no criteria is found, null is returned.
+	 * If there is no $tableVariableName corresponding in the database. Then $tableVariableName is inserted and returned with its primary key(s). 
+	 */
+	public $tableClassName assign$tableClassName ($tableClassName $tableVariableName) {
+		return refer$tableClassName ($tableVariableName, null, true);
+	}
+
+	/**
+	 * Assign the first $tableVariableName retrieved corresponding to the mask criteria.
+	 * Blank criteria are mapped to null.
+	 * If no criteria is found, null is returned.
+	 * If there is no $tableVariableName corresponding in the database. 
+	 * Then $tableVariableName is inserted and returned with its primary key(s). 
+	 * Mask servers usually to set unique keys or the semantic reference
+	 */
+    public $tableClassName assign$tableClassName ($tableClassName $tableVariableName, $tableClassName mask) {
+		return refer$tableClassName ($tableVariableName, mask, true);
+	}
+
+	public $tableClassName refer$tableClassName ($tableClassName $tableVariableName, $tableClassName mask, boolean isAssign) {
+		$tableVariableName = assignBlankToNull ($tableVariableName);
+		if (isAllNull($tableVariableName))
+			return null;
+		else {
+			List<$tableClassName> list;
+			if (mask==null)
+				list = searchPrototype$tableClassName($tableVariableName);
+			else
+				list = searchPrototype$tableClassName(mask);
+			if (list.isEmpty()) {
+			    if (isAssign)
+			       insert$tableClassName($tableVariableName);
+			    else
+				   return null;
+			}
+			else if (list.size()==1)
+				${tableVariableName}.copy(list.get(0));
+			else 
+				//TODO log error
+				${tableVariableName}.copy(list.get(0));
+		}
+		return $tableVariableName;		    
+	}
+
+   public $tableClassName assign${tableClassName}UseCache ($tableClassName $tableVariableName) {
+      return refer${tableClassName}UseCache ($tableVariableName, true);
+   }
+      		
+   public $tableClassName affect${tableClassName}UseCache ($tableClassName $tableVariableName) {
+      return refer${tableClassName}UseCache ($tableVariableName, false);
+   }
+      		
+   public $tableClassName refer${tableClassName}UseCache ($tableClassName $tableVariableName, boolean isAssign) {
+	  String key = getCacheKey(null, $tableVariableName, null, "assign$tableClassName");
+      $tableClassName ${tableVariableName}Cache = ($tableClassName)simpleCache.get(key);
+      if (${tableVariableName}Cache==null) {
+         ${tableVariableName}Cache = refer${tableClassName} ($tableVariableName, null, isAssign);
+         if (key!=null)
+         	simpleCache.put(key, ${tableVariableName}Cache);
+      }
+      ${tableVariableName}.copy(${tableVariableName}Cache);
+      return ${tableVariableName}Cache;
+   }	
+
+	private String getCacheKey ($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, String queryKey) {
+	    StringBuffer sb = new StringBuffer();
+	    sb.append(queryKey);
+	    if (${tableVariableName}What!=null)
+	       sb.append(${tableVariableName}What.toStringWithParents());
+	    if (positive${tableClassName}!=null)
+	       sb.append(positive${tableClassName}.toStringWithParents());
+	    if (negative${tableClassName}!=null)
+	       sb.append(negative${tableClassName}.toStringWithParents());
+	    return sb.toString();
+	}

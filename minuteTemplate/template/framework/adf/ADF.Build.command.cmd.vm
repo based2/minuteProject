@@ -1,0 +1,9 @@
+#exposeADFBuildSpecific()
+// check environment properties
+// WLS_HOME
+// JDEV_HOME
+// ORACLE_MF_HOME
+call ant -f deploy_to_ear.ant.xml disable-wls-jdbc-autosync
+call ojdeploy -buildfile deploy_to_ear.ojdeploy.xml -define workspace.path=C:\yourpath\to\workspace,ear.filename=testapp1_without_datasources.ear
+call ant -f deploy_to_ear.ant.xml enable-wls-jdbc-autosync 
+call ojdeploy -buildfile deploy_to_ear.ojdeploy.xml -define workspace.path=D:\DEV\JSF\ADF\nif2SDOApp,ear.filename=testapp1_without_datasources.ear

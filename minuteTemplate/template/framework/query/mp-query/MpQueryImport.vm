@@ -1,0 +1,63 @@
+##sample query to service/dashboard/DAO enrichment
+   <enrichment>
+      <queries>
+         <query name="dash1">
+##execute the query to prove it works.      
+            <query-sql sql="select ID, NAME, COMP.NAME from PERSON, COMP where PERSON.COMP_ID = COMP.ID and PERSON.ENTRY_DATE > {date} "/>
+##gives a DTO
+            <query-what name="what" beanPath-root-ref="output{x.y.MyReturnDTO}" ref="reference an object">
+               <!-- type is optional since deductible from the query run -->
+               <query-what-arg name="ID" type="INTEGER" sqlPath="PERSON.ID" order-position="" display-position="" order-by=""/>
+               <query-what-arg name="PERSON LAST NAME" type="STRING" beanPath="output.person{x.y.PersonDTO}.lastName"/>
+               <query-what-arg name="COMPANY NAME" type="STRING"/>
+            </query-what>
+            <query-where-filter name="where" beanPath-root-ref="input{x.y.MyInputDTO}" ref="reference an object">
+               <query-where-arg name="DATE ENTRY" type="DATE" display-position="" />
+            </query-where-filter>
+         </query>
+         <query name="dash2">
+##execute the query to prove it works.      
+            <query-sql sql="select origin, type, count(*) from REPORT group by origin, type having report.ENTRY_DATE > {date}  "/>
+##gives a default input/output DTO, use origin and type for jump.
+         </query>     
+         <query name="detail">
+##execute the query to prove it works.      
+            <query-sql sql="select det1, det2 from REPORT where origin={origin} and type={type}"/>
+##gives a default input/output DTO, use origin and type for jump.
+         </query>              
+      </queries> 
+      <jumps>
+         <jump query-output="dash2{origin, type}" query-input="detail" />
+         
+         <!-- audit semantic reference is used instead of FK, dashboard (projection queries) -->
+         <!-- criteria filter as input -->
+         </jump>
+      </jumps>
+      <virtual-entities>
+      </virtual-entities>
+   </enrichment>
+   
+##beanPath via rootObject ref => i.e. beanPath def done
+##beanPath via rootObject ref+def (ref   
+
+##external object beanPath def
+##dynamic def
+
+
+
+object short structure parser:
+
+<variable>:<type>
+if type composite (!=string+primitives)
+<var>:<type>{<var1>:<type1>{<var11>:<type11>},<var1>:<type2>,<var3>:<type1>,...}
+
+with yaml or antlr, xtext.
+Challenge:
+variable + type + affectation
+
++validation:
+beanPath+validation
+<var>:<type>.var1.var11{rules}
+<var>:<type>.var1.var11{mandatory,gt(10),gt(var1.var12+2)}
+
+

@@ -1,0 +1,7 @@
+    public $daoInterfaceName get$daoInterfaceClassName(){
+       return $daoInterfaceVariableName;
+    }
+
+    public void set$daoInterfaceClassName($daoInterfaceName $daoInterfaceVariableName) {
+       this.$daoInterfaceVariableName = $daoInterfaceVariableName;
+    }

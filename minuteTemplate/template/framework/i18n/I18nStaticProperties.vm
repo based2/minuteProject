@@ -1,0 +1,13 @@
+createTitle=Create
+createHeading=Create
+updateTitle=Update
+updateHeading=Update
+save=Save
+delete=Delete
+listTitle=List
+listHeading=List
+amountEntries=Amount entries
+execute=Execute
+manageSddTitle=SDD
+PersistenceErrorOccured=Persistence error occured
+manageSddChartTitle=Chart

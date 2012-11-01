@@ -1,0 +1,96 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#exposeRESTSDDURLServer()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.*;
+import java.sql.*;
+
+import java.io.IOException;
+import javax.servlet.http.*;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+#if($restJEEAnnotation)
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBElement;
+#end
+
+import $sddOutputBeanCollectionImport;
+import $sddInputBeanImport;
+import $sddDaoInterfaceImport;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: class for ${className} service </p>
+ *
+ */
+@RequestMapping ("$restXmlServerUrl")
+@Controller 
+public class ${className} {
+
+    @Autowired
+    @Qualifier("$sddDaoInterfaceVariable")
+    ${sddDaoInterfaceClass} $sddDaoInterfaceVariable;
+
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    @RequestMapping(method = RequestMethod.GET)
+//    @Produces ({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Transactional
+	@ResponseBody
+    public $sddOutputBeanCollectionClass execute (
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+        @RequestParam ("$columnVar") $columnType $columnVar #if($velocityCount!=$inputBean.columnCount),
+#end
+#end
+    ) {
+		$sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass ();
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+		${sddInputBeanVariable}.set$columnClass ($columnVar);
+#end
+        return ${sddDaoInterfaceVariable}.execute(${sddInputBeanVariable});
+    }
+#end
+$!updatedAreaEnd
+
+$!updatedAreaImplementation
+
+}

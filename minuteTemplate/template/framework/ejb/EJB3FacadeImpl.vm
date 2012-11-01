@@ -1,0 +1,71 @@
+#exposeEJBDomainObjectSpecific()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.transaction.UserTransaction;
+import javax.jws.WebService;
+
+import javax.inject.Inject;
+
+import $importDomainObjectUML;
+import $EJBDaoImplImport;
+import $EJBFacadeRemoteInterfaceImport;
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: remote interface for ${className} service </p>
+ *
+ */
+
+@WebService(endpointInterface = "${EJBFacadeImplImport}"
+           ,serviceName="${className}")
+public class ${className} implements $EJBFacadeRemoteInterfaceClass {
+    
+	@Inject
+    private $EJBDaoImplClass dao;
+	
+    public List<$tableClassName> findAll ($tableClassName $tableVariableName) {
+		return dao.findAll($tableVariableName);
+	}
+
+#if ($hasOnlyOnePrimaryKey)
+	public $tableClassName findById ($primaryKeyFullType $primaryKeyVariable) {
+		return dao.find($primaryKeyVariable);
+	}
+
+#end
+#if ($hasSemanticReference)
+	public $tableClassName findBySemanticReference ($primaryKeyFullType $primaryKeyVariable) {
+		return em.find (${tableClassName}.class, $primaryKeyVariable);
+	}
+	
+#end
+	public $tableClassName create ($tableClassName $tableVariableName) {
+		return dao.create($tableVariableName);
+	}
+	
+	public $tableClassName update ($tableClassName $tableVariableName) {
+		return dao.update (${tableVariableName});
+	}
+	
+	public void delete ($tableClassName $tableVariableName) {
+		dao.delete (${tableVariableName});
+	}
+	
+$!updatedAreaImplementation
+}

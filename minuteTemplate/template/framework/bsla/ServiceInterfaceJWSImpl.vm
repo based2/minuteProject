@@ -1,0 +1,96 @@
+#set ($table = $scope.modelEntity)
+#exposeVariableEntitySpecific()
+#exposeArchitectureParams()
+#exposeWebServiceInterface()
+package $packageName;
+
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+
+#distinctEntityProperty()
+import $importDomainObject;
+import $importViewServiceInterface;
+import java.util.List;
+
+import $importWSInterface;
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Service dealing with $className
+ * </p>
+ *
+ */
+@WebService(name = "${className}PortType",
+        serviceName = "$className",
+        targetNamespace = "http://minuteproject.sourceforge.net/$model.name")
+
+@SOAPBinding(style = SOAPBinding.Style.DOCUMENT,
+        use = SOAPBinding.Use.LITERAL,
+        parameterStyle = SOAPBinding.ParameterStyle.WRAPPED)
+
+//@WLHttpTransport(portName = "${className}Port",
+//        contextPath = "ws_${className}",
+//        serviceUri = "${className}") 
+public class $className {##implements $WSInterfaceName {
+    
+    $viewServiceInterfaceClassName $viewServiceInterfaceVariableName;    
+#foreach($strategy in $scope.strategies)
+
+#set ($methodName = $serviceView.getStrategyMethod($strategy))
+#set ($methodInputParameters = $serviceView.getStrategyInputParam($strategy))
+#set ($methodOutputParameters = $serviceView.getStrategyOutputParam($strategy))
+#set ($view = $serviceView.getView($strategy))
+##set ($table = $view)
+#exposeVariableEntitySpecific()
+#if ($strategy.name == 'SearchEntityOnLogicalIdBasedOnVirtualPrimaryKey')      
+    public $tableClassName $methodName (#foreach ($column in $view.virtualPrimaryKeys) 
+#putColumnParams()
+$columnType $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end ) {
+       return ${viewServiceInterfaceVariableName}.$methodName (#foreach ($column in $view.virtualPrimaryKeys) 
+#putColumnParams() $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end );       
+    }
+#end
+#if ($strategy.name == 'SearchEntityOnLogicalId')      
+#set ($strategyColumnCount = $serviceView.getCountStrategyLogicalIdColumns($strategy))
+    public $tableClassName $methodName (#foreach ($column in $serviceView.getStrategyLogicalIdColumns($strategy)) 
+#putColumnParams()
+$columnType $columnVar#if ($velocityCount!=$strategyColumnCount),#end
+#end ) {
+       return ${viewServiceInterfaceVariableName}.$methodName (#foreach ($column in $serviceView.getStrategyLogicalIdColumns($strategy)) 
+#putColumnParams() $columnVar#if ($velocityCount!=$strategyColumnCount),#end
+#end );       
+    }
+#end
+#if ($strategy.name == 'SearchListBasedOnPrototype')      
+    public List <${tableClassName}> $methodName (${tableClassName} $tableVariableName) {
+       return ${viewServiceInterfaceVariableName}.$methodName(${tableVariableName});
+    }
+#end
+#if ($strategy.name == 'SearchListBasedOnPrototypeInfo')      
+    
+    public List <${tableClassName}> $methodName (
+#foreach ($column in $serviceView.getStrategyLogicalIdColumns($strategy)) 
+#putColumnParams()
+       $columnType $columnVar#if ($velocityCount!=$strategyColumnCount),#end
+#end    
+    ){
+       return ${viewServiceInterfaceVariableName}.$methodName (#foreach ($column in $serviceView.getStrategyLogicalIdColumns($strategy)) 
+#putColumnParams() $columnVar#if ($velocityCount!=$strategyColumnCount),#end
+#end );       
+    }
+#end
+#end
+
+    public void set$viewServiceInterfaceClassName ($viewServiceInterfaceClassName $viewServiceInterfaceVariableName) {
+       this.$viewServiceInterfaceVariableName = $viewServiceInterfaceVariableName;
+    }
+    
+    public $viewServiceInterfaceClassName get$viewServiceInterfaceClassName () {
+       return $viewServiceInterfaceVariableName;
+    }    
+    
+}

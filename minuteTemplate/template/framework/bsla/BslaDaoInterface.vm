@@ -1,0 +1,121 @@
+#exposeVariableEntitySpecific()
+##putImportParams()
+#getTemplatePropertyValue("uml")
+#if (!$value.equals("true"))
+#putImportParams()
+#else
+#putImportParamsUML()
+#end
+package $packageName;
+
+#getTemplatePropertyValue("uml")
+#if (!$value.equals("true"))
+import $importDomainObject;
+#else
+import $importDomainObjectUML;
+#end
+import java.util.List;
+import java.sql.*;
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+import net.sf.minuteProject.architecture.bsla.dao.face.DataAccessObject;
+
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Data access object dealing with $className
+ * persistence. It offers a set of methods which allow for saving,
+ * deleting and searching $tableVariableName objects</p>
+ *
+ */
+public interface $className extends DataAccessObject {
+
+    /**
+     * Inserts a $tableClassName entity $tCN 
+     * @param $tableClassName $tableVariableName
+     */
+    public void insert$tableClassName($tableClassName $tableVariableName) ;
+
+    /**
+     * Updates a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public $tableClassName update$tableClassName($tableClassName $tableVariableName) ;
+
+    /**
+     * Updates a $tableClassName entity with only the attributes set into ${tableClassName}.
+     * Remark: The primary keys cannot be update by this methods, nor are the attributes that must be set to null.
+     * @param $tableClassName $tableVariableName
+     */
+    public void updateNotNullOnly$tableClassName($tableClassName $tableVariableName) ;
+    
+    public void updateNotNullOnlyPrototype${tableClassName}($tableClassName $tableVariableName, $tableClassName prototypeCriteria);
+    
+     /**
+     * Saves a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void save$tableClassName($tableClassName $tableVariableName);
+    
+    /**
+     * Deletes a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void delete$tableClassName($tableClassName $tableVariableName) ;
+    
+    /**
+     * Loads the $tableClassName entity which is related to an instance of
+     * $tableClassName
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+     * @param $columnType $columnVar
+#end
+     * @return $tableClassName The $tableClassName entity
+     */
+     public $tableClassName load$tableClassName(
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+     $columnType $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end
+    );   
+        
+    /**
+     * Loads the $tableClassName entity which is related to an instance of
+     * $tableClassName
+     * @param $primaryKeyFullType $primaryKey
+     * @return $tableClassName The $tableClassName entity
+     */
+    public $tableClassName loadFullFirstLevel$tableClassName($tableClassName $tableVariableName);    
+
+    /**
+     * Loads the $tableClassName entity which is related to an instance of
+     * $tableClassName and its dependent one to many objects
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+     * @param $columnType $columnVar
+#end
+     * @return $tableClassName The $tableClassName entity
+     */
+    public $tableClassName loadFullFirstLevel$tableClassName(
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+     $columnType $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end
+    );       
+    
+    /**
+     * Searches a list of $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     * @return List
+     */
+    public List<$tableClassName> search$tableClassName($tableClassName $tableVariableName) ;
+        
+    /**
+     * Load a paginated list of $tableClassName entity dependent of pagination criteria
+     * @param PaginationCriteria paginationCriteria
+     * @return List
+     */
+    public List loadPaginated$tableClassName ($tableClassName $tableVariableName, PaginationCriteria paginationCriteria) ;
+            
+}

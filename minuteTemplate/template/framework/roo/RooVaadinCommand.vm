@@ -1,0 +1,8 @@
+#rooCommand()
+#exposeVariableModelSpecific()
+#rooModel()
+${shell}https://oss.sonatype.org/content/repositories/vaadin-snapshots/com/vaadin/com.vaadin.spring.roo.addon/0.9.1.BUILD-SNAPSHOT/com.vaadin.spring.roo.addon-0.9.1.BUILD-20110211.144119-21.jar
+
+${shell}vaadin setup --applicationPackage ~.web --baseName ${model.name} --themeName ${model.name} --useJpaContainer false
+
+${shell}vaadin generate all --package ~.web.ui --visuallyComposable true

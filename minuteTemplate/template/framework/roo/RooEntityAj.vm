@@ -1,0 +1,142 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.lang.*;
+import java.util.List;
+import java.sql.Timestamp;
+import java.sql.Clob;
+import java.sql.Blob;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityManager;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Id;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Version;
+//import ${packageName}.${domainClassName};
+import org.springframework.transaction.annotation.Transactional;
+
+privileged aspect $className {
+
+    declare @type: ${domainClassName}: @Entity;
+     
+    @PersistenceContext
+    transient EntityManager ${domainClassName}.entityManager;
+
+##foreach($column in ${table.primaryKeyColumns})
+##putColumnParams()
+##columnJavaNaming()
+##if (!$isMany2Many)
+##if (!$isPkUserProvided)
+##if ($databaseUtils.isPrimaryKeyPolicyIncrement($table))
+##    @GeneratedValue(strategy = GenerationType.AUTO)
+##elseif ($databaseUtils.isPrimaryKeyPolicySequence($table))
+##set ($sequenceName = $databaseUtils.provideSequence($table))
+##    @SequenceGenerator(name = "${table.name}SEQ", sequenceName ="$sequenceName", allocationSize=1 )
+##end
+##end
+##    @Id @Column(name="$column.name" #if($isLengthPrecisionColumn),length=$column.size#end)
+##if (!$isMany2Many)
+##if (!$isPkUserProvided && $databaseUtils.isPrimaryKeyPolicySequence($table))
+##set ($sequenceName = $databaseUtils.provideSequence($table))
+##    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="${table.name}SEQ") 
+##end
+##end
+##end    
+##    private $columnType ${domainClassName}.$columnVar; ##// pk not fk
+##end
+
+#if ($table.hasVersion())
+#set ($column = $tableUtils.getVersion($table))
+#putColumnParams() 
+    @Version
+    @Column(name = "version")
+    private $columnType ${domainClassName}.$columnVar;
+#end
+    
+##    public $primaryKeyType ${domainClassName}.get$primaryKeyJavaNameClass() {
+##        return this.$primaryKeyVariable;
+##    }
+##    
+##    public void ${domainClassName}.set$primaryKeyJavaNameClass($primaryKeyType id) {
+##        this.$primaryKeyVariable = id;
+##    }
+
+#if ($table.hasVersion())        
+    public $columnType ${domainClassName}.get$columnClass() {
+        return this.$columnVar;
+    }
+    
+    public void ${domainClassName}.set$columnClass($columnType $columnVar) {
+        this.$columnVar = $columnVar;
+    }
+    
+#end
+    @Transactional
+    public void ${domainClassName}.persist() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.persist(this);
+    }
+    
+    @Transactional
+    public void ${domainClassName}.remove() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager.contains(this)) {
+            this.entityManager.remove(this);
+        } else {
+            ${domainClassName} attached = this.entityManager.find(this.getClass(), this.$primaryKeyVariable);
+            this.entityManager.remove(attached);
+        }
+    }
+    
+    @Transactional
+    public void ${domainClassName}.flush() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.flush();
+    }
+    
+    @Transactional
+    public ${domainClassName} ${domainClassName}.merge() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        ${domainClassName} merged = this.entityManager.merge(this);
+        this.entityManager.flush();
+        return merged;
+    }
+    
+    public static final EntityManager ${domainClassName}.entityManager() {
+        EntityManager em = new ${domainClassName}().entityManager;
+        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+        return em;
+    }
+    
+    public static long ${domainClassName}.count${domainClassName}es() {
+        return count${domainClassName}s();
+    }
+    
+    public static long ${domainClassName}.count${domainClassName}s() {
+        return ((Number) entityManager().createQuery("select count(o) from ${domainClassName} o").getSingleResult()).longValue();
+    }    
+
+    @SuppressWarnings("unchecked")
+    public static List<${domainClassName}> ${domainClassName}.findAll${domainClassName}s() {
+        return findAll${domainClassName}es();
+    }
+        
+    @SuppressWarnings("unchecked")
+    public static List<${domainClassName}> ${domainClassName}.findAll${domainClassName}es() {
+        return entityManager().createQuery("select o from ${domainClassName} o").getResultList();
+    }
+    
+    public static ${domainClassName} ${domainClassName}.find${domainClassName}($primaryKeyFullType id) {
+        if (id == null) return null;
+        return entityManager().find(${domainClassName}.class, id);
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static List<${domainClassName}> ${domainClassName}.find${domainClassName}Entries(int firstResult, int maxResults) {
+        return entityManager().createQuery("select o from ${domainClassName} o").setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+    
+}

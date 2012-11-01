@@ -1,0 +1,7 @@
+#macro(exposeWebService)
+#set($hasWsdlRootDirectory=$wsdlUtils.hasWsdlRootDirectory($model))
+#set($wsdlRootDirectory=$wsdlUtils.getWsdlRootDirectory($model))
+#set($wsdlDirectory=$wsdlUtils.getWsdlDirectory($model))
+#set($wsdlFile=$wsdlUtils.getWsdlFile($model))
+#end
+

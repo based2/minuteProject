@@ -1,0 +1,17 @@
+#exposeVariableEntitySpecific()
+#addedAreas()
+package $packageName;
+
+public interface $className extends java.io.Serializable {
+
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+#set($getSDOColumnFullType=$adfUtils.getSDOColumnFullType($column))
+   public $getSDOColumnFullType get$columnClass();
+
+   public void set$columnClass($getSDOColumnFullType value);
+
+#end
+
+}
+

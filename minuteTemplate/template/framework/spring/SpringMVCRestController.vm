@@ -1,0 +1,176 @@
+#exposeSpringDomainObjectSpecific()
+#exposeRESTURLServer()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.*;
+import java.sql.*;
+
+import java.io.IOException;
+import javax.servlet.http.*;
+import java.util.List;
+import java.util.ArrayList;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+
+#if($restJEEAnnotation)
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBElement;
+#end
+
+import $BslaDaoInterfaceImport;
+import $BslaDaoExtInterfaceImport;
+import $importDomainObjectUML;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: remote interface for ${className} service </p>
+ *
+ */
+@RequestMapping ("$restXmlServerUrl")
+@Controller 
+public class ${className} #if($implementInterface)implements $EJBDaoRemoteInterfaceClass#end {
+
+	@Autowired
+	@Qualifier("$BslaDaoInterfaceVariable")
+	${BslaDaoInterfaceClass} $BslaDaoInterfaceVariable;
+	
+	@Autowired
+	@Qualifier("$BslaDaoExtInterfaceVariable")
+	${BslaDaoExtInterfaceClass} $BslaDaoExtInterfaceVariable;
+
+#exposeEntityUpdatedAreas("FIND_ALL")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    @RequestMapping(method = RequestMethod.GET)
+    @Transactional
+	@ResponseBody
+    public List<$tableClassName> findAll () {
+		List<$tableClassName> r = new ArrayList<$tableClassName>();
+        List<$tableClassName> l = ${BslaDaoInterfaceVariable}.searchPrototype$tableClassName(new $tableClassName());
+		for ($tableClassName $tableVariableName : l) {
+			r.add(${tableVariableName}.flat());
+		}
+		return r;
+    }
+#end
+$!updatedAreaEnd
+
+#if ($hasOnlyOnePrimaryKey)
+#exposeEntityUpdatedAreas("FIND_BY_ID")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+	@RequestMapping(value = "/{$primaryKeyVariable}", method = RequestMethod.GET)
+	@ResponseBody
+	@Transactional
+    public $tableClassName findById (@PathVariable ("$primaryKeyVariable") $primaryKeyFullType $primaryKeyVariable) {
+        $tableClassName _$tableVariableName = new $tableClassName ();
+		_${tableVariableName}.set${primaryKeyJavaNameClass}($primaryKeyVariable);
+		_$tableVariableName = ${BslaDaoExtInterfaceVariable}.getFirst$tableClassName(_$tableVariableName);
+		if (_$tableVariableName!=null) return _${tableVariableName}.flat();
+		return new $tableClassName ();
+    }
+#end
+$!updatedAreaEnd
+#end
+
+	@RequestMapping(method = RequestMethod.POST)
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+	@ResponseBody
+	public $tableClassName create (
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+#if ($column.isLob() && $convertClobToString=="true")
+#set($columnType="String")
+#elseif($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+#end
+        @RequestParam("$columnVar") $columnType $columnVar,
+#end
+        HttpServletResponse servletResponse
+        ) throws IOException {
+        $tableClassName _$tableVariableName = new $tableClassName (
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+           $columnVar#if ($velocityCount!=$table.columnCount),
+#end
+#end	   
+);
+        return save(_$tableVariableName);
+    }
+
+    @RequestMapping(value = "/{$primaryKeyVariable}", method = RequestMethod.DELETE)
+    @Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+	@ResponseBody
+    public String delete (@PathVariable ("$primaryKeyVariable") $primaryKeyType $primaryKeyVariable) {
+        $tableClassName $tableVariableName = new $tableClassName ();
+        ${tableVariableName}.set$primaryKeyJavaNameClass($primaryKeyVariable);
+        ${BslaDaoInterfaceVariable}.delete$tableClassName($tableVariableName);
+		return "OK";
+    }
+	
+	@RequestMapping(method = RequestMethod.PUT)
+	@ResponseBody
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+    public $tableClassName save (
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+#if ($column.isLob() && $convertClobToString=="true")
+#set($columnType="String")
+#elseif($useTemporal && $isTimeColumn)
+#set($columnType="java.util.Date")
+#end
+        @RequestParam("$columnVar") $columnType $columnVar,
+#end
+        HttpServletResponse servletResponse
+        ) throws IOException {
+        $tableClassName _$tableVariableName = new $tableClassName (
+#foreach ($column in ${table.columns})
+#putColumnParamNaming()
+           $columnVar#if ($velocityCount!=$table.columnCount),
+#end
+#end
+);
+        return save(_$tableVariableName);
+    }	
+
+
+	public $tableClassName save ($tableClassName $tableVariableName) {
+		${BslaDaoInterfaceVariable}.save$tableClassName($tableVariableName);
+		return $tableVariableName;
+	}
+
+$!updatedAreaImplementation
+
+}

@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>    
+  	<groupId>eu.europa.ec.digitb3.soa.ulysse</groupId>
+  	<artifactId>ulysseFitnesse</artifactId>
+  	<packaging>jar</packaging>
+  	<version>1.0-SNAPSHOT</version>
+  	<name>ulysseFitnesse</name>
+
+    <dependencies>
+        <!-- JDBC driver --> 
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc14</artifactId>
+            <version>10.0.2.0.0</version>        
+        </dependency>    
+        <!-- junit -->
+	    <!-- Logging -->
+	    <dependency>
+	      <groupId>org.slf4j</groupId>
+	      <artifactId>slf4j-simple</artifactId>
+	      <version>1.5.8</version>
+	    </dependency>
+	    
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.14</version>
+        </dependency>
+		<!-- caching -->
+		<dependency>
+			<groupId>org.fitnesse</groupId>
+			<artifactId>fitnesse</artifactId>
+			<version>20111025</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.minuteproject</groupId>
+			<artifactId>mp-foundation</artifactId>
+			<version>0.8.3</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.minuteproject</groupId>
+			<artifactId>mp-fitnesse</artifactId>
+			<version>0.8.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.javaforge.scriptella</groupId>
+			<artifactId>scriptella-parent</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-pool</groupId>
+			<artifactId>commons-pool</artifactId>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-jexl</groupId>
+			<artifactId>commons-jexl</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+    </dependencies>
+    <repositories>
+    	<repository>
+    		<id>jarvana</id>
+    		<url>http://www.jarvana.com/jarvana</url>
+    	</repository>
+    </repositories>
+    <build>
+        <!--<finalName>ulysseBackEnd</finalName>-->
+        <resources>
+          <!-- overwrite generated artifacts for packaging: for example by providing another jndi name ... -->
+    	  <resource>
+    		<directory>src-generated/main/java</directory>
+    	  </resource>
+    	</resources> 		
+        <plugins>
+            <plugin>
+                <!-- Force UTF-8 & Java-Version 1.6 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <!--<encoding>utf-8</encoding>-->
+                </configuration>
+            </plugin>
+            <!-- querydsl integration -->
+        </plugins>
+    </build> 
+</project>

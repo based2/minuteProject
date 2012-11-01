@@ -1,0 +1,15 @@
+#set ($isOneGlobal = $databaseUtils.isPrimaryKeyPolicyOneGlobal($model))
+#set ($isOneForEachTable = $databaseUtils.isPrimaryKeyPolicyOneForEachTable($model))
+#if ($isOneGlobal)
+#set ($sequenceName = $databaseUtils.provideSequence($model))
+CREATE SEQUENCE ${sequenceName};
+#else
+#exposeVariableModelDetailSpecific()
+##exposePrimaryKeyPolicy()
+#foreach($package in $businessPackages)
+#foreach($table in $package.listOfTables)
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+CREATE SEQUENCE ${sequenceName};
+#end
+#end
+#end

@@ -1,0 +1,36 @@
+#exposeVariableEntitySpecific()
+#exposeJstlScopeItems("sessionScope" "${tableClassName}SearchResultList")
+<%@ include file="/WEB-INF/jsp/common/common-include.jsp"%>
+<fmt:setBundle basename="$bundle"/>
+##${ fn:length($items)} elements
+<table>
+	<tr>
+#foreach ($column in ${tableDB.columns})
+		##<td>$column.name</td>
+		#putColumnParams()
+				<td><fmt:message key="$resource"/></td>
+#end
+	</tr>
+	<c:forEach var="entity" items="$items" varStatus="status">
+	<tr <%@ include file="/WEB-INF/jsp/common/even-odd.jsp"%>>
+#foreach ($column in ${tableDB.columns})
+#putColumnParams()
+#exposeJstlEntity("entity" $columnVar)
+#set ($linkedTableValue = $commonUtils.getForeignKeyTableName($column, $tableDB))
+#if ($column.isPrimaryKey())
+#set ($actionURL = $URLUtils.getSearchByIdURL($tableDB.name, $column.name))
+		#set ($actionURL2 = $URLUtils.getSearchByIdURL($table))
+		<!--<a href="${ctx}/$actionURL">-->
+		<td><a href="${ctx}/$actionURL2"><img src="${ctx}/images/cherche.gif"><%--<c:out value="$entity"/>--%></a><!--</td>-->
+#set ($actionURL = $URLUtils.getEditURL($tableDB.name, $column.name))
+		<!--<td>--><a href="${ctx}/$actionURL"><img src="${ctx}/images/edit.gif"><%--<c:out value="$entity"/>--%></a></td>		
+#elseif ("$linkedTableValue"!="")
+#set ($actionURL = $URLUtils.getSearchByIdURL($linkedTableValue, $column.name))
+		<td><a href="${ctx}/$actionURL"><c:out value="$entity"/></a></td>
+#else
+		<td><c:out value="$entity"/></td>
+#end
+#end
+	</tr>	
+	</c:forEach>
+</table>

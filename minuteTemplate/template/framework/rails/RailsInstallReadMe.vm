@@ -1,0 +1,5 @@
+#exposeGrailsSpecific()
+MinuteProject 4 Grails reverse-engineering solution propose 2 ways:
+
+-One is to use MP reverse engineering code via the execution of build-$applicationGrails
+-The other is to use Grails reverse engineering plugin solution execution of execute-grails-plugin-reverse-4-$applicationGrails

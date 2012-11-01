@@ -1,0 +1,86 @@
+#exposeCompositeSpecific()
+#putImportCompositeSDDBean()
+#set($thisClassName=$className)
+#exposeSDDCompositeSpring()
+#putImportCompositeSDDBean()
+#putImportCompositeOutputSDDBean()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import $sddInputCompositeBeanImport;
+import $sddOutputCompositeBeanImport;
+
+#foreach ($q in $composite.getInputComposite().getQueries())
+#set ($query = $q.query)
+#exposeSDDSpring()
+import $sddDaoInterfaceImport;
+#end
+#foreach ($q in $composite.getInputComposite().getQueries())
+#set ($query = $q.query)
+#putImportQuerySDDBean()
+import ${sddOutputBeanCollectionImport};
+#end
+
+import $sddCompositeDaoInterfaceImport;
+/**
+ *
+ * <p>Title: ${thisClassName}</p>
+ *
+ * <p>Description: Interface for ${thisClassName} service </p>
+ *
+ */
+@Repository ("$sddCompositeDaoInterfaceVariable")
+@Transactional(propagation = Propagation.REQUIRED) 
+public class ${thisClassName} implements $sddCompositeDaoInterfaceClass {
+
+#foreach ($q in $composite.getInputComposite().getQueries())
+#set ($query = $q.query)
+#exposeSDDSpring()
+	@Autowired
+	@Qualifier("$sddDaoInterfaceVariable")
+	${sddDaoInterfaceClass} $sddDaoInterfaceVariable;
+#end
+
+#exposeCompositeUpdatedAreas("SDD_EXECUTE")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    public $sddOutputCompositeBeanClass execute ($sddInputCompositeBeanClass $sddInputCompositeBeanVariable) {
+		$sddOutputCompositeBeanClass $sddOutputCompositeBeanVariable = new $sddOutputCompositeBeanClass();
+#foreach ($q in $composite.getInputComposite().getQueries())
+#set ($query = $q.query)
+#putImportQuerySDDBean()
+#exposeSDDSpring()
+		${sddOutputBeanCollectionClass} ${sddOutputBeanCollectionVariable} = ${sddDaoInterfaceVariable}.execute (${sddInputCompositeBeanVariable}.get${sddInputBeanClass}());
+		${sddOutputCompositeBeanVariable}.set${sddOutputBeanCollectionClass} (${sddOutputBeanCollectionVariable});
+#end
+		return $sddOutputCompositeBeanVariable;
+	}
+#end
+$!updatedAreaEnd
+
+$!updatedAreaImplementation
+
+}

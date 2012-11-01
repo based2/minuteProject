@@ -1,0 +1,85 @@
+#exposeVariableModelSpecific()
+#exposeEJBModelObject()
+#addedAreas()
+#set($className2=$className)
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.transaction.UserTransaction;
+import javax.jws.WebService;
+
+import javax.inject.Inject;
+
+#foreach ($table in ${entities})
+#if (!$table.isManyToMany())
+#exposeEJBDomainObjectSpecific()
+import $importDomainObjectUML;
+import $EJBDaoImplImport;
+import $EJBFacadeRemoteInterfaceImport;
+#end
+#end
+
+#set($className=$className2)
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: WebService for ${model.name}  </p>
+ *
+ */
+
+@WebService(endpointInterface = "${EJBModelFacadeImplImport}"
+           ,serviceName="${className}")
+public class ${className} {
+    
+
+#foreach ($table in ${entities})
+#if (!$table.isManyToMany())
+#exposeEJBDomainObjectSpecific()
+	@Inject
+	private $EJBDaoImplClass $EJBDaoImplVariable;
+#end
+#end
+
+#foreach ($table in ${entities})
+#if (!$table.isManyToMany())
+#exposeEJBDomainObjectSpecific()	
+	public List<$tableClassName> findAll$tableClassName ($tableClassName $tableVariableName) {
+		return ${EJBDaoImplVariable}.findAll($tableVariableName);
+	}
+
+#if ($hasOnlyOnePrimaryKey)
+	public $tableClassName find${tableClassName}ById ($primaryKeyFullType $primaryKeyVariable) {
+		return ${EJBDaoImplVariable}.find($primaryKeyVariable);
+	}
+
+#end
+	public $tableClassName create${tableClassName} ($tableClassName $tableVariableName) {
+		return ${EJBDaoImplVariable}.create($tableVariableName);
+	}
+	
+	public $tableClassName update${tableClassName} ($tableClassName $tableVariableName) {
+		return ${EJBDaoImplVariable}.update (${tableVariableName});
+	}
+	
+	public void delete${tableClassName} ($tableClassName $tableVariableName) {
+		${EJBDaoImplVariable}.delete (${tableVariableName});
+	}
+#end
+#end
+		
+$!updatedAreaImplementation
+}

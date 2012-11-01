@@ -1,0 +1,15 @@
+#putJPA2TemplateDefinition()
+#set ($datasource = $model.dataModel.basicDataSource)
+##		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+#if($isEnvironmentLocal)		
+            <!--<property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />-->
+            <property name="javax.persistence.jdbc.driver" value="$datasource.driverClassName" />
+            <property name="javax.persistence.jdbc.url" value="$datasource.url" />
+            <property name="javax.persistence.jdbc.user" value="$datasource.username" />
+            <property name="javax.persistence.jdbc.password" value="$datasource.password" />
+            <property name="eclipselink.target-database" value="$database.type"/>
+#end           
+#addArea("properties")
+        </properties> 

@@ -1,0 +1,10 @@
+##set ($baseElement = $xmlSchemaUtils.getBaseElement ($document, $configuration))
+#set ($packageName = $xmlSchemaUtils.getPackageName($element, $template)) 
+#set ($baseElement = $xmlSchemaUtils.getBaseElement($document, $configuration)) 
+
+<!DOCTYPE digester-rules PUBLIC 
+        "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" 
+        "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<digester-rules>
+$xmlSchemaUtils.digesterContent($baseElement, $document, $configuration)
+</digester-rules>

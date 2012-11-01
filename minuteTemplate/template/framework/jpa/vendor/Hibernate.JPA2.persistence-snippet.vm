@@ -1,0 +1,36 @@
+#putJPA2TemplateDefinition()
+#set ($datasource = $model.dataModel.basicDataSource)
+##		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <properties>
+#if($isEnvironmentLocal)		
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />
+            <property name="hibernate.connection.driver_class" value="$datasource.driverClassName" />
+            <property name="hibernate.connection.url" value="$datasource.url" />
+            <property name="hibernate.connection.username" value="$datasource.username" />
+            <property name="hibernate.connection.password" value="$datasource.password" />
+#else
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false" />	
+#end
+            <property name="hibernate.dialect" value="$hibernate3.getDialect($database)"/>
+#if ($isEhCacheEnabled)
+            <property name="hibernate.cache.provider_class" value="net.sf.ehcache.hibernate.SingletonEhCacheProvider" />
+            <property name="net.sf.ehcache.configurationResourceName" value="/ehcache.xml" />
+            <property name="hibernate.cache.use_query_cache" value="true" />
+            <property name="hibernate.cache.use_second_level_cache" value="true" />
+#else
+#if ($hasABLNature)
+            <!-- Use this for environments without JTA -->
+            <property name="hibernate.current_session_context_class" 
+                        value="com.autobizlogic.abl.session.LogicThreadLocalSessionContext" />
+            <!-- Use this for JTA -->
+            <!-- <property name="hibernate.current_session_context_class" 
+                        value="com.autobizlogic.abl.session.LogicJTASessionContext" /> -->
+#end
+<!-- -->
+#end
+#addArea("properties")
+        </properties> 
+
+

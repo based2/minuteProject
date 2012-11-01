@@ -1,0 +1,9 @@
+#exposeVariableEntitySpecific()
+package ${packageName};
+
+import org.springframework.roo.addon.dod.RooDataOnDemand;
+import $importDomainObject;
+
+@RooDataOnDemand(entity = ${domainObject}.class)
+public class $className {
+}

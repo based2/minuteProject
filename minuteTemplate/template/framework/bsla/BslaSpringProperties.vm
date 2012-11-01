@@ -1,0 +1,18 @@
+#exposeVariableModelSpecific()
+#exposeJdbc()
+#exposeEnvironment()
+#set ($datasource = $model.dataModel.basicDataSource)
+#if ($hasEnvironmentTag)
+#if ($hasEnvironmentLocalTag)
+#parse("./snippet/bslaDatasourceLocalProperties.vm")
+#else
+#parse("./snippet/bslaDatasourceRemoteProperties.vm")
+#end
+#else
+#parse("./snippet/bslaDatasourceLocalProperties.vm")
+#parse("./snippet/bslaDatasourceRemoteProperties.vm")
+#end
+#getTemplatePropertyValue("hibernateDialect")
+#if ($value.equals("true"))
+hibernate.dialect=$hibernate3.getDialect($database)
+#end

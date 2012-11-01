@@ -1,0 +1,15 @@
+#putVaadinClassObjectAndPackage()
+
+import com.vaadin.ui.SplitPanel;
+import $domainObjectListImport;
+import $domainObjectFormImport;
+
+@SuppressWarnings("serial")
+public class $className extends SplitPanel {
+	public $className ($domainObjectListClass list, $domainObjectFormClass form) {
+		addStyleName("view");
+		setFirstComponent(list);
+		setSecondComponent(form);
+		setSplitPosition(40);
+	}
+}

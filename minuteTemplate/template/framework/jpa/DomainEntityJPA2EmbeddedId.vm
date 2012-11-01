@@ -1,0 +1,75 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+package $packageName;
+
+import java.io.*;
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+import javax.persistence.*;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Embedded Id describing a ${className} entity primary key</p>
+ *
+ */
+@Embeddable
+public class ${className} implements Serializable {
+
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+
+    @Column(name="$column.name" #if($isLengthPrecisionColumn),length=$column.size#end ,#if($column.isRequired())nullable=false#else nullable=true#end)
+    private $columnType $columnVar;
+#end
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+
+	public $columnType get$columnClass() {
+        return $columnVar;
+    }
+	
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar = $columnVar;
+    }
+#end
+#foreach ($foreignkey in $tableUtils.getParentCompositeForeignInPrimaryKey($table))
+//ParentCompositeForeignInPrimaryKey pattern not implemented yet $foreignkey
+#end
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        return obj.toString().equals(this.toString());
+    }
+ 
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+ 
+    @Override
+    public String toString() {
+        return "${className}:" 
+#foreach($column in $tableUtils.getPrimaryKeyNotForeignKeyColumns($table))  
+#putColumnParams()
+#columnJavaNaming()      
+        + ":" + $columnVar
+#end
+#foreach($column in $tableUtils.getPrimaryKeyAndForeignKeyColumnsAndNotPartOfCompositeForeignKey($table))  
+#putColumnParams()
+#columnJavaNaming()      
+        + ":" + $columnVar
+#end
+        ;
+    }
+    
+}

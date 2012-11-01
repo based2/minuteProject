@@ -1,0 +1,11 @@
+#exposeGrailsSpecific()
+#!/bin/sh
+
+GENDIR=$(cd `dirname $0`;pwd)
+
+grails create-app $applicationGrails
+cp -R grails-app/conf $applicationGrails/grails-app/conf 
+cd $applicationGrails
+
+grails install-plugin reverse-engineer
+grails reverse-engineer

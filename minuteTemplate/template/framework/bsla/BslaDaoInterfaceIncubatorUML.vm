@@ -1,0 +1,41 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+
+import $importDomainObjectUML;
+
+import java.util.List;
+import java.sql.*;
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+import net.sf.minuteProject.architecture.bsla.dao.face.DataAccessObject;
+
+public interface $className extends DataAccessObject {
+
+	/**
+	* returns the list of $tableClassName. Each $tableClassName has its corresponding mask attribute filled with value
+	* corresponding to duplicates
+	*/
+    public List<$tableClassName> searchDuplicateValues ($tableClassName ${tableVariableName}Mask);
+    
+    public List<$tableClassName> searchDuplicateEntities ($tableClassName ${tableVariableName}Prototype);
+    
+    public List<$tableClassName> searchDuplicateValueWithEntities ($tableClassName ${tableVariableName}Mask); 
+
+	public $tableClassName loadGraph ($tableClassName ${tableVariableName}Mask, $tableClassName ${tableVariableName}Where);
+	
+	public $tableClassName loadGraph ($tableClassName ${tableVariableName}Where, int depth);
+	
+##public List<$domainObjectBiClass> count ($tableClassName ${tableVariableName}Mask);
+##
+	#if($table.hasVersion())
+	public $tableClassName acquireOptimisticLock ($tableClassName ${tableVariableName});
+	    
+	public void releaseOptimisticLock ($tableClassName ${tableVariableName}) throws DBApiException;
+	
+	public List<$tableClassName> acquireOptimisticLock (List<$tableClassName> ${tableVariableName}s);
+	    
+	public void releaseOptimisticLock (List<$tableClassName> ${tableVariableName}s) throws DBApiException;
+	
+	#end
+
+}

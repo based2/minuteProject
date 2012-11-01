@@ -1,0 +1,27 @@
+#exposeVariableModelSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+
+   <sqlMap resource="net/sf/minuteProject/architecture/bsla/dao/implementation/ibatis/xml/common/common.xml"/>
+
+#foreach ($package in ${businessPackages})
+
+   <!-- $package.name -->
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecificSqlMapConfig()
+   <sqlMap resource="${packageDirName}/${filename}"/>
+#end
+#end
+#foreach ($package in ${businessPackageViews})
+
+   <!-- $package.name -->
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecificSqlMapConfig()
+   <sqlMap resource="${packageDirName}/${filename}"/>
+#end
+#end
+	
+</sqlMapConfig>
+

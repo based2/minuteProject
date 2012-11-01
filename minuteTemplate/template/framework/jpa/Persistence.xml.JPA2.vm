@@ -1,0 +1,67 @@
+#exposeVariableModelSpecific()
+#exposeJdbc()
+#exposeJPA2Specifics()
+<?xml version="1.0"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd"
+             version="1.0">
+#exposeModelUpdatedAreas("PERSISTENCE-UNIT")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+#if($isEnvironmentLocal)
+    <persistence-unit name="$persistenceUnitName" transaction-type="RESOURCE_LOCAL">
+#else
+    <persistence-unit name="$persistenceUnitName" transaction-type="JTA">
+#end
+#end
+$!updatedAreaEnd
+#if($jpa2ImplementationIsEclipseLink)
+        <!--<provider>oracle.toplink.essentials.PersistenceProvider</provider>-->
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+#else
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+#end
+#if(!$isEnvironmentLocal)
+#exposeModelUpdatedAreas("DATASOURCE")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+        <jta-data-source>$datasourceName</jta-data-source>	
+#end
+$!updatedAreaEnd
+#end
+#foreach ($package in ${businessPackages})
+        <!-- $package.name -->	
+#foreach ($table in ${package.listOfTables})
+#if (!$table.isManyToMany())
+#exposeJPA2DomainObject($table)
+        <class>$importDomainObjectUML</class>
+#end
+#end
+
+#end	
+#foreach ($package in ${businessPackageViews})
+        <!-- $package.name -->
+#foreach ($table in ${package.listOfViews})
+#exposeJPA2DomainObject($table)
+        <class>$importDomainObjectUML</class>
+#end
+
+#end
+
+#if($jpa2ImplementationIsHibernate)
+#parse("./vendor/Hibernate.JPA2.persistence-snippet.vm")
+#end
+#if($jpa2ImplementationIsEclipseLink)
+#parse("./vendor/Eclipselink.JPA2.persistence-snippet.vm")
+#end
+#addArea("persistence-unit")
+    </persistence-unit>
+
+#addArea("persistence")
+
+</persistence>

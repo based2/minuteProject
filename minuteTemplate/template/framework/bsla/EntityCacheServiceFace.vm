@@ -1,0 +1,56 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+##set($print = $printUtils.print("---------- packageName ---",$packageName))
+import java.util.ArrayList;
+import java.util.List;
+
+#set ($importDomainObject = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template,$templateDomainObjectUML))
+import $importDomainObject;
+
+#foreach ($linkReference in $enrichmentUtils.getDistinctLinkedTargetReferenceByMany2ManyForTag($table, "isToCache"))
+#templateDefinition()
+#set ($linkedTableDBName = $linkReference.localTableName)
+#set ($linkedTableDB = $tableUtils.getTable($database, $linkedTableDBName))
+#set ($targetTable = $linkReference.foreignTable)
+#set ($importLinkedDomainObject = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $linkedTableDB, $template,$templateDomainObjectUML))
+#set ($importTargetDomainObject = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $targetTable, $template,$templateDomainObjectUML))
+import $importLinkedDomainObject;
+import $importTargetDomainObject;
+#end
+
+public interface $className {
+
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2ManyForTag($table, "isToCache"))
+#set ($linkCacheTable = $linkReference.localTable)
+#templateDefinition()
+#set ($linkedTableDB = $linkCacheTable)
+#set ($linkTableName = $formatUtils.getJavaName($linkCacheTable.name))
+#set ($linkTableVariableName = $formatUtils.getJavaNameVariable($linkCacheTable.name))
+#set ($targetTable = $linkReference.foreignTable)
+#set ($targetTableName = $formatUtils.getJavaName($targetTable.name))
+#set ($targetTableVariableName = $formatUtils.getJavaNameVariable($targetTable.name))
+#set ($localColumnName = $formatUtils.getJavaName($linkReference.localColumnName))
+
+   public List<$targetTableName> get${targetTableName}Via${linkTableName}By${localColumnName} ($domainClassName $domainVariableName);
+#if ($targetTable.name ==$table.name)
+#set ($localColumnNameDB = $linkReference.localColumnName)
+#set ($foreignColumnNameDB = $linkReference.foreignColumnName)
+
+   public List<$targetTableName> get${targetTableName}RecursiveVia${linkTableName}By${localColumnName} ($primaryKeyType $primaryKeyVariable, boolean useCache);
+   
+   public List<$targetTableName> get${targetTableName}RecursiveVia${linkTableName}By${localColumnName} (List<$primaryKeyType> ${primaryKeyVariable}s, boolean useCache);
+#end
+
+#foreach ($property in $linkedTableDB.getPropertiesArray())
+-- $property.name
+#end
+#foreach ($property in $linkedTableDB.getPropertyArray())
+--> $property.name
+#end
+#if ($enrichmentUtils.hasTag("recursive", $linkedTableDB))
+   public recursive;
+#end 
+#end  
+
+}

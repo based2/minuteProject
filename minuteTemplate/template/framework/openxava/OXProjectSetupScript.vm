@@ -1,0 +1,2 @@
+#set ($applicationOX=$configuration.name)
+ant -f CreateNewProject.xml -Dproject=$applicationOX

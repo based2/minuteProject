@@ -1,0 +1,20 @@
+#exposeJOOQApplicationSpecific()
+jdbc.Driver=$datasource.driverClassName
+jdbc.URL=$datasource.url
+jdbc.User=$datasource.username
+jdbc.Password=$datasource.password
+generator.database.input-schema=$schema
+generator.database.includes=.*
+generator.database.excludes=
+generator.generate.master-data-tables=[a list of tables]  // covered in mp by enrichment (individually) or convention
+generator.generate.master-data-table-literal.[master data table]=[column used for enum literals]  // cover by field enrichment (constraint)
+generator.generate.master-data-table-description.[master data table]=[column used for documentation]  // idem
+generator=org.jooq.util.DefaultGenerator
+# generator.database=org.jooq.util.mysql.MySQLDatabase
+generator.database=$jooqDatabaseGenerator
+generator.generate.relations=true
+generator.generate.deprecated=false
+generator.target.package=$modelClassPackageImport
+generator.target.directory=$output
+generator.generate.instance-fields=true
+generator.generate.unsigned-types=true

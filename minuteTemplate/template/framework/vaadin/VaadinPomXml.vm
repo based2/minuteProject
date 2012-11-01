@@ -1,0 +1,77 @@
+#exposeMaven()
+#exposeVariableModelSpecific()
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!--<parent>
+            <groupId></groupId>
+            <artifactId></artifactId>
+            <version></version>
+    </parent>-->
+    <groupId>${rootPackage}.${model.name}</groupId>
+    <artifactId>${model.name}VaadinWeb</artifactId>
+    <version>${version}-SNAPSHOT</version>
+    <name>$DbApiName Vaadin Web Application</name>  
+    <packaging>war</packaging>
+    <dependencies>
+        <dependency>
+            <groupId>${rootPackage}.${model.name}</groupId>
+            <artifactId>${DbApiName}</artifactId>
+            <version>${version}-SNAPSHOT</version>
+        </dependency>
+	    <dependency>
+	      <groupId>com.vaadin</groupId>
+	      <artifactId>vaadin</artifactId>
+	      <version>6.5.2</version>
+	    </dependency>
+	    <dependency>
+	       <groupId>org.vaadin.addons</groupId>
+	       <artifactId>toolkit-productivity-tools</artifactId>
+	       <version>1.1.1</version>
+	    </dependency>   
+    </dependencies>
+  <repositories>
+    <repository>
+     <id>vaadin-addons</id>
+     <url>http://maven.vaadin.com/vaadin-addons</url>
+    </repository>   
+  </repositories>
+
+  <build>
+    <finalName>${DbApiName}VaadinWeb</finalName>
+    <resources>
+        <resource>
+         <directory>src/main/resources</directory>
+         <excludes>
+          <exclude>**/*.java</exclude>
+         </excludes>
+        </resource>
+    </resources>    
+    <plugins>
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-war-plugin</artifactId>
+	    <version>2.1.1</version>
+	    <configuration>
+	      <webResources>
+	        <resource>
+	          <!-- this is relative to the pom.xml directory -->
+	          <directory>${env.VAADIN_HOME}/WebContent</directory>
+	          <includes>
+	            <include>VAADIN/**</include>
+	          </includes>
+	        </resource>
+	      </webResources>
+	    </configuration>
+	  </plugin>    
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>1.5</source>
+                <target>1.5</target>
+            </configuration>
+         </plugin>        
+     </plugins>   
+  </build> 
+</project>

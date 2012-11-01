@@ -1,0 +1,83 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import net.sf.minuteProject.architecture.bsla.domain.DomainObject;
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+#exposeImportParams($reference.table)
+import $importDomainObject;
+#end
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ */
+public class ${className} implements DomainObject {
+
+#if($hasPrimaryKey)
+	private $primaryKeyFullType $primaryKey;
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+    private $columnType $columnVar; // $column.name
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+    private $linkedTableClass $linkedColumnVariable;
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+    private List <$linkedTableClass> ${linkedTableVariable}${linkedColumnClass}s;
+#end
+
+    public ${className}() {
+    }
+
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+    public $columnType get$columnClass() {
+        return $columnVar;
+    }
+	
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar = $columnVar;
+    }	
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+    public $linkedTableClass get$linkedTableClass () {
+    	return $linkedColumnVariable;
+    }
+	
+    public void set$linkedTableClass ($linkedTableClass $linkedColumnVariable) {
+    	this.$linkedColumnVariable = $linkedColumnVariable;
+    }
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+    public List get${linkedTableClass}s() {
+        if (${linkedTableVariable}${linkedColumnClass}s == null){
+            ${linkedTableVariable}${linkedColumnClass}s = new ArrayList();
+        }
+        return ${linkedTableVariable}${linkedColumnClass}s;
+    }
+
+    public void set${linkedTableClass}s (List ${linkedTableVariable}${linkedColumnClass}s) {
+        this.${linkedTableVariable}${linkedColumnClass}s = ${linkedTableVariable}${linkedColumnClass}s;
+    }	
+    
+#end
+
+}

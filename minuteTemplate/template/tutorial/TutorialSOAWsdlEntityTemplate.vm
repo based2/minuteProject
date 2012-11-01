@@ -1,0 +1,47 @@
+#set ($services = $wsdlmodel.services)
+test
+
+=>$wsdlmodel 
+- $wsdlmodel.services 
+- $wsdlmodel.services.size()
+$wsdlmodel.services.get(0).name
+
+>>$wsdlmodel.services.get(0).ports ;
+
+$wsdlmodel.targetNamespaceURI
+
+>>$wsdlmodel.services.get(0).ports.size()
+
+#foreach ($service in $wsdlmodel.services)
+> service $service.name
+#foreach ($port in $service.ports)
+-> port $port.name 
+#foreach ($operation in $port.operations)
+#set($request=$operation.request)
+#set($response=$operation.response)
+-> op $operation.name 
+-> request $request.name
+#foreach ($parameter in $request.parameters)
+	->$parameter.name
+#end
+-> response $response.name
+#foreach ($parameter in $response.parameters)
+	->$parameter.name
+#end
+#end
+#end
+#end
+
+---
+#set($entityModel = $wsdlmodel.entityModel)
+entity model
+--
+#foreach($name in $entityModel.entityNames)
+-->$name
+#end
+#foreach($entity in $entityModel.entities)
+-->entity $entity.name
+#foreach($field in $entity.fields)
+-->field  name = $field.name, type= $field.type
+#end
+#end

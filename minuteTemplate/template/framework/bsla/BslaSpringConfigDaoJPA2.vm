@@ -1,0 +1,34 @@
+#exposeVariableModelSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- Import Dao definitions for business components -->
+
+#foreach ($package in ${businessPackages})
+#exposeArchitecturePackageParams()
+   <!-- $package.name -->
+   <import resource="classpath:${JPApath}.xml"/>
+#end
+#foreach ($package in ${businessPackageViews})
+#exposeArchitecturePackageParams()
+   <!-- $package.name -->
+   <import resource="classpath:${JPApath}.xml"/>
+#end
+
+#if ($commonUtils.hasTemplate($model, "BslaSpringConfigDaoExtJPA"))
+    <!-- Import Ext Dao definitions for business components -->
+#foreach ($package in ${businessPackages})
+#set ($path = $bslaLibraryUtils.getPackageLevelTemplateFullClassPath($model, $package, $template, "BslaSpringConfigDaoExtJPA") )
+   <!-- $package.name extended dao -->
+   <import resource="classpath:${path}.xml"/>
+#end
+#foreach ($package in ${businessPackageViews})
+#set ($path = $bslaLibraryUtils.getPackageLevelTemplateFullClassPath($model, $package, $template, "BslaSpringConfigDaoExtJPA") )
+   <!-- $package.name extended dao -->
+   <import resource="classpath:${path}.xml"/>
+#end
+#end
+
+</beans>

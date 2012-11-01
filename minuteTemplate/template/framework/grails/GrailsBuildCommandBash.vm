@@ -1,0 +1,11 @@
+#exposeGrailsSpecific()
+#!/bin/sh
+
+grails create-app $applicationGrails
+
+cp -R grails-app $applicationGrails
+cp $MP_HOME/application/lib/extra/*.jar $applicationGrails/lib
+
+cd $applicationGrails
+
+grails run-app

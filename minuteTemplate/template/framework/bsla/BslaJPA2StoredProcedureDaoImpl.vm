@@ -1,0 +1,39 @@
+#exposeVariableFunctionSpecific()
+package $packageName;
+
+import java.util.List;
+
+import javax.persistence.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import $functionInputImport;
+import $functionOutputImport;
+import $functionInterfaceImport;
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Implementation of a Data access object dealing with store procedure $className
+ * It provides the call of the procedure passing input parameters
+ *  and return store procedure output</p>
+ *
+ */
+public class $className implements $functionInterfaceClassName {
+
+    public static final String ${functionNameUpperCase} = "${functionCall}";
+
+	@PersistenceContext
+    private EntityManager em;
+	
+    public List<$functionOutputClass> $tableVariableName($functionInputClass $functionInputVariable) {
+       Query query = em.createNativeQuery(${functionNameUpperCase});
+#foreach ($column in $input.columns)
+#putColumnParams()
+       query.setParameter($velocityCount, ${functionInputVariable}.get${columnClass}());
+#end
+       return query.getResultList(); 
+	}
+	
+}

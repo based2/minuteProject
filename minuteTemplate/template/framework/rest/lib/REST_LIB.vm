@@ -1,0 +1,37 @@
+#macro (exposeRESTURL $techno)
+#exposeRESTURLServer($techno)
+#exposeRESTURLClient($techno)
+#end
+
+#macro(exposeRESTSDDURLServer)
+#set($isFormatXml=$template.hasPropertyValue("add-format","xml"))
+#set($isFormatJson=$template.hasPropertyValue("add-format","json"))
+#set ($restXmlServerUrl = $restUtils.getRestUrlServerXml($query, $techno))
+#set ($restJsonServerUrl = $restUtils.getRestUrlServerJson($query, $techno))
+#end
+
+#macro (exposeRESTURLClient $techno)
+#set ($restXmlClientUrl = $restUtils.getRestUrlClientXml($table, $techno))
+#set ($restJsonClientUrl = $restUtils.getRestUrlClientJson($table, $techno))
+#end
+
+#macro (exposeRESTURLServer $techno)
+#set ($restXmlServerUrl = $restUtils.getRestUrlServerXml($table, $techno))
+#set ($restJsonServerUrl = $restUtils.getRestUrlServerJson($table, $techno))
+#end
+
+#macro (exposeRESTModelSpecific)
+#exposeVariableModelSpecific()
+#exposeRESTTemplate()
+#set ($modelWadlGeneratorJerseyImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelWadlGeneratorJersey))	
+#set ($modelResourceJerseyImport = $commonUtils.getRootAndTechnicalPackageName($model, $templateEntityResourceJersey))	
+#end
+
+#macro (exposeRESTTemplate)
+#set ($templateModelWadlGeneratorJersey = "JerseyWadlGenerator")
+#set ($templateEntityResourceJersey = "EJB3ResourceREST")
+#end
+
+#macro (exposeMavenJersey)
+#set($jerseyVersion=$template.getPropertyValue("add-rest-implementation-jersey-version","1.9-ea03"))
+#end

@@ -1,0 +1,48 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+
+import $importDomainObjectUML;
+import java.util.List;
+import net.sf.minuteProject.architecture.filter.data.Criteria;
+import net.sf.minuteProject.architecture.bsla.dao.face.DataAccessObject;
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Data access object dealing with $className
+ * persistence. It offers extended DAO functionalities</p>
+ *
+ */
+public interface $className extends DataAccessObject {
+
+    /**
+     * lookup $tableClassName entity $tCN, criteria and max result number
+     */
+    public List<$tableClassName> lookup$tableClassName($tableClassName $tableVariableName, Criteria criteria, int numberOfResult);
+	
+	  /**
+	   * Assign the first $tableVariableName retrieved corresponding to the $tableVariableName criteria.
+	   * Blank criteria are mapped to null.
+	   * If no criteria is found, null is returned.
+	   * If there is no $tableVariableName corresponding in the database. Then $tableVariableName is inserted and returned with its primary key(s). 
+	   */
+	  public $tableClassName assign$tableClassName ($tableClassName $tableVariableName);
+            
+	  public $tableClassName getFirst$tableClassName ($tableClassName $tableVariableName);
+
+    /**
+    * partial load enables to specify the fields you want to load explicitly
+    */            
+    public List<$tableClassName> partialLoad$tableClassName($tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName);
+
+    public List<$tableClassName> partialLoadWithParent$tableClassName($tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName);
+
+    /**
+    * search on prototype with cache
+    */
+    public List<$tableClassName> searchPrototypeWithCache$tableClassName ($tableClassName $tableVariableName);
+    
+}
+

@@ -1,0 +1,21 @@
+<html>
+<head>
+	<title>Menu</title>
+</head>
+<body>
+#foreach ($package in ${database.packages})
+   <ul id="$package.name">
+         <li> $package.name
+              <ul>
+#foreach ($table in ${package.listOfTables})
+#set($tableClassName = $utils.getClassName($table))
+	#set ($tableClassNameHtml = "${tableClassName}SearchScreen2TypeValidation.html")
+                  <li><a href="/DBView/html/$utils.getSubPackage($table)/$tableClassNameHtml">$table.name</a></li>
+#end
+              </ul>
+         </li>
+     </ul>
+	#end
+</body>
+</html>
+

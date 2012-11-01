@@ -1,0 +1,18 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+
+$table.alias;
+
+public interface $className {
+   
+   public $tableClass affectBasedOnRef ();
+   
+   public $tableClass assignBasedOnRef ();
+      
+#foreach ($property in $table.getPropertiesArray())
+$property.name , $property.value
+#end
+
+
+}

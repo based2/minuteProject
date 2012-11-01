@@ -1,0 +1,59 @@
+#exposeCompositeSpecific()
+#set($thisClass=${className})
+#addedAreas()
+package $packageName;
+
+#if($composite.isDirection($in))
+#foreach($table in ${composite.entities})
+#putImportCompositeInputSDDBean()
+import ${sddInputBeanImport};
+#end
+#else
+#foreach($table in ${composite.entities})
+#putImportCompositeOutputSDDBean()
+import ${sddOutputBeanCollectionImport};
+#end
+#end
+
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${thisClass}</p>
+ *
+ * <p>Description: Java Bean#if($composite.isDirection($in)) Input#else Output#end composite</p>
+ *
+ */
+public class ${thisClass} {
+
+#if($composite.isDirection($in))
+#foreach($table in ${composite.entities})
+#putImportCompositeInputSDDBean()
+    private $sddInputBeanClass $sddInputBeanVariable;
+#end
+#else
+#foreach($table in ${composite.entities})
+#putImportCompositeOutputSDDBean()
+    private $sddOutputBeanCollectionClass $sddOutputBeanCollectionVariable;
+#end
+#end	
+
+    /**
+    * Default constructor
+    */
+    public ${thisClass}() {
+    }
+	
+#if($composite.isDirection($in))
+#foreach($table in ${composite.entities})
+#putImportCompositeInputSDDBean()
+#putGetterSetter($sddInputBeanClass, $sddInputBeanVariable)
+#end
+#else
+#foreach($table in ${composite.entities})
+#putImportCompositeOutputSDDBean()
+#putGetterSetter($sddOutputBeanCollectionClass, $sddOutputBeanCollectionVariable)
+#end
+#end
+
+$!updatedAreaImplementation
+}

@@ -1,0 +1,8 @@
+#macro(putLoadTestEntitySpecific)
+#if($table.parents.size()==0)
+#set($hasNoForeignKey=true)
+#else
+#set($hasNoForeignKey=false)
+#end
+##set($test
+#end

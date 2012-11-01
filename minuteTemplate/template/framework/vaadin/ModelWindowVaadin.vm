@@ -1,0 +1,77 @@
+#exposeVariableModelDetailSpecific()
+#exposeVaadinModel()
+package $packageName;
+
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+
+import eu.livotov.tpt.gui.widgets.TPTMultiView;
+import eu.livotov.tpt.gui.widgets.TPTSizer;
+
+/*
+#foreach ($package in ${businessPackages})
+#foreach ($tableDB in ${package.listOfTables})
+#if(!$tableDB.isManyToMany())
+#exposeVaadinDomainObject()
+import $domainObjectViewImport;
+#end
+#end
+#end
+*/
+
+import $applicationControllerImport;
+
+public class $className extends Window {
+
+	private VerticalLayout root = new VerticalLayout();
+	private $applicationControllerClass controller = ${applicationControllerClass}.getController();
+
+	public $className () {
+		super("$model.name Demo");
+		setTheme("$model.name");
+		init();
+	}
+
+	private void init() {
+		setSizeFull();
+		root.setSizeFull();
+		root.setMargin(false);
+		root.setSpacing(false);
+		setContent(root);
+/*
+#foreach ($package in ${businessPackages})
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecific()
+#if(!$table.isManyToMany())
+#exposeVaadinDomainObject()
+#exposeVariableEntitySpecific()
+		controller.addView("$tableVariableName", new $domainObjectViewClass());//
+#end
+#end
+#end
+*/
+		controller.setSizeFull();
+		root.addComponent(controller);
+/*
+		HorizontalLayout h = new HorizontalLayout();
+		h.setWidth("100%");
+
+#foreach ($package in ${businessPackages})
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecific()
+#if(!$table.isManyToMany())	
+		h.addComponent(addMenuNavigation ("${tableVariableName}"));
+#end
+#end
+#end
+
+		h.addComponent(new TPTSizer("100%", null));
+
+		root.addComponent(h);
+		root.setExpandRatio(controller, 1.0f);
+*/		
+	}
+}

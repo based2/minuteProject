@@ -1,0 +1,153 @@
+#exposeVariableModelDetailSpecific()
+#exposeVaadinModel()
+package $packageName;
+
+import com.vaadin.event.MouseEvents.ClickEvent;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.MenuBar;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.MenuBar.Command;
+import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.*;
+import com.vaadin.ui.themes.Reindeer;
+import eu.livotov.tpt.gui.widgets.TPTSizer;
+import java.util.ArrayList;
+import java.util.List;
+
+import $applicationControllerImport;
+
+@SuppressWarnings("serial")
+public class $className extends VerticalLayout{ //MenuBar {
+
+    private List<EntityMenuItem> menuItems = new ArrayList<EntityMenuItem>();
+
+    private class EntityMenuItem extends AbsoluteLayout {
+        private Button selectButton = new NativeButton();
+        private Button newButton = new NativeButton("New");
+        private Object view;
+
+        public EntityMenuItem(final String entityName, String choosenEntityName) {
+            setHeight("36px");
+            setWidth("100%");
+            addStyleName("menu-item");
+            selectButton.setCaption(entityName);
+            this.view = view;
+            newButton.addStyleName("new");
+            if (entityName.equals(choosenEntityName)) {
+                newButton.setVisible(true);
+                newButton.setEnabled(true);
+            }else {
+                newButton.setVisible(false);
+                newButton.setEnabled(false);
+            }
+            addComponent(selectButton, "top: 0; left: 0; right: 0;");
+            addComponent(newButton, "top: 8px; right: 9px;");
+
+            selectButton.addListener(new Button.ClickListener() {
+                public void buttonClick(ClickEvent event) {
+                    Component viewComponent = null;
+                    try {
+                        if (EntityMenuItem.this.view instanceof Class) {
+                            Class<Component> viewClass = (Class) EntityMenuItem.this.view;
+                            viewComponent = viewClass.newInstance();
+                            EntityMenuItem.this.view = viewComponent;
+                        } else if (EntityMenuItem.this.view instanceof Component) {
+                            viewComponent = (Component) EntityMenuItem.this.view;
+                        }
+                    } catch (InstantiationException e) {
+                        Label l = new Label("Could not create view");
+                        l.setSizeUndefined();
+                        l.addStyleName(Reindeer.LABEL_H2);
+                        viewComponent = l;
+                    } catch (IllegalAccessException e) {
+                        Label l = new Label("Could not create view");
+                        l.setSizeUndefined();
+                        l.addStyleName(Reindeer.LABEL_H2);
+                        viewComponent = l;
+                    }
+                    //setCurrentView(viewComponent);
+                    for (EntityMenuItem item : menuItems) {
+                        item.removeStyleName("open");
+                        item.getNewButton().setEnabled(false);
+                        item.getNewButton().setVisible(false);
+                    }
+                    EntityMenuItem.this.addStyleName("open");
+                    ${applicationControllerClass}.getController().switchView(entityName);
+                }
+
+                public void buttonClick(Button.ClickEvent event) {
+                    ${applicationControllerClass}.getController().switchView(entityName);
+                }
+            });
+        }
+
+        public Button getNewButton() {
+            return newButton;
+        }
+    }
+
+    private EntityMenuItem addMenuNavigation (final String entityName, String choosenEntityName) {
+        EntityMenuItem menuItem = new EntityMenuItem(entityName, choosenEntityName);
+        menuItems.add(menuItem);
+        return menuItem;
+    }
+
+    
+    public $className () {
+        this(null);
+    }
+                      
+    public $className (String choosenEntityName) {
+        setSizeFull();
+        setMargin(false);
+        setSpacing(false);
+
+        addStyleName(Reindeer.SPLITPANEL_SMALL);
+        addStyleName("main");
+        //VerticalLayout v = new VerticalLayout();
+        //v.setWidth("100%");
+
+        VerticalLayout sidebar = new VerticalLayout();
+        sidebar.setSizeFull();
+        sidebar.addStyleName(Reindeer.LAYOUT_BLUE);
+        sidebar.addStyleName("sidebar");
+
+        // viewList
+        CssLayout viewList = new CssLayout();
+        viewList.setWidth("100%");
+        viewList.addStyleName("view-list");
+
+        Panel scroll = new Panel();
+        scroll.addStyleName(Reindeer.PANEL_LIGHT);
+        scroll.setSizeFull();
+        scroll.setContent(viewList);
+
+        // application header/name
+        Label appName = new Label("$model.name menu", Label.CONTENT_XHTML);
+        appName.addStyleName(Reindeer.LABEL_H1);
+        viewList.addComponent(appName);
+
+##        sidebar.addComponent(appName);
+        sidebar.addComponent(scroll);
+        
+#foreach ($package in ${businessPackages})
+#set($packageLabel=$formatUtils.getJavaNameVariable(${package.name}))
+##        final MenuBar.MenuItem ${packageLabel} = addItem("${packageLabel}", null);
+#foreach ($table in ${package.listOfTables})
+#if(!$table.isManyToMany())
+#exposeVariableEntitySpecific()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($tableLabelVariable=$formatUtils.getJavaNameVariable(${tableLabel}))
+        viewList.addComponent(addMenuNavigation ("${tableLabelVariable}", choosenEntityName));
+#end
+#end
+#end
+        addComponent(sidebar);
+    }
+
+}

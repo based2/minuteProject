@@ -1,0 +1,17 @@
+#exposeVariableModelSpecific() 
+#set ($applicationOX=$configuration.name) 
+#set ($applicationLabel=$formatUtils.getJavaName($applicationOX))
+
+<html>
+  <head>
+    <title>Welcome to $applicationLabel</title>
+  </head>
+
+  <body>
+    <h1>Welcome to $applicationLabel</h1>
+
+<a href="/${applicationOX}/xava/homeMenu.jsp">login</a>
+
+  </body>
+</html>
+

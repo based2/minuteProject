@@ -1,0 +1,75 @@
+#exposeVariableEntitySpecific()
+#distinctBEImport()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+import net.sf.minuteProject.architecture.validation.model.*;
+import net.sf.minuteProject.architecture.holder.ValidationHolder;
+import net.sf.minuteProject.architecture.holder.element.ValidationModelError;
+
+import $importDomainObject;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Model Validation of Domain Object ${className} entity</p>
+ *
+ */
+public class ${className} extends AbstractModelValidator {
+
+    public ValidationHolder validate ($domainClassName $domainVariableName) {
+       ValidationHolder validationHolder = new ValidationHolder();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if($isLengthPrecisionColumn && !$isPrimaryKey)    
+       validationHolder.add(validate${columnClass}MaxLength ($domainVariableName)); 
+#end  
+#end
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if ($isMandatory && !$isPrimaryKey)
+       validationHolder.add(validate${columnClass}Presence ($domainVariableName));
+#end  
+#end  
+       return validationHolder;
+    }
+    
+    public boolean isValid ($domainClassName $domainVariableName){
+        return validate($domainVariableName).isValid();
+    }
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if($isLengthPrecisionColumn)    
+    protected ValidationModelError validate${columnClass}MaxLength ($domainClassName $domainVariableName) {
+#if (!$isLargeFormat)	
+       return validateMaxLength ("$columnVar", ${domainVariableName}.get$columnClass(), ${domainClassName}.${column.name}_FIELD_SIZE);
+#else
+       try {
+	      if (${domainVariableName}.get$columnClass()!=null)
+		     return validateMaxLength ("$columnVar", ${domainVariableName}.get$columnClass().length(), ${domainClassName}.${column.name}_FIELD_SIZE);
+		  else
+		     return null;
+       }  catch (SQLException e) {
+		  return new ValidationModelError(ValidationModelError.CANNOT_VALIDATE, ${domainVariableName}.get$columnClass());
+       }
+#end
+    }
+#end  
+#end
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if ($isMandatory)
+    protected ValidationModelError validate${columnClass}Presence ($domainClassName $domainVariableName) {
+       return validatePresence ("$columnVar", ${domainVariableName}.get$columnClass(), ${domainClassName}.IS_${column.name}_MANDATORY);
+    }
+#end
+#end
+}
+

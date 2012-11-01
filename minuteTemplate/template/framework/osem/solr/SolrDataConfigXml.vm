@@ -1,0 +1,50 @@
+#exposeVariableModelSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+<dataConfig>
+##todo with embedded cp or jndi
+    <dataSource driver="$datasource.driverClassName" url="$datasource.url" user="$datasource.username" password="$datasource.password"/>
+    <document name="$model.name" >
+#foreach ($table in $osemUtils.getSearchRootTables($database))
+#exposeVariableEntitySpecific()
+            <entity name="$domainVariableName"  
+                    query="select * from $table.name"
+#if($osemUtils.hasDeltaQuery($table))
+##TODO                    deltaQuery="select ITEM_ID from FEATURE where last_modified > '${dataimporter.last_index_time}'"
+#end
+#if($osemUtils.hasParentDeltaQuery($table))
+##TODO                    parentDeltaQuery="select ID from item where ID=${feature.ITEM_ID}"
+#end                
+                    >
+##end
+#foreach($column in $table.primaryKeyColumns)
+#putColumnParams()
+                <field name="$columnVar" column="$column.name" />
+#end
+#foreach($column in $table.attributes)
+#putColumnParams()
+                <field name="$columnVar" column="$column.name" />
+#end
+#foreach($reference in $osemUtils.getSearchableChildren($table))
+#putReferenceParams2()
+#set($link="${linkedTableVariable}s") ##${linkedTableVariable}${linkedColumnClass}s
+#set($refVar=$formatUtils.getJavaVariableName($reference.localColumnName))
+                <entity name="${link}"
+                        query="select * from $reference.foreignTableName where ${reference.foreignColumnName} = '${${refVar}.${reference.localColumnName}}'"
+##                        deltaQuery="select ID from category where last_modified > '${dataimporter.last_index_time}'"
+##                        parentDeltaQuery="select ITEM_ID, CATEGORY_ID from item_category where CATEGORY_ID=${category.ID}">
+                 >
+#foreach($column in $reference.foreignTable.primaryKeyColumns)
+#putColumnParams()
+##NOPK for subquery                    <field name="$columnVar" column="$column.name" />
+#end                 
+#foreach($column in $reference.foreignTable.attributes)
+#putColumnParams()
+                    <field name="${link}.$columnVar" column="$column.name" />
+#end
+                </entity>
+#end
+            </entity>
+            
+#end
+    </document>
+</dataConfig>

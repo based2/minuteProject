@@ -1,0 +1,47 @@
+#exposeSpringConfig()
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package ${packageName};
+
+import java.io.Serializable;
+import java.util.Random;
+import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.vaadin.data.util.BeanItemContainer;
+
+import ${importDomainObjectUML};
+import ${importDaoInterfaceUML};
+
+@SuppressWarnings("serial")
+@Transactional
+public class ${className} implements $vaadinContainerServiceClass, Serializable {
+
+    private $daoInterfaceClassNameUML $daoInterfaceVariableNameUML;
+
+	public BeanItemContainer<${domainClassName}> getAll(Integer size) {
+	   ${className} ${variableName} = new ${className}();
+	   List<${domainClassName}> list = ${daoInterfaceVariableNameUML}.searchPrototype${domainClassName} (new ${domainClassName}());
+	   for (${domainClassName} ${domainVariableName} : list) {
+	      ${variableName}.addItem(${domainVariableName});
+	   }
+	   return ${variableName};
+	}
+	
+	public BeanItemContainer<${domainClassName}> saveAndUpdateList (${importDomainObjectUML} $domainVariableName) {
+	   save ($domainVariableName);
+	   return getAll(100);
+	}
+	
+	public void save (${importDomainObjectUML} $domainVariableName) {
+	   ${daoInterfaceVariableNameUML}.save$domainClassName ($domainVariableName);
+	}
+
+	public void delete (${importDomainObjectUML} $domainVariableName) {
+	   ${daoInterfaceVariableNameUML}.delete$domainClassName ($domainVariableName);
+	}
+		
+#parse("PARSER_daoInterfaceUMLGetterSetter.vm")
+    
+}

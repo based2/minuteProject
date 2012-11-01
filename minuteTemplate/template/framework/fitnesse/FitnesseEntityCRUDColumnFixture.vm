@@ -1,0 +1,86 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+
+import net.sf.minuteproject.fitnesse.fixture.DbInsertUpdateDeleteFixture;
+import net.sf.minuteproject.model.db.Column;
+import net.sf.minuteproject.model.db.type.FieldType;
+import fit.ColumnFixture;
+
+
+public class ${className} extends DbInsertUpdateDeleteFixture{
+
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#columnJavaNaming()
+   public String $formatUtils.getUppercaseUnderscore($column.name), WHERE_$column.name; //$columnVar; // 
+#set ($nbColumn = $velocityCount)
+#end
+
+	public static int NB_COLUMN = $nbColumn;
+	
+	protected int getNumberOfColumn() {
+		return NB_COLUMN;
+	}
+	 
+	protected String getTable() {
+		return "$tableDB.name";
+	}
+	
+	protected Map<Integer, String> getColumnIndex () {
+		Map<Integer, String> columnIndex = new HashMap<Integer, String>();
+		int i = 0;
+#foreach ($column in ${table.columns})
+#putColumnParams()
+	    columnIndex.put(i++, "$formatUtils.getUppercaseUnderscore($column.name)"); 
+#end
+	    return columnIndex;
+	}
+	
+	protected Map<String, String> getColumnValue () {
+	   Map<String, String> columnValue = new HashMap<String, String>();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#columnJavaNaming()
+	   columnValue.put("$formatUtils.getUppercaseUnderscore($column.name)", $formatUtils.getUppercaseUnderscore($column.name)); 
+#end
+	   return columnValue;
+	 }	
+	
+	protected Map<Integer, String> getColumnWhereIndex () {
+	   Map<Integer, String> columnIndex = new HashMap<Integer, String>();
+	   int i = 0;
+#foreach ($column in ${table.columns})
+#putColumnParams()
+	   columnIndex.put(i++, "$formatUtils.getUppercaseUnderscore($column.name)"); 
+#end
+	   return columnIndex;
+	 }
+	
+	protected Map<String, String> getColumnWhereValue () {
+	   Map<String, String> columnValue = new HashMap<String, String>();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+	   columnValue.put("$formatUtils.getUppercaseUnderscore($column.name)", WHERE_$column.name); 
+#end
+	   return columnValue;
+	}		
+
+	protected Map<Integer, Column> getColumns() {
+	   Map<Integer, Column> columnIndex = new HashMap<Integer, Column>();
+	   int i = 0;
+#foreach ($column in ${table.columns})
+#putColumnParams()	   
+	   columnIndex.put(i++, new Column("$formatUtils.getUppercaseUnderscore($column.name)", FieldType.$column.type, $isMandatory,#if ($isLengthPrecisionColumn) $columLengthPrecisionSize#else 0#end)); //$columnFullType
+#end	   
+	   return columnIndex;
+	}		 
+	
+}

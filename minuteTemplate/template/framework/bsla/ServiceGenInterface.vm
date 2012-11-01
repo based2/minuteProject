@@ -1,0 +1,60 @@
+#exposeVariableEntitySpecific()
+#putImportParams()
+#exposeVariableEntitySpecificBslaDaoIbatis()
+#exposeArchitectureParams()
+package $packageName;
+
+import $importDomainObject;
+import java.util.List;
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+import net.sf.minuteProject.architecture.bsla.dao.face.DataAccessObject;
+
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Service dealing with $className
+ * </p>
+ *
+ */
+public interface $className extends ServiceInterface {
+
+    private $daoInterfaceClassName $daoInterfaceVariableName;
+    
+#if ($hasPrimaryKey)
+    /**
+     * Duplicates a $tableClassName entity based on its entry
+     * Remove the primary key and store the data (care should be taken if there is a index key
+     * @param $primaryKeyFullType ${primaryKeyVariable}
+     * @return void
+     */
+	    public void duplicate$tableClassName ($primaryKeyFullType ${primaryKeyVariable}) {
+	        $tableClassName  $tableVariableName = ${daoInterfaceVariableName}.load$tableClassName(${primaryKeyVariable});
+	        duplicate$tableClassName($tableVariableName);
+	    }
+	    
+	    public void duplicate$tableClassName ($tableClassName $tableVariableName}) {
+	        ${tableVariableName}.set$primaryKeyJavaNameClass (null);
+	        ${daoInterfaceVariableName}.save$tableClassName($tableVariableName);
+	    }
+	    
+	#end
+	#if ($hasPrimaryKey)    
+		    /*
+		    * TODO
+		    * Copy the populate the target entity non empty fields with a source fields 
+		    * of the source entity
+		    */
+		    public void merge$tableClassName () {
+	    }
+#end
+#if ($hasPrimaryKey)
+    /*
+    * TODO
+    */	    
+	    public void compare$tableClassName () {
+	    }
+	#end            
+            
+}

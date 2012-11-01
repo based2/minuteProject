@@ -1,0 +1,194 @@
+#exposeADFModelSpecific()
+#exposeSDOSpecific()
+#set($thisClassName = $className)
+package $packageName;
+
+#foreach($table in $entities)
+#exposeADFSDOEntitySpecific()
+import $entityADFSDOViewImport;
+#end
+import $appModuleADFSODServiceFaceImport;
+
+import java.lang.reflect.Method;
+
+import java.util.List;
+
+import javax.ejb.Remote;
+import javax.ejb.Stateless;
+
+import javax.interceptor.Interceptors;
+
+import oracle.jbo.common.Diagnostic;
+import oracle.jbo.common.sdo.SDOHelper;
+import oracle.jbo.common.service.types.FindControl;
+import oracle.jbo.common.service.types.FindCriteria;
+import oracle.jbo.common.service.types.ProcessControl;
+import oracle.jbo.common.service.types.ProcessData;
+import oracle.jbo.server.svc.ServiceContextInterceptor;
+import oracle.jbo.server.svc.ServiceImpl;
+import oracle.jbo.service.errors.ServiceException;
+
+import oracle.webservices.annotations.PortableWebService;
+import oracle.webservices.annotations.async.AsyncWebService;
+
+@Stateless(name="${ejbBean}",
+    mappedName="$ejbBeanName")
+@Remote(${appModuleADFSODServiceFaceClass}.class)
+@PortableWebService(targetNamespace="${namespacePackage}",
+    serviceName="${appModuleADFSODServiceFaceClass}", portName="AppModuleServiceSoapHttpPort",
+    endpointInterface="${appModuleADFSODServiceFaceImport}")
+@Interceptors( { ServiceContextInterceptor.class })
+##@AsyncWebService
+public class $thisClassName extends ServiceImpl implements $appModuleADFSODServiceFaceClass {
+    private static boolean _isInited = false;
+
+    /**
+     * This is the default constructor (do not remove).
+     */
+    public $thisClassName() {
+        init();
+        setApplicationModuleDefName("${modelADFAppModuleImport}");
+        setConfigurationName("$appModuleADFSODServiceFaceClass");
+    }
+
+    /**
+     * Generated method. Do not modify. Do initialization in the constructor
+     */
+    protected void init() {
+        if (_isInited) {
+            return;
+        }
+        synchronized (${thisClassName}.class) {
+            if (_isInited) {
+                return;
+            }
+            try {
+                SDOHelper.INSTANCE.defineSchema("${namespacePackageShort}/serviceinterface/", "${appModuleADFSDOServiceXsdClass}.xsd");
+                _isInited = true;
+            } catch (Exception ex) {
+                Diagnostic.printStackTrace(ex);
+            }
+        }
+    }
+
+#foreach($table in $entities)
+#exposeADFSDOEntitySpecific()
+    /**
+     * get${domainClassName}View1: generated method. Do not modify.
+     */
+    public $entityADFSDOViewClass get${domainClassName}View1($primaryKeyFullType $primaryKeyVariable) throws ServiceException {
+        return ($entityADFSDOViewClass)get(new Object[] { $primaryKeyVariable }, "${domainClassName}View1",
+                                   ${entityADFSDOViewClass}.class);
+    }
+
+    /**
+     * create${domainClassName}View1: generated method. Do not modify.
+     */
+    public $entityADFSDOViewClass create${domainClassName}View1($entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException {
+        return ($entityADFSDOViewClass)create(${domainVariableName}View1, "${domainClassName}View1");
+    }
+
+    /**
+     * update${domainClassName}View1: generated method. Do not modify.
+     */
+    public $entityADFSDOViewClass update${domainClassName}View1($entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException {
+        return ($entityADFSDOViewClass)update(${domainVariableName}View1, "${domainClassName}View1");
+    }
+
+    /**
+     * delete${domainClassName}View1: generated method. Do not modify.
+     */
+    public void delete${domainClassName}View1($entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException {
+        delete(${domainVariableName}View1, "${domainClassName}View1");
+    }
+
+    /**
+     * merge${domainClassName}View1: generated method. Do not modify.
+     */
+    public $entityADFSDOViewClass merge${domainClassName}View1($entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException {
+        return ($entityADFSDOViewClass)merge(${domainVariableName}View1, "${domainClassName}View1");
+    }
+
+    /**
+     * find${domainClassName}View1: generated method. Do not modify.
+     */
+    public List<$entityADFSDOViewClass> find${domainClassName}View1(FindCriteria findCriteria,
+                                                 FindControl findControl) throws ServiceException {
+        return (List<$entityADFSDOViewClass>)find(findCriteria, findControl,
+                                          "${domainClassName}View1",
+                                          ${entityADFSDOViewClass}.class);
+    }
+
+    /**
+     * process${domainClassName}View1: generated method. Do not modify.
+     */
+    public List<$entityADFSDOViewClass> process${domainClassName}View1(String changeOperation,
+                                                    List<$entityADFSDOViewClass> ${domainVariableName}View1,
+                                                    ProcessControl processControl) throws ServiceException {
+        return (List<$entityADFSDOViewClass>)process(changeOperation, processControl,
+                                             ${domainVariableName}View1, "${domainClassName}View1");
+    }
+
+    /**
+     * processCS${domainClassName}View1: generated method. Do not modify.
+     */
+    public ProcessData processCS${domainClassName}View1(ProcessData processData,
+                                             ProcessControl processControl) throws ServiceException {
+        return processChangeSummary(processData, processControl, "${domainClassName}View1");
+    }
+#if($isAsync)
+    /**
+     * merge${domainClassName}View1Async: generated method. Do not modify.
+     */
+    public $entityADFSDOViewClass merge${domainClassName}View1Async($entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException {
+        return merge${domainClassName}View1(${domainVariableName}View1);
+    }
+
+    /**
+     * find${domainClassName}View1Async: generated method. Do not modify.
+     */
+    public List<$entityADFSDOViewClass> find${domainClassName}View1Async(FindCriteria findCriteria,
+                                                      FindControl findControl) throws ServiceException {
+        return find${domainClassName}View1(findCriteria, findControl);
+    }
+
+    /**
+     * process${domainClassName}View1Async: generated method. Do not modify.
+     */
+    public List<$entityADFSDOViewClass> process${domainClassName}View1Async(String changeOperation,
+                                                         List<$entityADFSDOViewClass> ${domainVariableName}View1,
+                                                         ProcessControl processControl) throws ServiceException {
+        return process${domainClassName}View1(changeOperation, ${domainVariableName}View1, processControl);
+    }
+
+    /**
+     * update${domainClassName}View1Async: generated method. Do not modify.
+     */
+    public $entityADFSDOViewClass update${domainClassName}View1Async($entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException {
+        return update${domainClassName}View1(${domainVariableName}View1);
+    }
+
+    /**
+     * delete${domainClassName}View1Async: generated method. Do not modify.
+     */
+    public void delete${domainClassName}View1Async($entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException {
+        delete${domainClassName}View1(${domainVariableName}View1);
+    }
+
+    /**
+     * get${domainClassName}View1Async: generated method. Do not modify.
+     */
+    public $entityADFSDOViewClass get${domainClassName}View1Async($primaryKeyFullType $primaryKeyVariable) throws ServiceException {
+        return get${domainClassName}View1($primaryKeyVariable);
+    }
+
+    /**
+     * processCS${domainClassName}View1Async: generated method. Do not modify.
+     */
+    public ProcessData processCS${domainClassName}View1Async(ProcessData processData,
+                                                  ProcessControl processControl) throws ServiceException {
+        return processCS${domainClassName}View1(processData, processControl);
+    }
+#end
+#end
+}

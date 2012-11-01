@@ -1,0 +1,35 @@
+#exposeVariableEntitySpecific()
+#addedAreas()
+#exposeADFSDOEntitySpecific()
+package $packageName;
+
+import org.eclipse.persistence.sdo.SDODataObject;
+import $entityADFSDOViewImport;
+
+public class $className extends SDODataObject implements $entityADFSDOViewClass {
+
+   public static final int START_PROPERTY_INDEX = 0;
+
+#set($maxIndex = ${table.getColumnCount()} - 1)
+   public static final int END_PROPERTY_INDEX = START_PROPERTY_INDEX + $maxIndex;
+
+   public $className() {}
+
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+#set($cpt = $velocityCount - 1)
+#set($getSDOColumnTypeBegin=$adfUtils.getSDOColumnTypeBegin($column))
+#set($getSDOColumnTypeEnd=$adfUtils.getSDOColumnTypeEnd($column))
+#set($getSDOColumnFullType=$adfUtils.getSDOColumnFullType($column))
+   public $getSDOColumnFullType get$columnClass() {
+      return ${getSDOColumnTypeBegin}(START_PROPERTY_INDEX + $cpt)${getSDOColumnTypeEnd};
+   }
+
+   public void set$columnClass($getSDOColumnFullType value) {
+      set(START_PROPERTY_INDEX + $cpt , value);
+   }
+
+#end
+
+}
+

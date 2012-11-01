@@ -1,0 +1,139 @@
+check in the template metadata configuration the Bslalibrary.vm  library is in your path
+#exposeVariableEntitySpecific()
+#addedAreas()
+package: $packageName
+Entity information
+
+isView : $isView
+$tableVariableName = $tableVariableName 
+$packageName 
+$packageDirName 
+$businessPackageName 
+$className 
+$tableClassName 
+$domainClassName 
+$domainVariableName
+$variableName 
+$primaryKey 
+$primaryKeyType 
+$primaryKeyTypeOnly
+$primaryKeyFullType 
+$pK 
+$primaryKeyFirstColumn
+$primaryKeyVariable 
+$primaryKeyJavaNameClass 
+$hasPrimaryKey 
+$isPkUserProvided 
+$bundle
+$primaryKeyCount
+$isMany2Many 
+$hasUniqueKey 
+$hasOnlyOnePrimaryKey 
+
+Information about the columns:
+
+-- for any columns
+#foreach ($column in $table.columns)
+#putColumnParams()
+$isForeignKey 
+$isPkUserProvided
+$columnFullType
+$columnType 
+$columnTypeOnly 
+$columnClass 
+$columnVar 
+$isColumnUnique
+$isMandatory
+$isPrimaryKey 
+$resource 
+$isLengthPrecisionColumn
+$columLengthPrecisionSize 
+$columnVarAsInput 
+$enumImport 
+$enumClassName 
+#end
+
+For columns that are not primary key nor foreign key
+====================================================
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+#columnJavaNaming()
+#set($columnCap = $formatUtils.upperCase(${columnClass}))
+    public static final String FIND_BY_$columnCap = "${className}.findBy$columnClass";
+#if($convertUtils.isStringType($column.type))
+    public static final String FIND_BY_${columnCap}_CONTAINING ="${className}.findBy${columnClass}Containing";
+#end
+#end	
+
+For columns that are primary keys
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+
+#end
+
+For reference (columns that are part of a foreign key
+Parent relationships
+====================
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+$linkedTableClass
+$linkedTableVariable 
+$localColumnVariable 
+$localTableVariable 
+$localTableClass 
+$localColumnClass 
+$localColumnName 
+$localColumnType 
+$localColumnTypeOnly 
+$localColumn
+$isLengthPrecisionColumnLocalColumn
+$linkedColumnClass
+$linkedColumnName
+$linkedColumnType
+$linkedColumn
+$linkedColumnVariable
+$linktableDB
+$parentLinkUML
+$parentLink 
+$importDomainObjectUMLForeignTable
+$isMandatory
+$localColumnVarAsInput
+$linkedColumnVarAsInput
+$linkedTableVarAsInput
+$childrenListVariable
+$childrenListClass
+
+#end
+
+Chidren relationships
+=====================
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+$linkedTableClass
+$linkedTableVariable 
+$localColumnVariable 
+$localTableVariable 
+$localTableClass 
+$localColumnClass 
+$localColumnName 
+$localColumnType 
+$localColumnTypeOnly 
+$localColumn
+$isLengthPrecisionColumnLocalColumn
+$linkedColumnClass
+$linkedColumnName
+$linkedColumnType
+$linkedColumn
+$linkedColumnVariable
+$linktableDB
+$parentLinkUML
+$parentLink 
+$importDomainObjectUMLForeignTable
+$isMandatory
+$localColumnVarAsInput
+$linkedColumnVarAsInput
+$linkedTableVarAsInput
+$childrenListVariable
+$childrenListClass
+#end

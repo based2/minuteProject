@@ -1,0 +1,64 @@
+#exposeVariableModelSpecific()
+package $packageName;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Date;
+import java.util.Map;
+
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: This class gives the generic methods for the Dao function manipulation
+ * </p>
+ *
+ */
+
+public class $className extends HibernateDaoSupport {
+
+#parse("./snippet/orm/dao/queryBuilderUtils.vm")   
+         
+    protected String getFormattedDate (Timestamp time) {
+       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+       return simpleDateFormat.format(time);
+    }
+    
+    protected String getFormattedDate (Date date) {
+       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+       return simpleDateFormat.format(date);
+    }
+    
+    protected String getFormattedDateTimeStamp (Timestamp time) {
+       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+       return simpleDateFormat.format(time);
+    }
+    
+    protected String getFormattedTimeStamp (Timestamp time) {
+       SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss aa");
+       return simpleDateFormat.format(time);
+    }
+    
+/*    
+    protected String getDBDateFormat () {
+## this is DB dependent to put aside    
+       return "YYYY-MM-DD";
+    }
+    
+    protected String getDBDateTimeFormat () {
+## this is DB dependent to put aside    
+       return "YYYY-MM-DD H24:MI:SS";
+    }
+    
+    protected String getDBTimeStampFormat () {
+## this is DB dependent to put aside    
+       return "YYYY-MM-DD H24:MI:SS";
+    }
+    */
+    
+}

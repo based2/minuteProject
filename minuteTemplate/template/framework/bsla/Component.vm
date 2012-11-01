@@ -1,0 +1,74 @@
+#macro (exposeChildElement)
+#set ($childVar = $formatUtils.getJavaNameVariable(${child.name}))
+#end
+#macro (exposeParentElement)
+#set ($hasParent = $component.hasParent())
+#set ($parentClass = ${component.parent.name})
+#set ($parentVariable = $formatUtils.getJavaNameVariable(${parentClass}))
+#end
+#exposeVariableComponentSpecific()
+#exposeParentElement()
+package $packageName
+
+import java.sql.*;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+public class $component.name {
+
+#foreach($column in $component.columns)
+#putColumnParams()
+    private $columnType _$columnVar;
+#end
+    // parent
+#if ($hasParent) ## only one p	arent per entity in this graph
+    private $parentClass $parentVariable;
+#end  
+    // child 
+#foreach($child in $component.children)
+#exposeChildElement()
+    private List <$child.name> _${childVar}s;
+#end
+
+#foreach ($column in ${component.columns})
+#putColumnParams()
+    public $columnType get$columnClass() {
+        return _$columnVar;
+    }
+	
+    public void set$columnClass ($columnType _$columnVar) {
+        this._$columnVar = _$columnVar;
+    }
+    	
+#end
+#foreach ($child in $component.children)
+#exposeChildElement()
+    public List <$child.name> get${child.name}s() {
+        if (${childVar}s == null){
+            ${childVar}s = new ArrayList<$child.name>();
+        }
+        return ${childVar}s;
+    }
+
+    public void set${child.name}s (List <$child.name> ${childVar}s) {
+        this.${childVar}s = ${childVar}s;
+    }	
+    
+    public void add${child.name} ($child.name ${childVar}) {
+    	    get${child.name}s().add($childVar);
+    }
+    
+#end
+#if ($hasParent)
+    public void set$parentClass ($parentClass _$parentVariable) {
+    	this._$parentVariable = _$parentVariable;
+    }
+    
+    public $parentClass get$parentClass () {
+    	return _${parentVariable};
+    }
+    
+#end
+}
+

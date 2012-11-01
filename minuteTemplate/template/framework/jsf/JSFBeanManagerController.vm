@@ -1,0 +1,205 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#if($isSpringBackend)
+#exposeSpringDomainObjectSpecific()
+#exposeSpringServiceDomainObject()
+#set ($EJBDaoImplClass = $SpringServiceInterfaceClass)
+#set ($EJBDaoImplVariable = $SpringServiceInterfaceVariable)
+#elseif($isEJBBackend)
+#exposeEJBDomainObjectSpecific()
+#end
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
+
+import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import net.sf.minuteProject.model.data.criteria.QuerySortOrder;
+
+import $modelJSFUtilsImport;
+import $SpringServiceInterfaceImport;
+
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import $EJBDaoImplImport;
+
+#end
+import $importDomainObjectUML;
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: JSF controller ${className} </p>
+ *
+ */
+#if($isSpringBackend)
+@ManagedBean (name="${entityControllerJSFVariable}")
+@RequestScoped
+#elseif($isEJBBackend)
+@Named(value = "$entityControllerJSFVariable")
+@Default
+@RequestScoped
+#end
+public class ${className} {
+
+#if($isSpringBackend)
+	@ManagedProperty("#{${EJBDaoImplVariable}}")
+    ${EJBDaoImplClass} $EJBDaoImplVariable;
+	private LazyDataModel<$tableClassName> lazyModel;
+#elseif($isEJBBackend)
+	@Inject 
+    private $EJBDaoImplClass $EJBDaoImplVariable;
+#end
+	
+	private $tableClassName $tableVariableName = new $tableClassName();
+	private $tableClassName selected$tableClassName;
+	
+##if($isEJBBackend)
+    public List<$tableClassName> findAll () {
+		return ${EJBDaoImplVariable}.findAll($tableVariableName);
+	}
+
+#if ($hasOnlyOnePrimaryKey)
+	public $tableClassName findById ($primaryKeyFullType $primaryKeyVariable) {
+		return ${EJBDaoImplVariable}.findById($primaryKeyVariable);
+	}
+
+	public void delete ($tableClassName ${tableVariableName}) {
+		${EJBDaoImplVariable}.delete (${tableVariableName});
+	}
+	
+	public String delete () {
+		${EJBDaoImplVariable}.delete (selected$tableClassName);
+        return "success";
+	}
+	
+#end
+
+#if($isSpringBackend)
+	
+    public LazyDataModel<$tableClassName> getLazyModel() {
+    	if (lazyModel == null) {
+    		lazyModel = new LazyDataModel<$tableClassName>() {
+				
+			     @Override
+			     public List<$tableClassName> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,String> filters) {  
+##			log.info("first=" + first + ", pagesize=" + pageSize + ", sortfield=" + sortField + " sortorder=" + sortOrder + " filter:" + filters);	
+                    int start = first;
+                	int end = first + pageSize;
+                	
+                	QuerySortOrder order = QuerySortOrder.ASC;
+                	if (sortOrder == SortOrder.DESCENDING) {
+            			order = QuerySortOrder.DESC;     
+            		}
+                	
+            		QueryData data = new QueryData(start, end, sortField, order, filters);
+            		${EJBDaoImplVariable}.find(data);
+            		List<$tableClassName> list = data.getResult();
+            		int count = data.getTotalResultCount().intValue();
+            		this.setRowCount(count);      	
+                    return list;
+				}
+
+			};
+    	}
+    	
+    	return lazyModel;
+    }
+	    
+    public void createOrUpdateListener(ActionEvent event) {
+    	try {
+	    	if (selected${tableClassName}.get$primaryKeyJavaNameClass() == null) {
+	    		${EJBDaoImplVariable}.create(selected${tableClassName});
+	            ${modelJSFUtilsClass}.addSuccessMessage(ResourceBundle.getBundle("i18n").getString("createTitle"));
+	    	} else {
+	    		${EJBDaoImplVariable}.update(selected${tableClassName});
+	            ${modelJSFUtilsClass}.addSuccessMessage(ResourceBundle.getBundle("i18n").getString("updateTitle"));
+	    	}
+	    	selected${tableClassName} = new ${tableClassName}();
+##    	} catch (StaleDataException e) {
+##    		current = getClassicModelsService().findEmployee(selected${tableClassName}.getEmployeeNumber());
+##            JsfUtil.addErrorMessage(ResourceBundle.getBundle("Bundle").getString("OptimisticLockError"));
+##    	} catch (DataNotFoundException e) {
+##    		current = new Employee();
+##            JsfUtil.addErrorMessage(ResourceBundle.getBundle("Bundle").getString("OptimisticLockErrorUserDeleted"));
+    	} catch (Exception e) {
+##			log.warn(e.toString(), e);
+			${modelJSFUtilsClass}.addErrorMessage(ResourceBundle.getBundle("Bundle").getString("PersistenceErrorOccured"));
+        }
+    }
+
+    public void clearListener(ActionEvent event) {
+    	selected${tableClassName} = new ${tableClassName}();
+    	UIViewRoot viewRoot =  FacesContext.getCurrentInstance().getViewRoot();
+	    UIComponent component = viewRoot.findComponent("form2");  
+	    ${modelJSFUtilsClass}.clearComponentHierarchy(component);
+    }
+#end
+
+#if ($hasSemanticReference)
+##	public $tableClassName findBySemanticReference ($primaryKeyFullType $primaryKeyVariable) {
+##		return ${EJBDaoImplVariable}.findBySemanticReference (${tableClassName}.class, $primaryKeyVariable);
+##	}
+##	
+#end
+
+	public String create () {
+		${EJBDaoImplVariable}.create($tableVariableName);
+		return "success";
+	}
+	
+	public $tableClassName update () {
+		return ${EJBDaoImplVariable}.update (${tableVariableName});
+	}
+	
+	public $tableClassName get$tableClassName() {
+	    return $tableVariableName;
+	}
+	
+	public void set$tableClassName ($tableClassName $tableVariableName) {
+	    this.$tableVariableName = $tableVariableName;
+	}	
+	
+	public $tableClassName getSelected$tableClassName() {
+	    return selected$tableClassName;
+	}
+	
+	public void setSelected$tableClassName ($tableClassName $tableVariableName) {
+	    this.selected$tableClassName = $tableVariableName;
+	}		
+	
+	//TODO put in upperclass
+    public String displayInput () {
+		return "success";
+	}	
+
+#putGetterSetter ($EJBDaoImplClass $EJBDaoImplVariable)
+
+$!updatedAreaImplementation
+}

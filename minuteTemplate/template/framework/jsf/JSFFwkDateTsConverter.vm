@@ -1,0 +1,33 @@
+#exposeJSFModelSpecific()
+package $packageName;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.ConverterException;
+import javax.faces.convert.FacesConverter;
+
+@FacesConverter(forClass = String.class)
+public class $className implements Converter {
+
+	@Override
+	public Object getAsObject(FacesContext ctx, UIComponent comp, String param) {
+		System.out.println(">>>>>> param " + param);
+		try {
+			Date date = new Date();
+			Timestamp ts = new Timestamp(date.getTime());
+			return ts;
+		} catch (Exception exception) {
+			throw new ConverterException(exception);
+		}
+	}
+
+	@Override
+	public String getAsString(FacesContext ctx, UIComponent comp, Object obj) {
+		return obj.toString();
+	}
+
+}

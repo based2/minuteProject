@@ -1,0 +1,28 @@
+#macro (exposeRoot)
+#set ($packageName = $xmlSchemaUtils.getPackageName($model, $template))
+#set ($className = $commonUtils.getClassName($model, $template))
+#set ($digesterFullPathConfigXml = $xmlSchemaUtils.getDigesterFullPathConfigXml($configuration))
+#set ($rootElementVar = $xmlSchemaUtils.getFirstSequenceElementJavaNameVariable($document, $configuration))
+#set ($rootElementName = $xmlSchemaUtils.getFirstSequenceElementJavaName($document, $configuration))
+#set ($importRootElementClass = $xmlSchemaUtils.getFirstSequenceElementJavaNameImport($document, $configuration))
+#set ($holderElementVar = $xmlSchemaUtils.getDigesterHolderBeanNameVariable($configuration))
+#set ($holderElementName = $xmlSchemaUtils.getDigesterHolderBeanName($configuration))
+#set ($importHolderElementClass = $xmlSchemaUtils.getDigesterHolderBeanNameImport($configuration))
+##set ($holderElementVar = $xmlSchemaUtils.getDigesterHolderBeanNameVariable($configuration))
+#set ($loaderElementName = $xmlSchemaUtils.getLoaderBeanName($configuration))
+##set ($importHolderElementClass = $xmlSchemaUtils.getDigesterHolderBeanNameImport($configuration))
+#end
+
+#macro(exposeScope)
+#set ($nameAttributeValue = $element.getNameAttributeValue())
+#set ($scopeName = $formatUtils.getJavaName($element.getNameAttributeValue()))
+#set ($scopeVariableName = $formatUtils.getJavaNameVariable($scopeName))
+#set ($scopeSpecificName = $formatUtils.getJavaName($scopeName))
+#end
+
+#macro(putSequenceSpecifics)
+#set ($sequenceType = $xmlSchemaUtils.getSequenceJavaType($sequence))
+#set ($sequenceVariableName = $xmlSchemaUtils.getSequenceJavaVariableName($sequence))
+#set ($sequenceClassName = $xmlSchemaUtils.getSequenceJavaClassName($sequence))
+#set ($isCollection = $xmlSchemaUtils.isCollection($sequence))
+#end

@@ -1,0 +1,102 @@
+#exposeABLModelSpecific()
+# Configuration file for ABL
+
+# This can contain a comma-separated list of all the Java packages that contain
+# the Hibernate persistent beans. This allows us to distinguish between calls to outside
+# classes vs. calls to persistent beans. This is not required if all your persistent beans
+# are in the same package.
+#persistentPackageNames = buslogicdemo.data
+
+
+
+# This can contain a comma-separated list of all the Java packages that contain
+# business logic classes. The business logic classes will be matched by name, so
+# a persistent bean Customer will be matched with a business logic class CustomerLogic
+#logicPackageNames = com.autobizlogic.abl.businesslogicengine.dependency.test.logic
+
+#exposeModelUpdatedAreas("abl-logic-packages")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+logicPackageNames = $ablPackages
+#end
+$!updatedAreaEnd
+
+# If you don't specify a value for logicPackageNames, then SBL will look for the logic classes
+# in a package parallel to the persistent beans' package. So for instance, if you persistent beans
+# are in package com.foo.data, then the logic classes will be expected to be in com.foo.businesslogic.
+# If "businesslogic" is not to your taste, you can change it here.
+#parallelPackageName = businesslogic
+
+# By default, a persistent bean MyBean will have its business logic in class MyBeanLogic.
+# If this "Logic" suffix is not what you want, you can change this value.
+#logicClassSuffix = Logic
+
+################################################################################################
+# Session settings
+#
+# If you use a non-standard session context class, you'll want to set your Hibernate
+# configuration to have hibernate.current_session_context_class set to
+# com.autobizlogic.abl.session.CurrentSessionContextProxy, and specify the name of
+# your own class here. SBL will wrap that class and use it.
+#
+# Normally you will use com.autobizlogic.abl.session.LogicJTASessionContext (or one of its siblings)
+# in your Hibernate configuration, so you should worry about this only if you have a custom,
+# non-standard session context class.
+#currentSessionContextClass = com.foo.MySessionContextClass
+
+################################################################################################
+# Controls whether setting/altering aggregates is overridden (default), or raises exception
+# Specify a negative value to throw exception
+# Missing or non-negative means system overrides client changes, and forces values to 0 on insert
+#aggregateDefaultOverride = y
+
+# Control whether formula methods are invoked.
+#invokeFormulaMethods=true
+
+################################################################################################
+# You can specify global event listeners to be used here. Each class listed here will be
+# instantiated and added as a global listener, in the order listed. 
+# If more than one class is listed, they should be comma-separated.
+globalEventListeners = buslogicdemo.util.DemoEventListener
+
+# You can specify global transaction summary listeners here. Each class listed here will be
+# instantiated (it requires a no-arg constructor) and added as a listener, in the order listed.
+# If more than one class is listed, they should be comma-separated.
+#globalTransactionSummaryListeners = com.autobizlogic.abl.event.impl.ConsoleTransactionSummaryListener
+
+################################################################################################
+# If you specify the JNDI name of a Work Manager here, it will be used to run background processes
+# such as the business rules verification. Otherwise, threads will be used directly.
+#workManagerName = ABL Work Manager
+
+################################################################################################
+# Specify where to find the logic classes, so that they can be dynamically reloaded
+
+# Use something like this to reload the logic classes dynamically from the file system.
+#logicClassPath = /Users/maxtardiveau/ABL/Dev/abl2/BusLogicDemo/build/classes
+
+# Use something like this to reload the logic classes dynamically from a database
+# See the buiid/DynamicDeploy.xml Ant script for an example of deploying the classes.
+#logicClassPath = hibernate:/Users/maxtardiveau/Downloads/ABL-2.0a/BusLogicDemo/build/DynamicDeploy.cfg.xml
+#databaseLogicProject = BusLogicDemo
+#databaseLogicRefreshInterval = 5
+
+#logicClassManager1 = com.autobizlogic.abl.logic.dynamic.TimeStampClassManager
+#logicClassManager1_directory = /tmp
+
+#logicClassManager2 = com.autobizlogic.abl.logic.dynamic.TimeStampClassManager
+#logicClassManager2_directory = /Users/maxtardiveau/ABL/Dev/abl2/BusLogicDemo/build/classes
+
+################################################################################################
+################################################################################################
+# Console service
+
+# Normally the console service is exposed as a servlet. If your application does not run in a
+# servlet container (i.e. an app server), you can expose the console service as a web service
+# at the following URL.
+#consoleServerUrl=http://localhost:9097/LogicConsoleService
+
+exceptionFactoryClass = $constraintExceptionTranslatorJCAImport
+

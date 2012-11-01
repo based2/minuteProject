@@ -1,0 +1,38 @@
+#header, #menu, #content, #footer {
+padding:1px 0;
+}
+
+#content {
+/* margin: 1em 25%;
+*/
+
+margin-left:245px;
+}
+#menu {
+float:left;
+width:240px;
+/*  position: absolute;
+  top: 1em;
+  left: 1%;
+  width: 18%;
+  */
+}
+
+#header {
+background-color:#FF9900;
+text-align:center;
+}
+#main {
+max-with:960px;
+margin:auto;
+}
+
+#contenu {
+margin-left:245px;
+background-color:#9966FF;
+}
+#footer {
+background-color:#669933;
+text-align:center;
+clear:both;
+}

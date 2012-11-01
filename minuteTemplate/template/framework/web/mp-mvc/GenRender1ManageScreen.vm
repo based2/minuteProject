@@ -1,0 +1,44 @@
+#exposeVariableEntitySpecific()
+#set ($action = "insert")
+#set ($actionURL = "crud.do")
+#set ($htmlFormName = $table.name)
+#exposeJSPElement()
+#set ($entityInSession = "${tableClassName}SearchResultOne")
+<%@ include file="/WEB-INF/jsp/common/common-include.jsp"%>
+<html>
+<head>
+	<title>$table.name edit screen</title>
+</head>	
+<body>
+#includeAction()
+##includeCRUD()
+$table.name field values
+<form name="$htmlFormName" action="${ctx}/$actionURL" onSubmit="return isToSubmit();">
+<input type="hidden" name="action" value="$action">
+<input type="hidden" name="table" value="$table.name">
+<table>
+#foreach ($column in ${table.columns})
+	#putColumnParams()
+	#exposeJstlEntity($entityInSession $columnVar)
+#if(!$column.isPrimaryKey())
+		  <tr>
+  <td>$columnVar #if($column.isRequired()) *#end</td>
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")  
+  <td> <input type="text" name="$columnVar" size="#columnSize()" onchange="check${columnVar}()" value="<c:out value="$entity"/>"/></td>
+#elseif($column.type=="INT" || $column.type=="BIGINT" || $column.type=="INTEGER")
+  <td> <input type="text" name="$columnVar" size="$column.size" onchange="check${columnVar}()" value="<c:out value="$entity"/>"/></td>
+#else
+  <td> <input type="text" name="$columnVar" onchange="check${columnVar}()" value="<c:out value="$entity"/>"/></td>
+#end
+	  <td><span id="${columnVar}-error" class="error"></span></td>
+  </tr>
+#else
+<input type="hidden" name="$columnVar" value="<c:out value="$entity"/>">
+#end
+#end
+<tr><td><input type="submit" value="Search" onclick="setAction('search');"></td></tr>
+<tr><td><input type="submit" value="Save" onclick="setAction('save');"></td></tr>
+</table>
+</form>
+</body>
+</html>

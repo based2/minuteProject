@@ -1,0 +1,53 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+import $sddDaoInterfaceImport;
+import $sddServiceInterfaceImport;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: SDD Spring service implementation </p>
+ *
+ */
+@Service ("$sddServiceInterfaceVariable")
+@Transactional
+public class ${className} implements $sddServiceInterfaceClass{
+    @Autowired
+    @Qualifier("$sddDaoInterfaceVariable") 
+    $sddDaoInterfaceClass $sddDaoInterfaceVariable;
+    
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    public $sddOutputBeanCollectionClass execute (#if($isNotVoidInput)$sddInputBeanClass $sddInputBeanVariable#end) {
+        return ${sddDaoInterfaceVariable}.execute (#if($isNotVoidInput)$sddInputBeanVariable#end);
+    }
+#end
+$!updatedAreaEnd
+
+$!updatedAreaImplementation
+
+}

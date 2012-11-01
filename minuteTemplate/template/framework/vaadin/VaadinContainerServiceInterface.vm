@@ -1,0 +1,58 @@
+#exposeSpringConfig()
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package ${packageName};
+
+import java.io.Serializable;
+import java.util.Random;
+import java.util.List;
+
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import com.vaadin.data.util.BeanItemContainer;
+
+@SuppressWarnings("serial")
+public class ${className} {
+
+	/**
+	 * Natural property order for Person bean. Used in tables and forms.
+	 */
+	public static final Object[] NATURAL_COL_ORDER = new Object[] {
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey && $columnUtils.isPkUserProvided($column))
+       "$columnVar",
+#end
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+	   "$columnVar"#if ($velocityHasNext), 
+#end
+#end
+	};	 
+
+	/**
+	 * "Human readable" captions for properties in same order as in
+	 * NATURAL_COL_ORDER.
+	 */
+	public static final String[] COL_HEADERS_ENGLISH = new String[] {
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey && $columnUtils.isPkUserProvided($column))
+#set($columnLabel=$i18nUtils.getI18nFromDBObject($column))
+       "$columnLabel",
+#end
+#end
+#foreach($column in $table.attributes)
+#putColumnParams()
+#set($columnLabel=$i18nUtils.getI18nFromDBObject($column))
+       "$columnLabel"#if ($velocityHasNext), 
+#end
+#end
+	};
+
+	public BeanItemContainer<${domainClassName}> getAll(Integer size);
+	
+	public BeanItemContainer<${domainClassName}> saveAndUpdateList (${importDomainObjectUML} $domainVariableName);
+    
+}

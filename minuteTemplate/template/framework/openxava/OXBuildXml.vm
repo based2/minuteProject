@@ -1,0 +1,13 @@
+#exposeOXSpecific()
+<?xml version="1.0"?>
+<project name="$applicationOX" basedir="." default="compile">
+	<property name="project" value="$applicationOX" />
+	<!-- Build and deploy the application in war format -->	
+	<target name="prepare">
+		<mkdir dir="gen-src-xava"/>
+		<mkdir dir="web/WEB-INF/classes"/>
+	</target>	
+	<target name="compile" depends="prepare">
+		<ant antfile="../OpenXava/build.xml" target="compile"/>
+	</target>										
+</project>

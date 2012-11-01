@@ -1,0 +1,59 @@
+##sample application template to test jooq
+#exposeMaven()
+#exposeJOOQModelSpecific()
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>    
+  	<groupId>${rootPackage}.${model.name}</groupId>
+  	<artifactId>$DbApiName</artifactId>
+  	<packaging>jar</packaging>
+  	<version>${version}-SNAPSHOT</version>
+  	<name>$DbApiName JOOQ implementation</name>
+    
+    <dependencies>
+        <!-- jooq -->
+        <dependency>
+          <groupId>org.jooq</groupId>
+          <!-- artefacts are jooq, jooq-meta, jooq-codegen -->
+          <artifactId>jooq</artifactId>
+          <version>${jooq.version}</version>
+        </dependency>
+        <!-- JDBC driver --> 
+#if($hasDriver)		
+        <dependency>
+            <groupId>$driver.groupId</groupId>
+            <artifactId>$driver.artifactId</artifactId>
+            <version>$driver.version</version>
+        </dependency>    
+#else
+	    <!-- add jdbc driver : it is not provided in the configuration -->
+#exposeModelUpdatedAreas("jdbc-driver-dependency")
+#end		
+        <!-- other dependencies -->
+#exposeModelUpdatedAreas("dependencies")
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+	<build>
+        <plugins>
+            <plugin>
+                <!-- Force UTF-8 & Java-Version 1.6 -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <!--<encoding>utf-8</encoding>-->
+                </configuration>
+            </plugin>
+        </plugins>
+	</build>
+    <properties>
+        <jooq.version>$jooqVersion</jooq.version>
+    </properties>
+ 
+</project>

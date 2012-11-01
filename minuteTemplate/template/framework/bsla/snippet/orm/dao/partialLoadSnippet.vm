@@ -1,0 +1,120 @@
+    public $tableClassName partialLoadWithParentFirst$tableClassName($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName){
+		List <$tableClassName> list = partialLoadWithParent$tableClassName(${tableVariableName}What, positive$tableClassName, negative$tableClassName);
+		return (!list.isEmpty())?($tableClassName)list.get(0):null;
+    }
+    
+    public $tableClassName partialLoadWithParentFirst${tableClassName}UseCache($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Boolean useCache){
+		List <$tableClassName> list = partialLoadWithParent${tableClassName}UseCache(${tableVariableName}What, positive$tableClassName, negative$tableClassName, useCache);
+		return (!list.isEmpty())?($tableClassName)list.get(0):null;
+    }
+	
+	public $tableClassName partialLoadWithParentFirst${tableClassName}UseCacheOnResult($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Boolean useCache){
+		List <$tableClassName> list = partialLoadWithParent${tableClassName}UseCacheOnResult(${tableVariableName}What, positive$tableClassName, negative$tableClassName, useCache);
+		return (!list.isEmpty())?($tableClassName)list.get(0):null;
+    }
+	//
+	protected List<$tableClassName> partialLoadWithParent$tableClassName($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Integer nbOfResult, Boolean useCache) {
+		 return partialLoadWithParent$tableClassName(${tableVariableName}What, positive$tableClassName, negative$tableClassName, new QuerySelectInit(), nbOfResult, useCache);
+	}	  
+
+	protected List partialLoadWithParent${tableClassName}QueryResult ($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Integer nbOfResult, Boolean useCache) {
+		 return partialLoadWithParent${tableClassName}QueryResult (${tableVariableName}What, positive$tableClassName, negative$tableClassName, new QuerySelectInit(), nbOfResult, useCache);
+	}	
+    
+    public List<$tableClassName> getDistinct$tableClassName($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName) {
+		 return partialLoadWithParent$tableClassName(${tableVariableName}What, positive$tableClassName, negative$tableClassName, new QuerySelectDistinctInit(), null, false);
+	}
+	
+	public List<$tableClassName> partialLoadWithParent$tableClassName($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName) {
+		 return partialLoadWithParent$tableClassName(${tableVariableName}What, positive$tableClassName, negative$tableClassName, new QuerySelectInit(), null, false);
+	}	
+  
+	public List<$tableClassName> partialLoadWithParent${tableClassName}UseCacheOnResult($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Boolean useCache) {
+		String key = getCacheKey(${tableVariableName}What, positive$tableClassName, negative$tableClassName, "partialLoadWithParent$tableClassName");
+		List<$tableClassName> list = (List<$tableClassName>)simpleCache.get(key);
+		if (list==null || list.isEmpty()) {
+			list = partialLoadWithParent$tableClassName(${tableVariableName}What, positive$tableClassName, negative$tableClassName);
+			if (!list.isEmpty())
+			   simpleCache.put(key, list);
+		}
+		return list;	
+	}	
+
+	public List<$tableClassName> partialLoadWithParent${tableClassName}UseCache($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Boolean useCache) {
+		String key = getCacheKey(${tableVariableName}What, positive$tableClassName, negative$tableClassName, "partialLoadWithParent$tableClassName");
+		List<$tableClassName> list = (List<$tableClassName>)simpleCache.get(key);
+		if (list==null) {
+			list = partialLoadWithParent$tableClassName(${tableVariableName}What, positive$tableClassName, negative$tableClassName);
+			simpleCache.put(key, list);
+		}
+		return list;	
+	}	
+	
+	private List<$tableClassName> handleLoadWithParent$tableClassName(Map beanPath, List list, $tableClassName ${tableVariableName}What) {
+	    return handleLoadWithParent$tableClassName(beanPath, list, ${tableVariableName}What, true);  
+	}
+	
+	private List<$tableClassName> handleLoadWithParent$tableClassName(Map beanPath, List list, $tableClassName ${tableVariableName}What, boolean isHql) {
+		if (beanPath.size()==1) {
+			return handlePartialLoadWithParent${tableClassName}WithOneElementInRow(list, beanPath, ${tableVariableName}What, isHql);
+		}
+		return handlePartialLoadWithParent$tableClassName(list, beanPath, ${tableVariableName}What, isHql);	
+	}
+	
+## populate
+    	// to set in super class	
+	protected void populate$tableClassName ($tableClassName ${tableVariableName}, Object value, String beanPath) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	   BeanUtils.populateBeanObject(${tableVariableName}, beanPath, value);
+	}
+	
+	protected void populate${tableClassName}FromSQL ($tableClassName ${tableVariableName}, Object value, String beanPath) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	   BeanUtils.populateBeanObject(${tableVariableName}, beanPath, value);
+	}
+    	// to set in super class BEWARE: genericity is only one level!!!!! first level is a copy second level is a reference!!! change to ${tableVariableName}.clone() instead
+	private $tableClassName clone$tableClassName ($tableClassName ${tableVariableName}) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+		//return ($tableClassName) BeanUtils.cloneBeanObject(${tableVariableName});
+	   if (${tableVariableName}==null) return new ${tableClassName}();
+	   return ${tableVariableName}.clone();
+	}
+    
+    // to set in super class
+	private Object getBeanObjectInstance (Object bean) throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+       return BeanUtils.getBeanObjectInstance(bean);	
+	}
+	// to set in super class
+	protected void populateObject (Object bean, Object value, String beanPath) throws IllegalAccessException, InvocationTargetException {
+       BeanUtils.populateObject(bean, value, beanPath);
+	}
+	
+	protected void populateObjectFromSQL (Object bean, Object value, String beanPath) throws IllegalAccessException, InvocationTargetException {
+       BeanUtils.populateObject(bean, value, beanPath);
+	}
+	
+## functions
+    public List<$tableClassName> countDistinct ($tableClassName whatMask, $tableClassName whereEqCriteria) {
+       return partialLoadWithParent$tableClassName(whatMask, whereEqCriteria, null, new QuerySelectCountInit("${tableVariableName}"), null, false);
+    }   
+    	
+##    public Long count($tableClassName whereEqCriteria) {
+##        List<$tableClassName> list = partialLoadWithParent$tableClassName(null, whereEqCriteria, null, new QueryCountInit("${tableVariableName}"), null, false);    
+##    	if (!list.isEmpty())
+##    		return list.get(0).getCount__();
+##    	return 0L;
+##    }
+##		  	
+    public Long count($tableClassName whereEqCriteria) {
+        Query query = getEntityManager().createQuery(getSelectCountPrototype(whereEqCriteria));
+        List<Long> list = query.getResultList();
+    	if (!list.isEmpty()) {
+            return list.get(0);
+    	}
+    	return 0L;
+    }
+		
+    protected String getSelectCountPrototype ($tableClassName whereEqCriteria) {
+        StringBuffer query = new StringBuffer();
+        StringBuffer queryWhere = new StringBuffer();
+        query.append ("SELECT count(*) FROM $tableClassName ${tableVariableName} ");
+        queryWhere.append (get${tableClassName}SearchEqualWhereQueryChunk(whereEqCriteria, false));   
+	    return getHQuery(query.toString(), queryWhere.toString());
+    }		  

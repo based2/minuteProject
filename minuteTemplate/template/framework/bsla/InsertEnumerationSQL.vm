@@ -1,0 +1,17 @@
+#exposeVariableModelDetailSpecific()
+#foreach($package in $businessPackages)
+#foreach($table in $package.listOfTables)
+#foreach($column in $table.columns)
+#if($columnUtils.hasCheckConstraint($column))
+#set ($sequenceName = $databaseUtils.insert($table))
+-- table:$table.name
+#set($property=$columnUtils.getCheckConstraintProperty($column))
+#set($propertyList=$property.getPropertiesArray())
+#foreach ($prop in $propertyList)
+#exposeVariableEntitySpecific()
+INSERT INTO $table.name ($pK,$column.name) values (-$velocityCount,'$restrictedCodeUtils.convertToValidJavaWithUpperCase($prop.name)');
+#end
+#end
+#end
+#end
+#end

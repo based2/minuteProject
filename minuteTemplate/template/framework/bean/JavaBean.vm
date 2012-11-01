@@ -1,0 +1,66 @@
+#exposeVariableEntitySpecific()
+#addedAreas()
+package $packageName;
+
+import java.util.List;
+import java.util.ArrayList;
+
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Java Bean containing a collection of ${domainClassName} </p>
+ *
+ */
+public class ${className} {
+
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.name)")
+    private final $columnType $defaultConstant = $defaultValue;
+#end
+#end
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+    private $columnType $columnVar;
+#end
+
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+	
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+#if($hasDefaultValue)
+#set($defaultConstant = "__DEFAULT_$formatUtils.getUppercaseUnderscore($column.name)")
+    public $columnType get$columnClass() {
+        return ($columnVar!=null)?$columnVar:$defaultConstant;
+    }
+#else
+    public $columnType get$columnClass() {
+        return $columnVar;
+    }
+#end
+    public void set$columnClass ($columnType $columnVar) {
+        this.$columnVar =  $columnVar;
+    }
+
+#end
+
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+        sb.append("$columnClass: "+get$columnClass());
+#if($velocityCount<${table.columns.length})
+        sb.append(", ");
+#end
+#end
+        return sb.toString();
+    }
+$!updatedAreaImplementation
+}

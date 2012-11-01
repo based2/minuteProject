@@ -1,0 +1,78 @@
+#exposeVariableModelSpecific()
+   <enrichment>
+      <!-- 
+         balancing quantity and repartition 
+         
+         2 types of loading approach proposed:
+         - quantitive: set target quantity;
+         - relative: set ratio between relationships.
+         
+         2 types of dataset proposed:
+         - extrapolation: expand a original db dataset to its target size.
+         - declarative: declare the dataset patterns to generate;         
+         
+      -->
+       
+      <load-model fix-quantity-first="false" ratio-quantity-first="true" />
+#foreach ($package in ${businessPackages})
+#foreach ($table in ${package.listOfTables})   
+#putLoadTestEntitySpecific()
+      <entity name="$table.name">
+         <load-entity>
+#if($hasNoForeignKey)
+            <load-quantity-fix="z"/>
+#else 
+            <load-quantity-relationships>
+#foreach ($reference in $table.parents)
+#if($tableUtils.isReferenceDataContentType($reference.foreignTable))
+               <!-- 
+#end               
+               <load-quantity-relationship dependency-name="${reference.foreignTableName}_$reference.localColumnName"/>
+#if($tableUtils.isReferenceDataContentType($reference.foreignTable))
+               --> 
+#end 
+#end
+            </load-quantity-relationships>       
+#end         
+#foreach ($reference in $table.parents)      
+            <entity-relationship name="${reference.foreignTableName}_$reference.localColumnName" to-entity="${reference.foreignTableName}" via-field="$reference.localColumnName">
+#if($tableUtils.isReferenceDataContentType($reference.foreignTable))
+               <entity-relationship-load distribution="random"/> <!-- x percent of type semantic ref A , y of B ...-->
+#else
+               <entity-relationship-load average="x.y" range="a..b" #if(!$isMandatory) filled=""#end/>
+#end
+            </entity-relationship>
+#end
+         </load-entity>
+#if($isManyToMany)
+         <!-- todo m2m -->
+#else        
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+#if($isPrimaryKey && !$isManyToMany)
+##TODO check if natural
+         <field name="$column.name">
+            <load-field variation="$loadTestUtils.getPrimaryKeyValue($column)" pattern=""/>
+         </field>
+#elseif($isForeignKey)
+##do nothing already in relationships
+#else
+##normal case
+         <!-- pattern : {Mr|Mrs|Ms} {email} {url} -->
+         <!-- variation : random, endswith, startswith {sqlpath} -->
+         <!-- sqlpath-format : sample : '$column.name {sqlpath1}-hardcoded value... {sqlpath2s}'-->
+         <field name="$column.name">
+            <load-field variation="" pattern="" plugin-provided="plugin" sqlpath-format=""/>
+         </field>
+#end
+#end
+#end
+      </entity>
+#end
+#end
+   </enrichment>
+   
+   
+## affected children not affected fk nullable
+
+

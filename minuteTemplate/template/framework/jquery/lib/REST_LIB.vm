@@ -1,0 +1,27 @@
+#macro (exposeRESTURL $techno)
+#exposeRESTURLServer($techno)
+#exposeRESTURLClient($techno)
+#end
+
+#macro (exposeRESTURLClient $techno)
+#set ($restXmlClientUrl = $restUtils.getRestUrlClientXml($table, $techno))
+#set ($restJsonClientUrl = $restUtils.getRestUrlClientJson($table, $techno))
+#end
+
+#macro (exposeRESTURLServer $techno)
+#set ($restXmlServerUrl = $restUtils.getRestUrlServerXml($table, $techno))
+#set ($restJsonServerUrl = $restUtils.getRestUrlServerJson($table, $techno))
+#end
+
+#macro (exposeRESTModelSpecific)
+#exposeVariableModelSpecific()
+#exposeRESTTemplate()
+#set ($modelWadlGeneratorJerseyImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelWadlGeneratorJersey))	
+#set ($modelResourceJerseyImport = $commonUtils.getRootAndTechnicalPackageName($model, $templateEntityResourceJersey))	
+#end
+
+#macro (exposeRESTTemplate)
+#set ($templateModelWadlGeneratorJersey = "JerseyWadlGenerator")
+#set ($templateEntityResourceJersey = "EJB3ResourceREST")
+#end
+

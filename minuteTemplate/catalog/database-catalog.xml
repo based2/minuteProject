@@ -1,0 +1,95 @@
+<database-catalog>
+  <databases>
+	 
+	 <database name="HSQLDB" 
+        hibernate-dialect="org.hibernate.dialect.HSQLDialect" 
+        use-schema="false" 
+        driverclassname="org.hsqldb.jdbcDriver"
+        default-url-structure="jdbc:hsqldb:hsql://{server-name}:${port-number}/{database-name}" >
+        <maven-artifact
+           mvn-artifact-id="hsqldb" 
+           mvn-group-id="hsqldb"
+           mvn-version="1.8.0.7">
+        </maven-artifact>
+        <primary-key-policy type="sequence"/>
+	 </database>  
+	 
+	 <database name="MYSQL" 
+        hibernate-dialect="org.hibernate.dialect.MySQLDialect" 
+        use-schema="true" 
+        driverclassname="org.gjt.mm.mysql.Driver" 
+        default-url-structure="jdbc:mysql://{server-name}:${port-number}/{database-name}" >
+        <maven-artifact
+           mvn-artifact-id="mysql-connector-java" 
+           mvn-group-id="mysql"
+           mvn-version="5.0.5" >
+        </maven-artifact>	
+        <primary-key-policy type="autoincrement"/>            
+	 </database>
+
+	 <database name="DERBY" 
+        hibernate-dialect="org.hibernate.dialect.HSQLDialect" 
+        use-schema="true" 
+        driverclassname="org.apache.derby.jdbc.ClientDriver"
+        default-url-structure="jdbc:derby://{server-name}:${port-number}/{database-name}" >
+        <maven-artifact
+           mvn-artifact-id="derbyclient" 
+           mvn-group-id="org.apache.derby"
+           mvn-version="10.4.2.0">
+        </maven-artifact>
+        <primary-key-policy type="autoincrement"/>
+	 </database>
+	   
+	 <database name="ORACLE" 
+        hibernate-dialect="org.hibernate.dialect.Oracle10gDialect" 
+        use-schema="true" 
+        driverclassname="oracle.jdbc.OracleDriver"
+        default-url-structure="jdbc:oracle:thin:@{server-name}:{port-number}:{SID}" >
+        <maven-artifact 
+        	mvn-artifact-id="ojdbc14" 
+            mvn-group-id="com.oracle"
+            mvn-version="10.0.2.0.0">
+        </maven-artifact>
+        <grammar>
+           <escaping char-to-escape="'" escaping-char="\">
+           </escaping>
+           <detection>
+           	 <boolean-detection field-content-type="string" field-length="1"></boolean-detection>         
+           </detection>
+        </grammar>
+        <structure>
+          <database-object max-name-length="32"></database-object>
+        </structure>
+        <primary-key-policy type="sequence" />
+	 </database>
+	 
+	 <database name="DB2" 
+        hibernate-dialect="org.hibernate.dialect.DB2Dialect" 
+        use-schema="true" 
+        driverclassname="com.ibm.db2.jcc.DB2Driver" 
+        default-url-structure="jdbc:db2://{server-name}:${port-number}/{database-name}">
+        <maven-artifact
+           mvn-artifact-id="db2jcc" 
+           mvn-group-id="com.ibm"
+           mvn-version="3.50.152" >
+        </maven-artifact>
+        <primary-key-policy type="sequence"/>
+	 </database>
+	 
+	 <!--  -->
+	 <database name="POSTGRES" 
+        hibernate-dialect="org.hibernate.dialect.PostgreSQLDialect" 
+        use-schema="true" 
+        driverclassname="org.postgresql.Driver"
+        default-url-structure="jdbc:postgresql://{server-name}:${port-number}:{database-name}" >
+        <maven-artifact
+           mvn-artifact-id="postgresql" 
+           mvn-group-id="postgresql"
+           mvn-version="9.0-801.jdbc4">
+        </maven-artifact>
+        <primary-key-policy type="autoincrement"/>
+	 </database>
+	 
+  </databases>
+
+</database-catalog>

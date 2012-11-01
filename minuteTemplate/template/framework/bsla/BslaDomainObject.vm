@@ -1,0 +1,88 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import net.sf.minuteProject.architecture.bsla.domain.AbstractDomainObject;
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+#exposeImportParams($reference.table)
+import $importDomainObject;
+#end
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+	#exposeImportParams($reference.table)
+	import $importDomainObject;
+#end
+//TODO getAllPackage for the domain object in the import
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ */
+public class ${className} extends AbstractDomainObject {
+
+#foreach ($column in ${table.columns})
+	#putColumnParams()
+private $columnType _$columnVar;
+#end
+
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+    private $linkclass _$var2;
+#end
+
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+	private List _${var}s;
+#end
+
+    public ${className}() {
+    }
+
+#foreach ($column in ${table.columns})
+#putColumnParams()
+    public $columnType get$columnClass() {
+        	return _$columnVar;
+    }
+	
+    public void set$columnClass ($columnType _$columnVar) {
+        this._$columnVar = _$columnVar;
+    }	
+#end
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+    public $linkclass get$varclass2 () {
+    	    return _$var2;
+    }
+	
+    public void set$varclass2 ($linkclass _$var2) {
+    	    this._$var2 = _$var2;
+    }
+	#end
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+    
+    public List get${varclass}s() {
+        if (_${var}s == null){
+            _${var}s = new ArrayList();
+        }
+        return _${var}s;
+    }
+
+    public void set${varclass}s (List _${var}s) {
+        this._${var}s = _${var}s;
+    }
+    
+    public void add${varclass}s ($linkclass $link) {
+        get${varclass}s().add($link);
+    }	
+#end
+
+}

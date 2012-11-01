@@ -1,0 +1,39 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+
+$table.alias;
+
+public interface $className {
+
+   //public boolean does<alias>Exist ($className var) ;
+
+   public boolean does<alias>ReferenceExist ($className var) {
+       if (does<alias>ReferenceAsCorrectPattern(var)) {
+          return extendedDao.exists(var);
+       } else {
+          throw InvalidArgumentException ("reference pattern not correctly populated");
+       }
+   }
+   
+   public boolean does<alias>ReferenceAsCorrectPattern ($className var) {
+#foreach ($field in $fieldpropertythatmatchpattern("reference"))
+      if (var.$field == null) 
+         return false;  
+#end
+      return true;
+   }
+   
+   public isUnique
+   
+   public List<$className> getDuplicate ($className);
+      
+   public List<$className> getDistinct ($className);
+   
+   public int countDistinct ()
+#foreach ($property in $table.getPropertiesArray())
+$property.name , $property.value
+#end
+
+
+}

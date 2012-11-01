@@ -1,0 +1,11 @@
+    <bean id="${model.name}DataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+#exposeJdbcParam($jdbcDriverClassName)
+        <property name="driverClassName"><value>$paramResult</value></property>
+#exposeJdbcParam($jdbcUrl)        
+        <property name="url"><value>$paramResult</value></property>
+#exposeJdbcParam($jdbcUsername)        
+        <property name="username"><value>$paramResult</value></property>
+#exposeJdbcParam($jdbcPassword)
+        <property name="password"><value>$paramResult</value></property>
+    </bean>
+    

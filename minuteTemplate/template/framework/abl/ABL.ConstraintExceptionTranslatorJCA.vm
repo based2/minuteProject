@@ -1,0 +1,47 @@
+#exposeABLModelSpecific()
+package $packageName;
+
+import java.util.*;
+
+import javax.validation.*;
+
+import com.autobizlogic.abl.engine.*;
+/**
+ * Translates ABL com.autobizlogic.abl.engine.ConstraintException<br>
+ * into javax.validation.ConstraintViolationException, as expected by OpenXava.
+ * 
+ * <br><br>
+ * Invoked by ABL engine, per ABLConfig.properties
+ */
+public class $className extends DefaultExceptionFactory implements ExceptionFactory {
+
+	public RuntimeException createConstraintException(String aMessage, List <ConstraintFailure> aConstraintList) {
+
+		Set<ConstraintViolation<?>> constraintViolations = new HashSet<ConstraintViolation<?>>();
+		for (ConstraintFailure eachConstraintFailure: aConstraintList)  {
+			constraintViolations.add(new AblConstraintViolation<Object>(eachConstraintFailure));
+		}
+		
+		ConstraintViolationException javaX_excp = new ConstraintViolationException(aMessage, constraintViolations);
+		return javaX_excp;
+	}
+
+	/**
+	 * FIXME - old unused code - delete when the translator runs.
+	 * 
+	 * @param aConstraintExcp
+	 * @return
+	 */
+	public RuntimeException z_translateConstraintException(ConstraintException aConstraintExcp) {
+		String msg = aConstraintExcp.getMessage();
+		
+		Set<ConstraintViolation<?>> constraintViolations = new HashSet<ConstraintViolation<?>>();
+		for (ConstraintFailure eachConstraintFailure: aConstraintExcp.getConstraintFailures())  {
+			constraintViolations.add(new AblConstraintViolation<Object>(eachConstraintFailure));
+		}
+		
+		ConstraintViolationException javaX_excp = new ConstraintViolationException(msg, constraintViolations);
+		return javaX_excp;
+	}
+
+}

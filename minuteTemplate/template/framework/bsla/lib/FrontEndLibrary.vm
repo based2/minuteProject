@@ -1,0 +1,175 @@
+#macro (exposeJSPElement) 
+#exposeJstlSingle('$ctx')
+#end
+
+#macro (exposeJstlScopeItems $instance $attribute)
+#exposeJstlCombinaison($instance $attribute)
+#set($items = $combi)
+#end
+
+#macro (exposeJstlEntity $instance $attribute)
+#exposeJstlCombinaison($instance $attribute)
+#set($entity = $combi)
+#end
+
+#macro(exposeVariableEntitySpecificURL)
+#set ($tableDB = $table.table)
+#getTemplatePropertyValue("framework")
+#if ($value.equals("struts2Default"))
+#set ($URLSearchEntity = $struts2.getURLSearchEntity($model, $table))
+#set ($URLManageEntity = $struts2.getURLManageEntity($model, $table))
+#else
+#set ($URLSearchEntity = $URLUtils.getURLSearchEntity($model, $tableDB))
+#set ($URLManageEntity = $URLUtils.getURLManageEntity($model, $tableDB))
+#end
+#end
+
+#macro (exposeJstlCombinaison $element1 $element2)
+#set ($itemsFirst = '${')
+#set ($itemsSeparator = '.')
+#set ($itemsLast = '}')
+#set ($combi = "${itemsFirst}${element1}${itemsSeparator}${element2}${itemsLast}")
+#end
+
+#macro (exposeJSPPath)
+#set ($jspPath = "/jsp/$model.name/$businessPackageName")
+#end
+
+#macro(includeCRUD)
+#exposeVariableEntitySpecific()
+<div class="node">
+<script type='text/javascript'>
+
+#foreach ($column in ${table.columns})
+	#putColumnParams()
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")
+function isValid$columnVar() {
+  return validateData("alphanumeric",document.forms["$htmlFormName"].elements["$columnVar"],"")
+         && validateData("maxlen=${column.size}",document.forms["$htmlFormName"].elements["$columnVar"],"");
+}
+#elseif ($column.type=="BIGINT" || $column.type=="INT" || $column.type=="INTEGER")
+function isValid$columnVar() {
+  return validateData("num",document.forms["$htmlFormName"].elements["$columnVar"],"");
+}
+#end
+#if ($column.isRequired())
+function isRequired$columnVar() {
+  return validateData("required",document.forms["$htmlFormName"].elements["$columnVar"],"");
+}
+#end
+#end
+
+#foreach ($column in ${table.columns})
+	#putColumnParams()
+function check$columnVar() {
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")
+  if (!isValid$columnVar()) {
+    processReply(false, "$columnVar", "${columnVar}-error", "Please enter a valid $columnVar (type String, max length ${column.size}.");
+  }
+#elseif ($column.type=="BIGINT" || $column.type=="INT" || $column.type=="INTEGER")
+  if (!isValid$columnVar()) {
+    processReply(false, "$columnVar", "${columnVar}-error", "Please enter a valid $columnVar (type Integer).");
+  }
+#end
+  processReply(true, "$columnVar", "${columnVar}-error", "");
+}
+#end
+
+function isToSubmit() {
+  bReturn = true;
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")
+  if (isValid$columnVar() == false) {
+    bReturn = false;
+  }
+#elseif ($column.type=="BIGINT" || $column.type=="INT" || $column.type=="INTEGER")
+  if (isValid$columnVar() == false) {
+    bReturn = false;
+  }
+#end
+#if ($column.isRequired())
+  if (isRequired$columnVar() == false) {
+    bReturn = false;
+}
+#end
+#end
+  return bReturn;
+}
+
+function processReply(valid, id, errid, error) {
+  if (valid) {
+    DWRUtil.setValue(errid, "");
+    $(id).style.color = "black";
+  }
+  else {
+    DWRUtil.setValue(errid, error);
+    $(id).style.color = "red";
+  }
+}
+
+function setAction(target) {
+     document.forms[0].action.value=target;
+}
+
+function init() {
+  DWRUtil.useLoadingMessage();
+}
+
+callOnLoad(init);
+</script>
+
+<style>
+.error { color: red; }
+</style>
+
+#end
+
+#macro (importChunkSearchAction)
+
+			if (req.getParameter("action").equals("search")) {
+#foreach ($package in ${businessPackages})
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecific()
+			#putReferenceParams()
+			#exposeJSPPath()
+			if (table.equals("$table.name")) {
+				System.out.println("search $table.name");
+				$tableClassName entity = new $tableClassName();
+				${tableClassName}Dao dao = (${tableClassName}Dao)MyProjectFactory.getBean("${tableVariableName}Dao");			
+				populate(entity, req);
+				List list = dao.search$tableClassName(entity);
+				if (list.size()==0) {
+					System.out.println("no result");
+					forward = "$jspPath/${tableClassName}ResultListScreen.jsp";
+				}
+				if (list.size()>0) {
+					System.out.println("multiple result");
+					forward = "$jspPath/${tableClassName}ResultListScreen.jsp";
+				}
+					session.setAttribute("${tableClassName}SearchResultList",list);
+				forward(forward,req,res);
+			}
+																							#end
+#end
+}
+#end
+
+#macro (columnSize)
+#if ($column.sizeAsInt>80)80#else$column.size#end
+#end
+
+#macro (includeAction)
+<script type='text/javascript'>
+function setAction(target) {
+     document.forms[0].action.value=target;
+}
+</script>
+#end
+
+#macro (importFrontEndJSP)
+#getTemplateExtensionValue()
+#if ($value.equals("jsp"))
+<%@ include file="/WEB-INF/jsp/common/common-include.jsp"%>
+#end
+#end

@@ -1,0 +1,138 @@
+#macro (putJPA2TemplateDefinitionOld)
+##set ($templateJPA2EmbeddedId="DomainEntityJPA2EmbeddedId")
+#getTemplatePropertyValue("DomainEntityJPA2EmbeddedId")
+#if (!$value.equals(""))
+#set ($templateJPA2EmbeddedId=$value)
+#else
+#set ($templateJPA2EmbeddedId="DomainEntityJPA2EmbeddedId")
+#end
+#getTemplatePropertyValue("DomainEntityUMLTemplate")
+#if (!$value.equals(""))
+#set ($templateJPA2DomainObject=$value)
+#else
+#set ($templateJPA2DomainObject="DomainEntityJPA2Annotation")
+#end
+#end
+
+#macro (putJPA2TemplateDefinition)
+#set($templateJPA2EmbeddedId=$template.getPropertyValue("DomainEntityJPA2EmbeddedId","DomainEntityJPA2EmbeddedId"))
+#set($templateJPA2DomainObject=$template.getPropertyValue("DomainEntityUMLTemplate","DomainEntityJPA2Annotation"))
+#set($templateEnvironment=$template.getPropertyValue("environment","local"))
+#set($isEnvironmentLocal=($templateEnvironment=="local"))
+#set($addXmlBinding=$template.getPropertyValue("add-xmlbinding",false))
+#set($addDomainSpecificMethod=$template.getPropertyValue("add-domain-specific-method",false))
+#set($hasABLNature=$template.hasPropertyValue("add-automated-business-logic",false))
+#set($autobizlogicVersion=$template.getPropertyValue("add-automated-business-logic","2.1.4"))
+#set($useTemporal=$template.getPropertyValue("use-temporal",false))
+#set($xmlFormat=$template.getPropertyValue("add-xml-format","none"))
+#set($isCacheEnabled=$template.hasPropertyValue("add-cache-implementation",false))
+#set($isEhCacheEnabled=$template.hasPropertyValue("add-cache-implementation","ehcache"))
+#end
+
+#macro (exposeJPA2DomainObject $tableDB)
+#putJPA2TemplateDefinition()
+#set ($domainObjectClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateJPA2DomainObject))
+#set ($domainObjectVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectClass))
+#set ($importDomainObjectUML = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateJPA2DomainObject))
+#end
+
+#macro (exposeEmbeddedId $tableDB)
+#putJPA2TemplateDefinition()
+#set ($embeddedIdClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateJPA2EmbeddedId))
+#set ($embeddedIdVariable = $commonUtils.getJavaNameVariableFirstLetter($embeddedIdClass))
+#set ($importDomainObjectUMLEmbeddedId = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateJPA2EmbeddedId))
+#end
+
+#macro (exposeJPA2EnumImport)
+#foreach ($column in $table.columns)
+#putColumnParams()
+##-$column.name - $isEnum - $enumImport - $enumClassName
+#if($isEnum)
+import $enumImport;
+#end
+#end
+#end
+
+#macro (exposeJPA2CompositeKeyImport)
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+#exposeEmbeddedId($table)
+import $importDomainObjectUMLEmbeddedId;
+#end
+#end
+
+#macro (exposeJPA2Import)
+#foreach ($reference in $table.children)
+#set ($thisTable = $reference.foreignTable)
+#exposeJPA2DomainObject($reference.foreignTable)
+#if(!$thisTable.isManyToMany())
+import $importDomainObjectUML;
+#end
+#end
+#foreach ($reference in $table.parents)
+#exposeJPA2DomainObject($reference.foreignTable)
+#set ($thisTable = $reference.foreignTable)
+#if(!$thisTable.isManyToMany())
+import $importDomainObjectUML;
+#end
+#end
+##foreach ($reference in $childReferences)
+##putReferenceParams()
+##if($linktableDB.isManyToMany())
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeJPA2DomainObject($targetTable)
+import $importDomainObjectUML;
+##end
+##end
+#end
+#end
+
+#macro(exposeJPA2Specifics)
+#exposeJPASpecifics()
+#set ($jpa2Implementation = $jpa2Utils.getJpa2Implementation($template))
+#set ($jpa2ImplementationIsHibernate = ($jpa2Implementation=="hibernate"))
+#set ($jpa2ImplementationIsEclipseLink = ($jpa2Implementation=="eclipselink"))
+#set($templateEnvironment=$template.getPropertyValue("environment","local"))
+#set($isEnvironmentLocal=($templateEnvironment=="local"))
+#set ($datasourceName=$persistenceUtils.getDatasourceName($model))
+#end
+
+#macro(exposeXmlElementValue)
+#set($xmlElementValue=$jaxbUtils.getXmlElementValue($column, $xmlFormat))
+#end
+
+#macro(putJPA2TriggerSnippet)
+#if ($tableUtils.hasInsertTrigger($table))
+#exposeEntityUpdatedAreas("prepersist")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    @javax.persistence.PrePersist
+    public void prePersist_ () {
+#foreach ($trigger in $tableUtils.getInsertTriggers($table)) 
+#exposeVariableTriggerSpecific()
+        $triggerVar = $triggerJavaExpressionChunk;
+#end
+    }
+#end
+$!updatedAreaEnd
+#end
+
+#if ($tableUtils.hasUpdateTrigger($table))
+#exposeEntityUpdatedAreas("preupdate")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    @javax.persistence.PreUpdate
+    public void preUpdate_ () {
+#foreach ($trigger in $tableUtils.getUpdateTriggers($table)) 
+#exposeVariableTriggerSpecific()
+        $triggerVar = $triggerJavaExpressionChunk;
+#end
+    }
+#end
+$!updatedAreaEnd
+#end
+#end

@@ -1,0 +1,39 @@
+#macro (putDomainObjectClassHibernateAnnotation)
+    @Entity
+    @Table(name = "${table.name}")
+#end
+
+#macro (putDomainObjectPrimaryKeyHibernateAnnotation $column)
+    @Id
+    @GeneratedValue
+    @Column(name = "$column.name")
+    #if($columnDB.isRequired())@NotNull#end  
+#end
+
+#macro (putDomainObjectAttributeHibernateAnnotation $column)
+#putColumnParams()
+    @Column(name = "$column.name")
+    #if($columnDB.isRequired())@NotNull#end
+    #if($isColumnUnique)@Unique#end    
+#end
+
+#macro (putDomainObjectParentHibernateAnnotation $reference)
+#putReferenceParams2()
+#exposeImportParamsUML($reference.foreignTable)
+    @ManyToOne
+    @JoinColumn(name = "$reference.localColumnName",
+                insertable=false, 
+                updatable=false,
+                cascade = CascadeType.ALL)
+    #if($columnDB.isRequired())@NotNull#end	
+#end
+
+#macro (putDomainObjectChildHibernateAnnotation $reference)
+#putReferenceParams2()
+#exposeImportParamsUML($reference.foreignTable)
+    @LazyCollection(value = LazyCollectionOption.TRUE) 
+    #if($columnDB.isRequired())@NotNull#end
+    @JoinTable(name = "$reference.foreignTableName",
+            joinColumns = {@JoinColumn(name = "$reference.foreignColumnName") })//,
+    //        inverseJoinColumns = @JoinColumn(name = "pad_address_id"))       
+#end

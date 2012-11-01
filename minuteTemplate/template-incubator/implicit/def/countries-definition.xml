@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<base-structure name="countries" location="countries.csv" separator=";" >
+</base-structure>

@@ -1,0 +1,32 @@
+#exposeVariableModelSpecific()
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+	<session-factory>
+
+	<!-- Echo all executed SQL to stdout -->
+	<property name="show_sql">false</property>
+		
+#foreach ($package in ${businessPackages})
+   <!-- $package.name -->
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecificHibernateMapConfig()
+   <mapping resource="$artifactRelativePathDirAndFullName"/>
+#end
+
+#end
+#foreach ($package in ${businessPackageViews})
+   <!-- $package.name -->
+#foreach ($view in ${package.listOfViews})
+#exposeVariableEntityViewSpecificHibernateMapConfig()
+   <mapping resource="$artifactRelativePathDirAndFullName"/>
+#end
+
+#end
+
+	</session-factory>
+
+</hibernate-configuration>

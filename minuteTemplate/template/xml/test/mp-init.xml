@@ -1,0 +1,83 @@
+<target name="BackendOnBsla">		
+	<architecture-target name="bsla" description="basic springframework layer architecture"/>	
+	<plugin name="xmlSchemaUtils" className="net.sf.minuteProject.plugin.xml.schema.XmlSchemaUtils"></plugin>
+
+		<template-target rootdir="C:/DEV/JAVA/mysourceforge/MP_PRO/minuteTemplatePro/template/xml"
+		    templatedir = "test" 
+			tool="velocity"
+			outputdir="C:/DEV/JAVA/eclipse/workspace-demo/minuteDigester/src-generated"
+			package-root="net.sf.minuteProject.loader"
+			name="build" belongToPackage="false">		
+	
+			<template 
+				name="DigesterConfigXML" templateFileName="DigesterConfigXML.vm" 
+				subdir="" outputsubdir="" technicalPackage="" add-model-name="true"
+				file-extension="xml" file-prefix="Digester-" file-suffix="-rules" 
+				entity-specific="false" package-specific="false" model-specific="true"
+				application-specific="false">
+			</template>
+			
+			<template 
+				name="DigesterConfigBean" templateFileName="DigesterConfigBean.vm" 
+				subdir="" outputsubdir="" technicalPackage="node" add-model-name="true"
+				file-extension="java" file-prefix="" file-suffix="" 
+				node-attribute-name-specific="true"
+				node-name-value="complexType"
+				node-attribute-name-value="name"
+				entity-specific="false" 
+				package-specific="false" 
+				model-specific="false"
+				application-specific="false"
+				is-template-to-generate-method="xmlSchemaUtils.isTrue"
+				/>
+			<template 
+				name="DigesterConfigBeanSimpleType" templateFileName="DigesterConfigBean.vm" 
+				subdir="" outputsubdir="" technicalPackage="node" add-model-name="true"
+				file-extension="java" file-prefix="" file-suffix="" 
+				node-attribute-name-specific="true"
+				node-name-value="simpleType"
+				node-attribute-name-value="name"
+				entity-specific="false" 
+				package-specific="false" 
+				model-specific="false"
+				application-specific="false"
+				is-template-to-generate-method="xmlSchemaUtils.isTrue"
+				/>				
+				<!-- depends on templateDocumentXML -->
+				<!-- 
+			<template 
+				name="DigesterConfigBean" templateFileName="DigesterConfigBean.vm" 
+				subdir="" outputsubdir="" technicalPackage="node" add-model-name="true"
+				file-extension="java" file-prefix="" file-suffix="" 
+				node-attribute-name-specific="true"
+				node-name-value="element"
+				node-attribute-name-value="name"
+				entity-specific="false" 
+				package-specific="false" 
+				model-specific="false"
+				application-specific="false"
+				is-template-to-generate-method="xmlSchemaUtils.isComplexElement"
+				>
+				
+				
+			</template>
+			 -->
+
+			<template 
+				name="DigesterHolderBean" templateFileName="DigesterHolderBean.vm" 
+				subdir="" outputsubdir="" technicalPackage="" add-model-name="true"
+				file-extension="java" file-prefix="" file-suffix="Holder" 
+				entity-specific="false" package-specific="false" model-specific="true"
+				application-specific="false">
+			</template>			
+							
+			<template 
+				name="DigesterLoadJavaClass" templateFileName="DigesterLoadJavaClass.vm" 
+				subdir="" outputsubdir="" technicalPackage="" add-model-name="true"
+				file-extension="java" file-prefix="" file-suffix="" 
+				entity-specific="false" package-specific="false" model-specific="true"
+				application-specific="false">
+			</template>										
+	</template-target>	
+
+</target>	

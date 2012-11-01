@@ -1,0 +1,21 @@
+#exposeVariableModelSpecific()
+<html>
+<head>
+	<title>Menu</title>
+</head>
+<body>
+#foreach ($package in ${businessPackages})
+   <ul id="$package.name">
+         <li> $package.name
+              <ul>
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecificURL()
+##                  <li><a href="$URLSearchEntity">$table.name</a></li>
+                  <li><a href="$URLManageEntity">$table.name</a></li>
+#end
+              </ul>
+         </li>
+     </ul>
+	#end
+</body>
+</html>

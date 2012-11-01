@@ -1,0 +1,37 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#putPlayTemplateDefinition()
+#exposeImportPlayParamParamsUML ($table)
+package $packageName;
+
+import controllers.CRUD; //check if it can be generated under the same package
+import play.*;
+import play.mvc.*;
+import java.util.List;
+
+import $importDomainObjectUML;
+
+@CRUD.For(${domainClassName}.class)
+public class ${className} extends CRUD {
+
+    public static void show${domainClassName}($primaryKeyType $primaryKeyVariable) {
+        ${domainClassName} ${domainVariableName} = ${domainClassName}.findById ($primaryKeyVariable);
+        if (${domainVariableName}==null) ${domainVariableName} = new ${domainClassName}();
+        render (${domainVariableName});
+    }
+
+    public static void list${domainClassName}() {
+        List<${domainClassName}> ${domainVariableName}s = ${domainClassName}.findAll ();
+        render (${domainVariableName}s);
+    }
+    
+    public static void searchXml${domainClassName} () {
+        render();
+    }
+    
+    public static void searchJson${domainClassName} () {
+        render();
+    }    
+    
+}
+

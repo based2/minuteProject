@@ -1,0 +1,49 @@
+package com.javacodegeeks.gwtspring.server.endpoints;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+//TODO import DO and Service
+
+@Controller
+@RequestMapping("/employeeService")
+public class EmployeeServiceController {
+
+ @Autowired
+ EmployeeService employeeService;
+
+ @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+ @ResponseBody
+ public EmployeeDTO findEmployee(@PathVariable("id") long employeeId) {
+  return employeeService.findEmployee(employeeId);
+ }
+
+ @RequestMapping(value = "/{id}/{name}/{surname}/{job}", method = RequestMethod.POST)
+ @Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+ public String saveEmployee(@PathVariable("id") long employeeId, @PathVariable String name, @PathVariable String surname, @PathVariable("job") String jobDescription) throws Exception {
+  employeeService.saveEmployee(employeeId, name, surname, jobDescription);
+  return "redirect:/restServices/employeeService/" + employeeId;
+ }
+
+ @RequestMapping(value = "/{id}/{name}/{surname}/{job}", method = RequestMethod.PUT)
+ @Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+ public String updateEmployee(@PathVariable("id") long employeeId, @PathVariable String name, @PathVariable String surname,  @PathVariable("job") String jobDescription) throws Exception {
+  employeeService.updateEmployee(employeeId, name, surname, jobDescription);
+  return "redirect:/restServices/employeeService/" + employeeId;
+ }
+
+ @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+ @Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+ @ResponseBody
+ public String deleteEmployee(@PathVariable("id") long employeeId) throws Exception {
+  employeeService.deleteEmployee(employeeId);
+  return "OK";
+ }
+
+}

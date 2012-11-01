@@ -1,0 +1,27 @@
+#set ($packageName = $xmlSchemaUtils.getPackageName($model, $template))
+#set ($className = $commonUtils.getClassName($model, $template))
+#set ($digesterFullPathConfigXml = $xmlSchemaUtils.getDigesterFullPathConfigXml($configuration))
+#set ($rootElementVar = $xmlSchemaUtils.getFirstSequenceElementJavaNameVariable($document, $configuration))
+#set ($rootElementName = $xmlSchemaUtils.getFirstSequenceElementJavaName($document, $configuration))
+#set ($importRootElementClass = $xmlSchemaUtils.getFirstSequenceElementJavaNameImport($document, $configuration))
+package $packageName;
+
+import $importRootElementClass;
+
+public class ${className} {
+
+   private static $rootElementName _$rootElementVar;
+
+   public ${className}() {
+   }
+
+   public static $rootElementName get$rootElementName() {
+      return _$rootElementVar;
+   }
+	
+   public static void set$rootElementName ($rootElementName _${rootElementVar}2) {
+      _$rootElementVar = _${rootElementVar}2;
+   }
+   
+}
+

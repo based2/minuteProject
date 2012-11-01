@@ -1,0 +1,4 @@
+xml schema as salami slice pattern
+xml base element contains def of element that can be ref by other element.
+ref is base on '<elementName>+Ref'
+comparison is base on element id 

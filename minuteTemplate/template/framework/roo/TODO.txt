@@ -1,0 +1,32 @@
+Comment on the roo console
+give a .roo file as input of the console: stop first error otherwise at end.
+primary key policy?
+enum?
+many2many intermediary table?
+Explicit name of table for mapping.
+roo console field type (mapping to DB type), exhaustive list.
+
+Conventions to resolve ambiguities:
+resolve ambiguity for dependencies. Entity A has two ONE_TO_MANY link with Entity B. 
+It is not possible to have twice the same variable 'bs' twice. (Compilation uniqueness issue).
+
+is ONE_TO_MANY bidirectional always. (implicit MANY_TO_ONE trigger).
+what if we just want unidirectional?
+
+Roo class without version
+
+pom.xml version of hsqldb
+
+--
+steps:
+>generate (put mvn jdbc jar)
+>open roo console inject .roo file
+rem: the output is nearly correct (pk policy is to be overwritten, same as version)
+>copy src-overwritten into src
+
+>persistence.xml remove hibernate.autoddl...
+>change pom.xml to correct hsqldb.jar, version
+>mvn package
+
+Not taken into account:
+>m2m

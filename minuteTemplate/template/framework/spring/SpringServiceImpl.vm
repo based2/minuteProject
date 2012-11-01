@@ -1,0 +1,101 @@
+#exposeVariableEntitySpecific()
+#exposeSpringServiceDomainObject()
+#exposeSpringBslaDomainObject()
+#exposeJPA2DomainObject($table)
+#putImportParamsUML()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+
+import java.util.List;
+import java.util.ArrayList;
+
+import net.sf.minuteProject.model.data.criteria.QueryData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import $importDomainObjectUML;
+import $SpringServiceInterfaceImport;
+import $BslaDaoInterfaceImport;
+import $BslaDaoExtInterfaceImport;
+
+import org.springframework.transaction.annotation.Transactional;
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Service layer Interface 
+ * It offers coarse grain methods over the fine grain DAO layer:
+ * It performs input and business validation.
+ * </p>
+ *
+ */
+@Service ("$SpringServiceInterfaceVariable")
+@Transactional
+public class $className implements $SpringServiceInterfaceClass {
+
+    @Autowired
+    @Qualifier("$BslaDaoInterfaceVariable")	
+	$BslaDaoInterfaceClass $BslaDaoInterfaceVariable;
+
+    @Autowired
+    @Qualifier("$BslaDaoExtInterfaceVariable")	
+	$BslaDaoExtInterfaceClass $BslaDaoExtInterfaceVariable;
+	
+    /**
+     * Inserts a $tableClassName entity $tCN 
+     * @param $tableClassName $tableVariableName
+     */
+    public void create ($tableClassName $tableVariableName) {
+		${BslaDaoInterfaceVariable}.insert$tableClassName($tableVariableName);
+	}
+
+    /**
+     * Updates a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public $tableClassName update($tableClassName $tableVariableName) {
+		return ${BslaDaoInterfaceVariable}.update$tableClassName($tableVariableName);
+	}
+
+#if ($hasOnlyOnePrimaryKey)
+	public $tableClassName findById ($primaryKeyFullType $primaryKeyVariable) {
+		return ${BslaDaoInterfaceVariable}.load$tableClassName($primaryKeyVariable);
+	}
+
+	public void delete ($tableClassName ${tableVariableName}) {
+	    $tableClassName var = findById (${tableVariableName}.get$primaryKeyJavaNameClass());
+		${BslaDaoInterfaceVariable}.delete$tableClassName (var);
+	}
+	
+#end
+     /**
+     * Saves a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void save($tableClassName $tableVariableName){
+		${BslaDaoInterfaceVariable}.save$tableClassName (${tableVariableName});
+	}
+	
+	public List<$tableClassName> findAll ($tableClassName $tableVariableName) {
+		List<$tableClassName> list = ${BslaDaoInterfaceVariable}.searchPrototype$tableClassName ($tableVariableName);
+		List<$tableClassName> ret = new ArrayList<$tableClassName>(); 	
+		 for ($tableClassName a : list) {
+			$tableClassName b = a.clone();
+			ret.add(b);
+		}
+		return ret;
+	}
+
+	@Override
+	public void find(QueryData<$tableClassName> data) {
+		${BslaDaoExtInterfaceVariable}.find (data);
+	}
+	
+$!updatedAreaImplementation
+
+}

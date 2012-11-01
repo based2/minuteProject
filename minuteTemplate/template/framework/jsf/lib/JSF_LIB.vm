@@ -1,0 +1,102 @@
+#macro (putJSFColumnSnippet)
+<label>#{i18n.$tableVariableName$separator$columnVar}#if($column.isRequired()) *#end</label>
+#if($columnUtils.isTimeColumn($column))
+    <p:calendar value="#{agentTypeController.agentType.createdDate}"
+       id="lbl${columnClass}" ##converter="dateTsConverter"
+       converterMessage="Invalid Date" required="$column.isRequired()"
+       pattern="dd/MM/yyyy">
+    </p:calendar>
+	<p:message for="lbl${columnClass}" />
+#else
+	<p:inputText label="${columnClass}" id="lbl${columnClass}" value="#{${entityControllerJSFVariable}.${tableVariableName}.${columnVar}}" required="$column.isRequired()" />
+	<p:message for="lbl${columnClass}"/>
+#end
+#end
+#macro (putJSFColumnSnippet2)
+<label>#{i18n.$tableVariableName$separator$columnVar}#if($column.isRequired()) *#end</label>
+#if($columnUtils.isTimeColumn($column))
+    <p:calendar value="#{agentTypeController.agentType.createdDate}"
+       id="lbl${columnClass}" ##converter="dateTsConverter"
+       converterMessage="Invalid Date" required="$column.isRequired()"
+       pattern="dd/MM/yyyy">
+    </p:calendar>
+	<p:message for="lbl${columnClass}" />
+#else
+	<p:inputText label="${columnClass}" id="lbl${columnClass}" value="#{${entityControllerJSFVariable}.selected${tableVariableName}.${columnVar}}" required="$column.isRequired()" />
+	<p:message for="lbl${columnClass}"/>
+#end
+#end
+
+#macro(exposeSeparator)
+#exposeJSFTemplate()
+#set($separator=$i18nUtils.getSeparator($template, $templateModelI18nJSF))
+#end
+
+#macro (exposeJSFEntitySpecific)
+#exposeVariableEntitySpecific()
+#exposeJSFTemplate()
+#exposeJSFConfig()
+#set ($entityCreateJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityCreateJSF))
+#set ($entityCreateJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityCreateJSF))
+#set ($entityCreateJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityCreateJSF))	
+#set ($entityCreateJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityCreateJSF))
+#set ($entityListJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityListJSF))
+#set ($entityListJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityListJSFClass))
+#set ($entityListJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityListJSF))	
+#set ($entityListJSFLocation = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $template, $templateEntityListJSF))
+#set ($entityControllerJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityControllerJSF))
+#set ($entityControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityControllerJSFClass))
+#set ($entityControllerJSFImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateEntityControllerJSF))	
+#end
+
+#macro (exposeJSFModelSpecific)
+#exposeVariableModelSpecific()
+#exposeJSFConfig()
+#exposeJSFTemplate()
+#set ($modelJSFUtilsClass = $commonUtils.getTemplateClassName($model, $template, $templateModelJSFUtils))
+##set ($modelJSFUtilsVariable = $commonUtils.getJavaNameVariableFirstLetter($modelJSFUtilsClass))
+#set ($modelJSFUtilsImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelJSFUtils))
+#set ($modelI18nJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelI18nJSF))
+#set ($modelI18nJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelI18nJSFClass))
+#set ($modelI18nJSFImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelI18nJSF))
+#set ($modelBeanManagerMenuJSFClass = $commonUtils.getTemplateClassName($model, $template, $templateModelBeanManagerMenuJSF))
+#set ($modelBeanManagerMenuJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($modelBeanManagerMenuJSFClass))
+#set ($modelBeanManagerMenuJSFImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelBeanManagerMenuJSF))
+#set ($modelDecoratorJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateModelXhtmlDecoratorJSF))
+#set ($modelDecoratorJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateModelXhtmlDecoratorJSF))
+#set ($modelMenuJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateModelXhtmlMenuJSF))
+#set ($modelCssDefaultJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateCssDefaultJSF))
+#set ($controllerBeanPackageName=$commonUtils.getPackageName($model, $template, $templateEntityControllerJSF))
+#set ($controllerBeanMenuPackageName=$commonUtils.getPackageName($model, $template, $templateModelBeanManagerMenuJSF))
+#end
+
+#macro (exposeJSFAppFwkSpecific)
+#exposeVariableModelSpecific()
+#set ($dateTsConverterImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateJSFFwkDateTsConverter))
+#set ($modelCssDefaultJSFImport = $commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateCssDefaultJSF))
+#end
+
+#macro (exposeJSFTemplate)
+#set ($templateEntityCreateJSF = "JSFXhtmlCreateEntity")
+#set ($templateEntityListJSF = "JSFXhtmlListEntity")
+#set ($templateSDDJSF = "JSFXhtmlSDDInput")
+#set ($templateEntityControllerJSF = "JSFBeanManagerController")
+#set ($templateModelI18nJSF = "JSFI18nProperties")
+#set ($templateModelXhtmlDecoratorJSF = "JSFXhtmlDecorator")
+#set ($templateModelXhtmlMenuJSF = "JSFXhtmlMenu")
+#set ($templateCssDefaultJSF = "JSFCssDefault")
+#set ($templateModelBeanManagerMenuJSF = "JSFBeanManagerMenu")
+#set ($templateJSFFwkDateTsConverter = "JSFFwkDateTsConverter")
+#set ($templateModelJSFUtils = "JSFUtils")
+#set ($templateChartJSF = "JSFXhtmlChart")
+#end
+
+#macro(exposeJSFConfig)
+#set ($isSpringBackend=$template.hasPropertyValue("add-backend-implementation","spring"))
+#set ($isEJBBackend=$template.hasPropertyValue("add-backend-implementation","ejb"))
+#end
+
+#macro(exposePrimefacesConfig)
+#set ($primefacesVersion=$template.getPropertyValue("primefaces-version","3.3.1"))
+#set ($primefacesNamespace=$template.getPropertyValue("primefaces-namespace","http://primefaces.org/ui"))
+#end

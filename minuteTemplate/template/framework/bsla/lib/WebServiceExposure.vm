@@ -1,0 +1,10 @@
+#macro(exposeWebServiceInterface)
+#templateDefinitionWS()
+#set ($WSInterfaceName = $commonUtils.getTemplateClassName($tableDB, $model, $templateWSInterfaceName))
+#set ($importWSInterface = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template,$templateWSInterfaceName))
+#end
+
+
+#macro (templateDefinitionWS)
+#set ($templateWSInterfaceName="WSServiceInterface")
+#end

@@ -1,0 +1,6 @@
+#exposePlaySpecific()
+mkdir $applicationPlay
+play new $applicationPlay
+cp -R play-app $applicationPlay 
+play eclipsify
+play run $applicationPlay

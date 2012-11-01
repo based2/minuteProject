@@ -1,0 +1,24 @@
+#exposeVariablePackageSpecific()
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+	
+<struts>
+	<package name="$package.name" extends="struts-default" namespace="/$package.name">
+	
+		<!-- Default interceptor stack. -->
+		<default-interceptor-ref name="paramsPrepareParamsStack"/>
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntityStruts2Specific()
+#exposeSubmitActionProperties()
+	    <action name="display$actionManageScreen" class="$actionClassPath" method="manage">
+            <result name="input">$manageScreenFile</result>
+        </action>
+	    <action name="$actionSubmit" class="$actionClassPath" method="save">
+            <result name="input">$manageScreenFile</result>
+            <result>$manageScreenSuccessFile</result>
+        </action>        
+#end        
+	</package>
+</struts>
+	

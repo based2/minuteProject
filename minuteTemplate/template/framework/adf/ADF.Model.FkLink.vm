@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewLink SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewLink
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="OrdersAddressesFkLink"
+  Version="11.1.1.61.92"
+  InheritPersonalization="true"
+  EntityAssociation="my.hw.view.OrdersAddressesFkAssoc">
+  <DesignTime>
+    <Attr Name="_isCodegen" Value="true"/>
+  </DesignTime>
+  <ViewLinkDefEnd
+    Name="AddressesView"
+    Cardinality="1"
+    Owner="my.hw.view.AddressesView"
+    Source="true">
+    <DesignTime>
+      <Attr Name="_finderName" Value="AddressesView"/>
+      <Attr Name="_isUpdateable" Value="true"/>
+      <Attr Name="_minCardinality" Value="1"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="my.hw.view.AddressesView.AddressId"/>
+    </AttrArray>
+  </ViewLinkDefEnd>
+  <ViewLinkDefEnd
+    Name="OrdersView"
+    Cardinality="-1"
+    Owner="my.hw.view.OrdersView">
+    <DesignTime>
+      <Attr Name="_finderName" Value="OrdersView"/>
+      <Attr Name="_isUpdateable" Value="true"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="my.hw.view.OrdersView.ShipToAddressId"/>
+    </AttrArray>
+  </ViewLinkDefEnd>
+</ViewLink>

@@ -1,0 +1,85 @@
+#exposeABLEntitySpecific()
+#exposeJPA2DomainObject($table)
+#addedAreas()
+package $packageName;
+
+import com.autobizlogic.abl.annotations.*;
+import com.autobizlogic.abl.engine.*;
+import com.autobizlogic.abl.logic.LogicContext;
+import $importDomainObjectUML;
+import ${logicBaseImport};
+
+$!updatedAreaImport
+ /**
+ * Business Logic Component for ${domainClassName} (each row represents a ${domainVariableName} account).
+ */
+public class ${className} extends ${logicBaseClass} {
+
+    @CurrentBean
+    public ${domainObjectClass} $domainObjectVariable;             // injected by Business Logic Engine, prior to invoking Business Logic Rule methods
+
+    @OldBean
+    public ${domainObjectClass} ${domainObjectVariable}_old;       // injected by Engine, providing access to old values
+
+//   logicContext inherited - injected by Engine, providing access to nest level, session, etc.
+
+#foreach($constraint in $table.constraints)
+#exposeABLContraintSpecific()
+#exposeEntityUpdatedAreas("abl-constraint-${constraintName}")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+##    @Constraint(
+##       value = "${constraint.value}"
+###if($hasErrorMessage)
+##       ,errorMessage = "${constraint.errorMessage}"
+###end
+##    )
+$comment
+    ${constraint.value}
+    public void constraint${constraintName}() { 
+	}
+
+#end
+$!updatedAreaEnd
+#end
+#foreach($action in $table.actions)
+#exposeABLActionSpecific()
+#exposeEntityUpdatedAreas("abl-action-${actionName}")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+$comment
+    ${action.value}
+#if ($action.isToImplement())
+    public void ${actionName}() { 
+        //implement
+    }
+#else
+    public void ${actionName}() { }
+#end
+#end
+$!updatedAreaEnd
+#end
+#foreach($column in ${table.attributes})
+#foreach($derivation in $column.derivations)
+#exposeABLDerivedSpecific()
+#exposeEntityUpdatedAreas("abl-derivation-${derivationName}")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+$comment
+    ${derivation.value}
+    public void derived${derivationName}() { }
+
+#end
+$!updatedAreaEnd
+#end
+#end
+
+$!updatedAreaImplementation
+
+}

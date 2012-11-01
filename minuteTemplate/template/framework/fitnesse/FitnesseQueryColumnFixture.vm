@@ -1,0 +1,51 @@
+#exposeQuerySpecific()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+import net.sf.minuteproject.fitnesse.fixture.DbInsertUpdateDeleteFixture;
+import fit.ColumnFixture;
+import fitnesse.fixtures.TableFixture;
+
+public class ${className} extends DbInsertUpdateDeleteFixture{
+##--
+##foreach ($param in $query.queryParams.queryParams)
+##exposeStatementParam()
+##    public $javaType $javaVariable; //public $param.type $param.name; // $param.isMandatory() ;
+##end
+##--
+##foreach ($param in $query.outputParams.queryParams)
+##exposeStatementParam()
+##    public $javaType $javaVariable; //$param.type
+##end
+##--
+###foreach ($param in $query.inputParams.queryParams)
+##exposeStatementParam()
+##    public $javaType $javaVariable; 
+##end
+
+    public execute () {
+		PreparedStatement prest = connection.prepareStatement(getInputParameters());
+		ResultSet rs = prest.executeQuery();
+#foreach ($param in $query.inputParams.queryParams)
+#exposeStatementParam()
+		prest.${setterType}($velocityCount,$javaVariable);
+#end
+		while (rs.next()){
+#foreach ($param in $query.outputParams.queryParams)
+#exposeStatementParam()
+			$javaType $javaVariable = rs.${getterType}($velocityCount);
+#end
+		}
+    }
+
+	private String getInputParameters() {
+		return "${query.queryBody.value}";
+	}
+	
+}

@@ -1,0 +1,152 @@
+#exposeVariableApplicationSpecific()
+#exposeWebSecurityProperties()
+#set ($applicationOX=$configuration.name) 
+<?xml version="1.0" encoding="UTF-8"?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+
+	<display-name>$applicationOX</display-name>
+
+	<description>$applicationOX generated application by MinuteProject</description>
+
+	<servlet>
+		<servlet-name>moduleHome</servlet-name>
+		<servlet-class>net.sf.minuteproject.openxava.web.servlet.ModuleHomeServlet</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>module</servlet-name>
+		<servlet-class>org.openxava.web.servlets.ModuleServlet</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>images</servlet-name>
+		<servlet-class>org.openxava.web.servlets.ImagesServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>gallery</servlet-name>
+		<servlet-class>org.openxava.web.servlets.GalleryServlet</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>jasperReport</servlet-name>
+		<servlet-class>org.openxava.web.servlets.JasperReportServlet</servlet-class>
+	</servlet>	
+	<servlet>
+		<servlet-name>generatePDFReport</servlet-name>
+		<servlet-class>org.openxava.web.servlets.GenerateReportServlet</servlet-class>
+	</servlet>			
+	<servlet>
+		<servlet-name>generateExcelReport</servlet-name>
+		<servlet-class>org.openxava.web.servlets.GenerateReportServlet</servlet-class>
+	</servlet>		
+	<servlet>
+		<servlet-name>generateCustomReport</servlet-name>
+		<servlet-class>org.openxava.web.servlets.GenerateCustomReportServlet</servlet-class>
+	</servlet>			
+	<servlet>
+		<servlet-name>dwrInvoker</servlet-name>
+		<display-name>DWR Servlet</display-name>
+		<description>Direct Web Remoter Servlet</description>
+		<servlet-class>org.directwebremoting.servlet.DwrServlet</servlet-class>    
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<load-on-startup>12</load-on-startup>
+	</servlet>
+	
+	
+	<servlet-mapping>
+		<servlet-name>moduleHome</servlet-name>
+		<url-pattern>/modulesHome/*</url-pattern>
+	</servlet-mapping>	
+		
+	<servlet-mapping>
+		<servlet-name>module</servlet-name>
+		<url-pattern>/modules/*</url-pattern>
+	</servlet-mapping>		
+	<servlet-mapping>
+		<servlet-name>images</servlet-name>
+		<url-pattern>/xava/ximage</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>images</servlet-name>
+		<url-pattern>/ximage</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>gallery</servlet-name>
+		<url-pattern>/xava/gallery</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>jasperReport</servlet-name>
+		<url-pattern>/xava/jasperReport</url-pattern>
+	</servlet-mapping>	
+	<servlet-mapping>
+		<servlet-name>generatePDFReport</servlet-name>
+		<url-pattern>/xava/list.pdf</url-pattern>
+	</servlet-mapping>		
+	<servlet-mapping>
+		<servlet-name>generateExcelReport</servlet-name>
+		<url-pattern>/xava/list.csv</url-pattern>
+	</servlet-mapping>			
+	<servlet-mapping>
+		<servlet-name>generateCustomReport</servlet-name>
+		<url-pattern>/xava/report.pdf</url-pattern>
+	</servlet-mapping>		
+	<servlet-mapping>
+		<servlet-name>dwrInvoker</servlet-name>
+		<url-pattern>/dwr/*</url-pattern>
+	</servlet-mapping>	
+	
+    <mime-mapping>
+        <extension>
+            jnlp
+        </extension>
+        <mime-type>
+            application/x-java-jnlp-file
+        </mime-type>
+    </mime-mapping>	
+	
+
+  <!-- Define a Security Constraint on this Application -->
+#if ($securityAuthenticationType!="none")
+	<security-constraint>
+       <web-resource-collection>
+           <web-resource-name>OX Application</web-resource-name>
+           <url-pattern>/xava/*</url-pattern>
+       </web-resource-collection>
+       <auth-constraint>
+           <role-name>$mpUserRole</role-name>
+       </auth-constraint>
+   </security-constraint>
+
+<!-- Define the Login Configuration for this Application -->
+#if ($securityAuthenticationType=="basic")   
+    <login-config>
+	   <auth-method>BASIC</auth-method>
+	   <realm-name>$applicationRealm</realm-name>
+	</login-config>
+
+#end
+#if ($securityAuthenticationType=="form") 
+    <login-config>
+        <auth-method>FORM</auth-method>
+		    <realm-name>$applicationRealm</realm-name>
+        <form-login-config>
+           <form-login-page>/$loginPath</form-login-page>
+           <form-error-page>/$loginErrorPath</form-error-page>
+        </form-login-config>
+    </login-config>
+	
+#end
+	<!-- Security roles referenced by this web application -->
+	<security-role>
+	  <description>
+	    The role that is required to log in to the Manager Application
+	  </description>
+	  <role-name>$mpUserRole</role-name>
+	</security-role>
+#end
+
+</web-app>

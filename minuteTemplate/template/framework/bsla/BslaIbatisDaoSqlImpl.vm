@@ -1,0 +1,223 @@
+#exposeVariableEntitySpecific()
+#putImportParams()
+package $packageName;
+
+import java.util.List;
+import java.util.HashMap;
+import java.sql.*;
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+
+import $importDaoInterface;
+import $importDomainObject;
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Ibatis implementation of interface $daoInterfaceName
+ * implementation of the standard DB operation regarding the persistence of the entity $tableClassName
+ * It offers a set of methods which allow for saving, loading,
+ * deleting and searching $tableClassName objects</p>
+ *
+ */
+
+public class $className extends SqlMapClientDaoSupport implements $daoInterfaceName {
+
+	public $className () {}
+
+    /**
+     * Inserts a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void insert$tableClassName($tableClassName $tableVariableName) {
+      this.getSqlMapClientTemplate().insert("insert$tableClassName", $tableVariableName);
+    }
+
+    /**
+     * Updates a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void update$tableClassName($tableClassName $tableVariableName) {
+      this.getSqlMapClientTemplate().update("update$tableClassName", $tableVariableName);
+    }
+
+    /**
+     * Updates a $tableClassName entity with only the attributes set into ${tableClassName}.
+     * Remark: The primary keys cannot be update by this methods, nor are the attributes that must be set to null.
+     * @param $tableClassName $tableVariableName
+     */
+    public void updateNotNullOnly$tableClassName($tableClassName $tableVariableName) {
+       this.getSqlMapClientTemplate().update("updateNotNullOnly$tableClassName", $tableVariableName);
+    }
+    
+    private class ${tableClassName}CriteriaValue {
+	       	public $tableClassName $tableVariableName, prototypeCriteria;
+	       	
+	       	public $tableClassName get$tableClassName() {
+	           return $tableVariableName;	
+	       	}
+	       	
+	       			public void set$tableClassName($tableClassName $tableVariableName) {
+	           this.$tableVariableName = $tableVariableName;	
+	       	}
+
+	       	public $tableClassName getPrototypeCriteria() {
+	           return prototypeCriteria;	
+	       	}
+	       	
+	       			public void setPrototypeCriteria($tableClassName prototypeCriteria) {
+	           this.prototypeCriteria = prototypeCriteria;	
+	       	}
+    	}
+    	
+    public void updateNotNullOnlyPrototype${tableClassName}($tableClassName $tableVariableName, $tableClassName prototypeCriteria) {
+       HashMap<String, Object> map = new HashMap();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#set($tableVar_colVar="${tableVariableName}_$columnVar")
+       map.put("$tableVar_colVar", ${tableVariableName}.get$columnClass());
+       map.put("prototypeCriteria_$columnVar", prototypeCriteria.get$columnClass());
+#end
+       this.getSqlMapClientTemplate().update("updateNotNullOnlyPrototype$tableClassName", map);
+    }
+     
+     /**
+     * Saves a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void save$tableClassName($tableClassName $tableVariableName) {
+#if ($hasPrimaryKey)    
+     //TODO check that on all the PK
+      if (${tableVariableName}.get${primaryKey}()!=null)
+      	   update$tableClassName($tableVariableName);
+      	else
+         insert$tableClassName($tableVariableName);	
+#else
+      insert$tableClassName($tableVariableName);
+#end
+    }
+       
+    /**
+     * Deletes a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void delete$tableClassName($tableClassName $tableVariableName) {
+      this.getSqlMapClientTemplate().delete("delete$tableClassName", $tableVariableName);
+    }
+    
+     /**
+     * Loads the $tableClassName entity which is related to an instance of
+     * $tableClassName
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+     * @param $columnType $columnVar
+#end
+     * @return $tableClassName The $tableClassName entity
+     */
+     public $tableClassName load$tableClassName(
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+     $columnType $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end
+    ) {
+      // verify if it is needed to throw an illegal...Exception in case of a null value in the fk.
+      ${domainClassName} my${domainVariableName} = get${domainClassName} (
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+        $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end      
+      );
+    	return ($tableClassName)getSqlMapClientTemplate().queryForObject("load$tableClassName", my${domainVariableName});
+    }  
+        
+    /**
+     * Loads the $tableClassName entity which is related to an instance of
+     * $tableClassName
+     * @param $tableClassName $tableVariableName
+     * @return $tableClassName The $tableClassName entity
+     */
+    public $tableClassName loadFullFirstLevel$tableClassName($tableClassName $tableVariableName){
+    	   return ($tableClassName)getSqlMapClientTemplate().queryForObject("loadFullFirstLevelAll$tableClassName", $tableVariableName);
+    }
+    
+
+    /**
+     * Loads the $tableClassName entity which is related to an instance of
+     * $tableClassName and its dependent one to many objects
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+     * @param $columnType $columnVar
+#end
+     * @return $tableClassName The $tableClassName entity
+     */
+    public $tableClassName loadFullFirstLevel$tableClassName(
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+     $columnType $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end   
+    ) {
+      // verify if it is needed to throw an illegal...Exception in case of a null value in the fk.
+      ${domainClassName} my${domainVariableName} = get${domainClassName} (
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+        $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end      
+      );
+    	return ($tableClassName)getSqlMapClientTemplate().queryForObject("loadFullFirstLevel$tableClassName", my${domainVariableName});
+    }
+
+
+    /**
+     * Loads the $tableClassName entity which is related to an instance of
+     * $tableClassName and its dependent objects one to many
+     * @param $primaryKeyFullType $primaryKeyVariable
+     * @return $tableClassName The $tableClassName entity
+     */
+    public $tableClassName loadFull$tableClassName($primaryKeyFullType $primaryKeyVariable) {
+    	return ($tableClassName)getSqlMapClientTemplate().queryForObject("loadFull$tableClassName", $primaryKeyVariable);
+    }
+
+    /**
+     * Searches a list of $tableClassName entity 
+     * @param $tableClassName $variableName
+     * @return List
+     */
+    public List<$tableClassName> search$tableClassName($tableClassName $tableVariableName) {
+    	return getSqlMapClientTemplate().queryForList("search$tableClassName", $tableVariableName);
+    } 
+    
+    /**
+     * Load a paginated list of $tableClassName entity dependent of pagination criteria
+     * @param PaginationCriteria paginationCriteria
+     * @return List
+     */
+    public List<$tableClassName> loadPaginated$tableClassName ($tableClassName $tableVariableName, PaginationCriteria paginationCriteria) {
+        return getSqlMapClientTemplate().queryForList("loadPaginated$tableClassName", paginationCriteria);
+    }       
+    
+     /**
+     * get a $tableClassName entity field with the primary keys
+#foreach ($column in $table.primaryKeyColumns) 
+#if($column.isPrimaryKey())
+#putColumnParams()
+     * @param $columnType $columnVar
+#end
+#end
+     * @return $tableClassName The $tableClassName entity
+     */
+     public $tableClassName get$tableClassName(
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+        $columnType $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end
+     ) {
+        ${domainClassName} my${domainVariableName} = new ${domainClassName}();
+#foreach ($column in $table.primaryKeyColumns) 
+#putColumnParams()
+        my${domainVariableName}.set$columnClass($columnVar);
+#end
+    	return my${domainVariableName};
+    }      
+    
+}

@@ -1,0 +1,66 @@
+<!--<?xml version="1.0" ?>
+<flow xmlns="http://test.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://test.com presentation.xsd">
+
+</flow>-->
+<dictionary  xmlns="http://mp.org/presentation/"
+   xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+   xsi:noNamespaceSchemaLocation="file:presentation.xsd">
+
+<!--<dictionary>
+
+
+-->
+<valueList  id="statuslist" name="statuslist" type="simple">
+	<valueElement name="status_active" value="actif"/>
+	<valueElement name="status_pending" value="pending"/>
+	<valueElement name="status_revoked" value="revoked"/>
+</valueList>
+
+<window id="searchproject" name="searchproject" isform="true">
+  <block name="search by reference" isform="true">
+	<component name="projectId" type="textField" ismandatory="true"/>
+	<component name="rdg" type="textField" />
+	<component name="programme" type="textField" />
+	<component name="status" type="dropDownList" valuelistref="statuslist"/>
+  </block>
+  <block name="search by reference button">
+	<component name="Search" type="button" action="Search"/>
+	<component name="Reset" type="button" action="Reset"/>
+  </block>
+</window>
+ 
+<page id="searchprojectPage" name="search project page">
+  <windowRef>searchproject</windowRef>
+</page>
+ 
+<page id="firstpage" name="first">
+  <window name="first window">
+	<block name="first block" >
+		<component name="comp1">
+		</component>
+		<component name="comp2">
+		</component>
+	</block>
+  </window>
+</page>
+<page id="secondpage" name="second">
+  <window name="first window">
+	<block name="another block">
+		<component name="comp1">
+		</component>
+		<component name="comp2">
+		</component>
+	</block>
+  </window>
+</page>
+<flow name="first flow">
+  <pageRef>firstpage</pageRef>
+</flow>
+
+<flow name="second flow">
+  <pageRef>firstpage</pageRef>
+  <pageRef>secondpage</pageRef>
+</flow>
+
+</dictionary>

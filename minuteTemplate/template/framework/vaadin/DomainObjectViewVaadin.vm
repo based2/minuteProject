@@ -1,0 +1,173 @@
+#putVaadinClassObjectAndPackage()
+#exposeVaadinDomainObject()
+#exposeVaadinModel()
+#exposeVariableEntitySpecific()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($tableLabelVariable=$formatUtils.getJavaNameVariable(${tableLabel}))
+
+import $modelApplicationImport;
+import $menuImport;
+import $domainObjectContainerImport;
+import $domainObjectFormImport;
+import $domainObjectListImport;
+import $domainObjectListViewImport;
+import $domainObjectSearchViewImport;
+import $domainObjectApplicationImport;
+
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.terminal.ExternalResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.SplitPanel;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Label;
+import com.vaadin.ui.Link;
+
+import eu.livotov.tpt.gui.widgets.TPTMultiView.TPTView;
+
+import $menuImport;
+
+public class $className extends VerticalLayout implements TPTView, ClickListener, ValueChangeListener, ItemClickListener {
+
+	private SplitPanel horizontalSplit = new SplitPanel(SplitPanel.ORIENTATION_HORIZONTAL);
+	private $domainObjectFormClass form = null;
+	private Table table = null;
+
+	public $className () {
+		this(0);
+	}
+		
+	public $className (Integer size) {
+		setSizeFull();
+
+		addComponent(createToolbar());
+		addComponent(horizontalSplit);
+		setExpandRatio(horizontalSplit, 1);
+
+		horizontalSplit.setSplitPosition(200, SplitPanel.UNITS_PIXELS);
+		horizontalSplit.setFirstComponent(new $menuClass("${tableLabelVariable}"));
+
+		horizontalSplit.setSecondComponent(getSplitPanel(size));
+		horizontalSplit.setSizeFull();
+	}
+	
+	private HorizontalLayout createToolbar() {
+		HorizontalLayout lo = new HorizontalLayout();
+		Link l = new Link("powered by minuteproject", new ExternalResource("http://minuteproject.sf.net"));
+		l.setStyleName("mp-style");
+		lo.addComponent(l);
+		lo.setMargin(true);
+		lo.setSpacing(true);
+		lo.setStyleName("sidebar");
+		lo.setWidth("100%");
+		return lo;
+	}
+
+	public SplitPanel getSplitPanel(Integer size) {
+		SplitPanel splitPanel = new SplitPanel();
+		table = new Table();
+		table.setSizeFull();
+		$domainObjectApplicationClass app  = new $domainObjectApplicationClass();
+		
+		if (size==0)
+			table.setContainerDataSource(app.getDatasource());
+		else
+			table.setContainerDataSource(app.getElements(100));
+
+		table.setVisibleColumns(${domainObjectContainerClass}.NATURAL_COL_ORDER);
+		table.setColumnHeaders (${domainObjectContainerClass}.COL_HEADERS_ENGLISH);
+
+		table.setColumnCollapsingAllowed(true);
+		table.setColumnReorderingAllowed(true);
+
+		table.setSelectable(true);
+		table.setImmediate(true);
+
+		table.setNullSelectionAllowed(false);
+		table.addListener((ValueChangeListener)this);
+		splitPanel.setFirstComponent(table);
+		
+		form = new $domainObjectFormClass();
+		splitPanel.setSecondComponent(form);
+		return splitPanel;	
+	}
+		
+	public void viewActivated(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void viewAttached() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void viewDeactivated(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void viewRemoved() {
+		// TODO Auto-generated method stub
+		
+	}
+	private void setMainComponent(Component c) {
+		horizontalSplit.setSecondComponent(c);
+	}
+
+	/*
+	 * View getters exist so we can lazily generate the views, resulting in
+	 * faster application startup time.
+	 */
+
+
+	public void buttonClick(ClickEvent event) {
+		final Button source = event.getButton();
+
+//		if (source == search) {
+//			showSearchView();
+//		} else if (source == newEntity) {
+//			addAddress();
+//		}
+	}
+
+
+	public void valueChange(ValueChangeEvent event) {
+		Property property = event.getProperty();
+		if (property == table) {
+			Item item = table.getItem(table.getValue());
+			if (item != form.getItemDataSource()) {
+				form.setItemDataSource(item);
+			}
+		}
+	}
+
+	public void itemClick(ItemClickEvent event) {
+//		if (event.getSource() == tree) {
+//			Object itemId = event.getItemId();
+//			if (itemId != null) {
+//				if (itemId == NavigationTree.SHOW_ALL) {
+//					// clear previous filters
+//					refresh();
+//				} else if (itemId == NavigationTree.SEARCH) {
+//					showSearchView();
+//				//} else if (itemId instanceof SearchFilter) {
+//					//search((SearchFilter) itemId);
+//				}
+//			}
+//		}
+	}
+
+}

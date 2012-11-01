@@ -1,0 +1,35 @@
+#set ($action = "insert")
+#set ($actionURL = "crud.do")
+#set ($htmlFormName = $table.name)
+#exposeJSPElement()
+<%@ include file="/WEB-INF/jsp/common/common-include.jsp"%>
+<html>
+<head>
+	<title>$table.name edit screen</title>
+</head>	
+<body>
+#includeCRUD()
+$table.name field values
+<form name="$htmlFormName" action="/${ctx}/$actionURL" onSubmit="return isToSubmit();">
+<input type="hidden" name="action" value="$action">
+<input type="hidden" name="table" value="$table.name">
+<table>
+#foreach ($column in ${table.columns})
+	#putColumnParams()
+#if(!$column.isPrimaryKey())
+		  <tr>
+  <td>$columnVar #if($column.isRequired()) *#end</td>
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")  
+  <td> <input type="text" name="$columnVar" size="$column.size" onchange="check${columnVar}()"/></td>
+#else
+  <td> <input type="text" name="$columnVar" onchange="check${columnVar}()"/></td>
+#end
+	  <td><span id="${columnVar}-error" class="error"></span></td>
+  </tr>
+#end
+#end
+<tr><td><input type="submit" value="Submit"></td><td></td></tr>
+</table>
+</form>
+</body>
+</html>

@@ -1,0 +1,107 @@
+#exposeVariableModelSpecific() 
+#set ($applicationOX=$configuration.name) 
+#set ($applicationLabel=$formatUtils.getJavaName($applicationOX))
+<%@ taglib prefix="mp" tagdir="/WEB-INF/tags/common" %>
+<%
+ request.setAttribute("ctx", request.getContextPath()); 
+ %>
+<div class='portlet' style='margin: 4px'>
+
+<div id="menuheader">
+  	<span id="menutitle">$applicationLabel menu 
+      <a href="/$applicationOX/xava/homeMenu.jsp" ><img src="/$applicationOX/xava/images/home.gif"></a>
+    </span>
+  	<span id="menuPowerByMP">
+#getTemplatePropertyValue("add-spring-security")
+#if ($value.equals("true"))  	
+  	  <span id="logout"><a href="../j_spring_security_logout">Logoff</a></span>&nbsp;&nbsp;&nbsp;&nbsp;
+#end
+      <a href="http://minuteproject.wikispaces.com" >powered by minuteProject</a>
+    </span>		
+</div>
+
+
+<table id="menuTable" border="0" width="100%" cellspacing="0" cellpadding="0" style="margin-top: 2px;">
+<tr>
+
+<td>
+
+<div id="searchbar">
+<div class="menustyle" id="menu">
+  <ul class="menubar" id="dmenu">
+#foreach ($package in ${businessPackages})
+#set($displayableEntities = $presentationUtils.getDisplayableEntityFromPackage($package))
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#if(!$displayableEntities.isEmpty())
+#set($packageLabel=$openXavaUtils.getPackageName($package))
+#if($entitySecurityUtils.isEntityRoleSecured($package))
+#set($roles=$entitySecurityUtils.getEntitySecuredRoles($package))
+<mp:isUserInRole role="${roles}">
+#end
+    <li class="topitem">
+      <a href="#" onclick="return false;">
+#if ($displayUtils.hasIcon($package))
+      <img class="link" border="0" src="$displayUtils.getIcon($package)"/>
+#end      
+      ${packageLabel}
+      </a>
+	  <ul class="submenu">
+#foreach ($groups in $displayableEntityGroups)
+#if ($velocityCount>1)
+        <!--<li><hr color="black"></li>-->
+#end
+#foreach ($table in ${groups})
+#exposeVariableEntitySpecific()
+#exposeOXEntitySpecific()
+#if($entitySecurityUtils.isEntityRoleSecured($table))
+#set($roles=$entitySecurityUtils.getEntitySecuredRoles($table))
+<mp:isUserInRole role="${roles}">
+#end
+        <li><a href="$url" #if($presentationUtils.hasAlt($table)) alt="$presentationUtils.getAlt($table)"#end>$tableLabel</a></li>
+#if($entitySecurityUtils.isEntityRoleSecured($table))
+</mp:isUserInRole>
+#end
+#end
+#end
+	  </ul>
+	</li>
+#if($entitySecurityUtils.isEntityRoleSecured($package))	
+</mp:isUserInRole>	
+#end
+#end
+#end
+<!-- views -->
+#foreach ($package in ${businessPackageViews})
+#set($packageLabel=$formatUtils.getJavaName(${package.name}))
+#if($entitySecurityUtils.isEntityRoleSecured($package))
+#set($roles=$entitySecurityUtils.getEntitySecuredRoles($package))
+<mp:isUserInRole role="${roles}">
+#end
+    <li class="topitem"><a href="#" onclick="return false;">${packageLabel}</a>
+	  <ul class="submenu">
+#foreach ($table in ${package.listOfViews})
+#if (!$package.listOfViews.isEmpty())
+#exposeVariableEntitySpecific()
+#exposeOXEntitySpecific()
+        <li><a href="$url" #if($displayUtils.hasAlt($table)) alt="$displayUtils.getAlt($table)"#end>$tableLabel</a></li>
+#end
+#end
+	  </ul>
+	</li>
+#if($entitySecurityUtils.isEntityRoleSecured($package))	
+</mp:isUserInRole>	
+#end
+#end
+  </ul>
+  </div>
+
+</div>
+</td>
+
+</tr>
+</table>
+
+</div>
+
+</div>
+

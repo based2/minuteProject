@@ -1,0 +1,9 @@
+#macro (areObjectsInContextForMainBsla)
+## model, table, reference (towards this table must be available), formatUtils, modelUtils, template
+#set ($db = $model.dataModel.database)
+#set ($tableClassName = $formatUtils.getClassName($table))
+#set ($tableVariableName = $utils.getJavaNameVariable($table.name))
+#set ($packageName = $modelUtils.getPackage($model))
+#set ($className = $template.getOutputFileName($TableClassName))
+#set ($variableName = $utils.getJavaNameVariable($className))
+#end

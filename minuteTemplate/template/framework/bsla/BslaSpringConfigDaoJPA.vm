@@ -1,0 +1,25 @@
+#exposeVariablePackageSpecific()
+#set($ignoreManyToMany=$template.getPropertyValue("ignore-many-to-many",false))
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+#foreach ($table in ${package.listOfTables})
+#if(!($table.isManyToMany() && $ignoreManyToMany))
+#putImportParamsUML()
+#exposeArchitectureParams()
+    <bean id="$daoInterfaceVariableNameUML" class="$importJPAImplName" singleton="false" >
+        <property name="entityManagerFactory"><ref bean="$JPAFactoryName"/></property>
+    </bean>
+#end
+#end
+#foreach ($view in ${package.listOfViews})
+#set ($table = $view)
+#putImportParamsUML()
+#exposeArchitectureParams()
+    <bean id="$daoInterfaceVariableNameUML" class="$importJPAImplName" singleton="false" >
+        <property name="entityManagerFactory"><ref bean="$JPAFactoryName"/></property>
+    </bean>
+#end
+
+</beans>

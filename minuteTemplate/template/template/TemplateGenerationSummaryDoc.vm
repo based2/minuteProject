@@ -1,0 +1,10 @@
+What is generated:
+
+#foreach ($templateTarget in $configuration.target.getTemplateTargets())
+#foreach ($tpl in $templateTarget.templates)
+$tpl.name template have generated $tpl.numberOfGeneratedArtifacts $tpl.fileExtension files in $tpl.outputdir  
+
+##$tpl.templateFileName $tpl.templateTarget.outputdir
+#end
+#end
+

@@ -1,0 +1,69 @@
+#macro (putRooColumnParams)
+#putColumnParams()
+#set($rooColumn=$rooUtils.getRooColumn($column))
+#set($minSizeChunk=$rooColumn.minSizeChunk)
+#set($sizeMaxChunk=$rooColumn.sizeMaxChunk)
+#set($rooConsoleType=$rooColumn.rooConsoleType)
+#set($typeChunk=$rooColumn.typeChunk)
+#set($notNullChunk=$rooColumn.notNullChunk)
+#set($rooColumnVariableName=$rooColumn.columnVariableName)
+#set($rooColumnClassName=$rooColumn.columnClassName)
+#end
+
+#macro (putRooEntityParams)
+#exposeVariableEntitySpecific()
+#rooTemplateDefinition()
+#set($entityAfterRootPackage=$tableUtils.getEntityAfterRootPackage($table, $template, $templateRooDomainObject))
+#set($identifierField=$primaryKeyVariable)
+#set($identifierColumn=$primaryKeyFirstColumn.name)
+##set($column=$primaryKeyFirstColumn)
+#set($identifierType=$primaryKeyFullType)
+#end
+
+#macro(rooCommand)
+#getTemplatePropertyValue("showShellCommand")
+#if ($value.equals("true"))
+#if ($template.fileExtension=="cmd")
+#set ($shell = "call roo ")
+#else
+#set ($shell = "roo ")
+#end
+#else
+#set ($shell = "")
+#end
+#end
+
+#macro (putRooReferenceParams)
+#putReferenceParams2()
+#if($isMandatory)
+#set($notNullChunk="--notNull")
+#else
+#set($notNullChunk="")
+#end
+#end
+
+#macro(rooModel)
+#set ($modelRootPackage=$modelUtils.getModelRootPackage($model))
+#set ($rooDatabase=$database.type)
+#if ($rooDatabase=="HSQLDB")
+#set ($rooDatabase="HYPERSONIC_IN_MEMORY")
+#end
+#end
+
+#macro (rooTemplateDefinition)
+#set($templateRooEntityAj="RooEntityAj")
+#set($templateRooDomainObject="RooDomainObject")
+#set($templateRooIntegrationTestAj="RooIntegrationTestAj")
+#set($templateRooIntegrationTest="RooIntegrationTest")
+#set($templateRooDomainDataOnDemand="RooDomainDataOnDemand")
+#end
+
+#macro (exposeRooTestSpecific)
+#rooTemplateDefinition
+#set($importRooDomainDataOnDemand=$commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateRooDomainDataOnDemand))
+#set($rooDomainDataOnDemand = $commonUtils.getTemplateClassName($tableDB, $model, $templateRooDomainDataOnDemand))
+#set($rooIntegrationTestClassName=$commonUtils.getTemplateClassName($tableDB, $model, $templateRooIntegrationTest))
+#set($importDomainObject = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateRooDomainObject))
+#set($domainObject = $commonUtils.getTemplateClassName($tableDB, $model, $templateRooDomainObject))
+#end
+

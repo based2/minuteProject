@@ -1,0 +1,12 @@
+#exposeVariableEntitySpecific()
+<%@ include file="/WEB-INF/jsp/common/common-include.jsp"%>
+<html>
+<head>
+	<title>$table.name search result list</title>
+</head>
+<body>
+<div class="entityListTitle">$tableDB.name</div>
+<jsp:include page="/jsp/$model.name/${businessPackageName}/${tableClassName}ResultListBody.jsp" />
+</body>
+</html>
+

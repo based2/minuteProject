@@ -1,0 +1,12 @@
+<html>
+<body>
+#foreach ($table in ${database.tables})
+	#if ($utils.isToGenerate($table)) 
+	#set($tableClassName = $utils.getClassName($table))
+	#set ($tableClassNameHtml = "${tableClassName}SearchScreen.html")
+	table = <a href="/DBView/html/$utils.getSubPackage($table)/$tableClassNameHtml">$table.name</a> </BR>
+	#end
+#end
+</body>
+</html>
+

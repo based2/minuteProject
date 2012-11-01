@@ -1,0 +1,104 @@
+#exposeVariableEntitySpecific()
+#addedAreas()
+#set($adfVersion = "11.1.1.61.92")
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE Entity SYSTEM "jbo_03_01.dtd">
+<!---->
+<Entity
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="$className"
+##  Version="11.1.2.59.47"
+  Version="$adfVersion"
+##TODO with views
+  InheritPersonalization="true"
+  DBObjectType="table"
+  DBObjectName="$table.name"
+  AliasName="$className"
+  BindingStyle="OracleName"
+  UseGlueCode="false">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access"/>
+    <AttrArray Name="_publishEvents"/>
+  </DesignTime>
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+#set($adfType=$adfUtils.getAdfType($column))
+#set($adfSQLType=$adfUtils.getAdfSQLType($column))
+  <Attribute
+    Name="$columnClass"
+    IsNotNull="$column.isRequired()"
+    Precision="$column.size"
+#if($isScaleColumn)
+    Scale="$column.scale"
+#end
+    ColumnName="$column.name"
+    SQLType="$adfSQLType"
+    Type="$adfType"
+    ColumnType="$adfUtils.getColumnType($column)"
+    TableName="${column.table.name}"
+#if(${column.isPrimaryKey()})
+    PrimaryKey="true">
+#else
+	>
+#end
+    <DesignTime>
+      <Attr Name="_DisplaySize" Value="$column.size"/>
+    </DesignTime>
+  </Attribute>
+#end
+###foreach($child in $table.getChildren())
+##  <AccessorAttribute
+##    Name="$child.name"
+##    Association="demo.model.DeptMgrFkAssoc"
+##    AssociationEnd="demo.model.DeptMgrFkAssoc.Employees"
+##    AssociationOtherEnd="demo.model.DeptMgrFkAssoc.Departments"
+##    Type="oracle.jbo.server.EntityImpl"
+##    IsUpdateable="true"/>
+###end
+##  <AccessorAttribute
+##     Name="Employees1"
+##     Association="demo.model.EmpDeptFkAssoc"
+##     AssociationEnd="demo.model.EmpDeptFkAssoc.Employees1"
+##     AssociationOtherEnd="demo.model.EmpDeptFkAssoc.Departments1"
+##     Type="oracle.jbo.RowIterator"
+##     IsUpdateable="false"/>
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+#if($column.isPrimaryKey())
+  <Key
+    Name="${className}_Pk"
+    PrimaryKey="true">
+    <DesignTime>
+      <Attr Name="_DBObjectName" Value="$column.name"/>
+    </DesignTime>
+    <AttrArray Name="Attributes">
+      <Item Value="${packageName}.${className}.$columnClass"/>
+    </AttrArray>
+  </Key>
+#end
+#if($column.isRequired())
+  <Key
+    Name="${columnVar}Nn">
+    <DesignTime>
+      <Attr Name="_DBObjectName" Value="${column.name}_NN"/>
+      <Attr Name="_checkCondition" Value="${column.name} IS NOT NULL"/>
+      <Attr Name="_isCheck" Value="true"/>
+    </DesignTime>
+    <AttrArray Name="Attributes"/>
+  </Key>
+#end
+##if($column.isForeignKey())
+##  <Key
+##    Name="DeptLocFk">
+##    <DesignTime>
+##      <Attr Name="_referencedKey" Value="LOC_ID_PK"/>
+##      <Attr Name="_isForeign" Value="true"/>
+##      <Attr Name="_DBObjectName" Value="DEPT_LOC_FK"/>
+##    </DesignTime>
+##    <AttrArray Name="Attributes">
+##      <Item Value="demo.model.Departments.LocationId"/>
+##    </AttrArray>
+##  </Key>
+###end
+#end
+</Entity>

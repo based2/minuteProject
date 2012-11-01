@@ -1,0 +1,22 @@
+#exposeVariableModelSpecific()
+package $packageName;
+
+import com.sun.jersey.api.wadl.config.WadlGeneratorConfig;
+import com.sun.jersey.api.wadl.config.WadlGeneratorDescription;
+import com.sun.jersey.server.wadl.generators.WadlGeneratorGrammarsSupport;
+import com.sun.jersey.server.wadl.generators.resourcedoc.WadlGeneratorResourceDocSupport;
+import java.util.List;
+
+
+public class $className extends WadlGeneratorConfig{
+
+    @Override
+    public List<WadlGeneratorDescription> configure() {
+      return generator(WadlGeneratorGrammarsSupport.class)
+                .prop("grammarsStream", "application-grammars.xml")
+                .generator(WadlGeneratorResourceDocSupport.class)
+                .prop("resourceDocStream", "resourcedoc.xml")
+                .descriptions();
+    }
+
+}

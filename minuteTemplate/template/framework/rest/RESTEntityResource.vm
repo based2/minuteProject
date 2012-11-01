@@ -1,0 +1,140 @@
+#exposeEJBDomainObjectSpecific()
+#exposeJPASpecifics()
+#exposeEJBProperties()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.*;
+import java.sql.*;
+
+import javax.servlet.http.*;
+
+#exposeRESTURLServer()
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.xml.bind.JAXBElement;
+
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import com.sun.jersey.spi.inject.Inject;
+import javax.inject.Named;
+
+import $importDomainObjectUML;
+import $EJBDaoImplImport;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: remote interface for ${className} service </p>
+ *
+ */
+@Path ("$restXmlServerUrl")
+@Produces ({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@Consumes ({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+@RequestScoped 
+public class ${className} #if($implementInterface)implements $EJBDaoRemoteInterfaceClass#end {
+ 
+    @Inject 
+    private $EJBDaoImplClass $EJBDaoImplVariable;
+
+    public List<$tableClassName> findAll ($tableClassName $tableVariableName) {
+        return ${EJBDaoImplVariable}.findAll($tableVariableName);
+    }
+
+#exposeEntityUpdatedAreas("FIND_ALL")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    @GET
+    @Produces ({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})	
+    public List<$tableClassName> findAll () {
+        return ${EJBDaoImplVariable}.findAll();
+    }
+#end
+$!updatedAreaEnd
+
+#if ($hasOnlyOnePrimaryKey)
+#exposeEntityUpdatedAreas("FIND_BY_ID")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else	
+    @GET
+    @Path("{$primaryKeyVariable}")
+    @Produces ({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})		
+    public $tableClassName findById (@PathParam ("$primaryKeyVariable") $primaryKeyFullType $primaryKeyVariable) {
+        return ${EJBDaoImplVariable}.findById($primaryKeyVariable);
+    }
+#end
+$!updatedAreaEnd
+
+    @DELETE
+    @Path("{$primaryKeyVariable}")
+    public void delete (@PathParam ("$primaryKeyVariable") $primaryKeyType $primaryKeyVariable) {
+        $tableClassName $tableVariableName = new $tableClassName ();
+        ${tableVariableName}.set$primaryKeyJavaNameClass($primaryKeyVariable);
+        ${EJBDaoImplVariable}.delete($tableVariableName);
+    }
+#end
+#if ($hasSemanticReference)
+    public $tableClassName findBySemanticReference ($primaryKeyFullType $primaryKeyVariable) {
+        return ${EJBDaoImplVariable}.findById($primaryKeyVariable);
+    }
+	
+#end
+
+    public $tableClassName create ($tableClassName $tableVariableName) {
+        return ${EJBDaoImplVariable}.create($tableVariableName);
+    }
+
+    @POST
+    @Produces ({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})	
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public $tableClassName create (
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#columnJavaNaming()
+        @FormParam("$columnVar") $columnType $columnVar,
+#end
+        @Context HttpServletResponse servletResponse
+        ) throws IOException {
+        $tableClassName _$tableVariableName = new $tableClassName (
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#columnJavaNaming()
+           $columnVar#if ($velocityCount!=$table.columnCount),
+#end
+#end
+);
+        return create(_$tableVariableName);
+    }
+
+    @PUT
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public $tableClassName save(JAXBElement<$tableClassName> jaxb$tableClassName) {
+        $tableClassName $tableVariableName = jaxb${tableClassName}.getValue();
+        if (${tableVariableName}.get${primaryKeyJavaNameClass}()!=null)
+            return ${EJBDaoImplVariable}.update($tableVariableName);
+        return create($tableVariableName);
+    }
+
+$!updatedAreaImplementation
+		
+}

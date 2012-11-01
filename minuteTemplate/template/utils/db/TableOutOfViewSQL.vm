@@ -1,0 +1,37 @@
+#exposeVariableModelSpecific()
+-- drop entities
+#foreach ($package in ${businessPackageViews})
+--package name is $package.name
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecific()
+drop view $table.name;
+drop table TB_$table.name;
+#end
+#end
+
+-- create dummy tables
+#foreach ($package in ${businessPackageViews})
+--package name is $package.name
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecific()
+create table TB_$table.name (
+#foreach($column in ${table.columns})
+#putColumnParams()
+#set($columnSQLType=$sqlUtils.getSqlTypeFormat($column, $database.type))
+    #if($velocityCount>1),#else #end$column.name $columnSQLType
+#end
+);
+
+#end
+#end
+
+-- create dummy views
+#foreach ($package in ${businessPackageViews})
+--package name is $package.name
+#foreach ($table in ${package.listOfViews})
+#exposeVariableEntitySpecific()
+create view $table.name as select * from TB_$table.name;
+#end
+#end
+
+commit;

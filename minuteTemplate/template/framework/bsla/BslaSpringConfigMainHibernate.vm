@@ -1,0 +1,47 @@
+#exposeVariableModelSpecific()
+#exposeArchitectureParams()
+#templateDefinition()
+#exposeConnectionSpecific()
+#exposeModelCache()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+#set ($pathDaoHibernate = $bslaLibraryUtils.getModelLevelTemplateFullClassPath($model, $template, "BslaSpringConfigDaoHibernate2") )
+#set ($pathHibernateConfig = $bslaLibraryUtils.getModelLevelTemplateFullClassPath($model, $template, "HibernateConfig") )
+#set ($databaseConfig = $bslaLibraryUtils.getModelLevelTemplateFullClassPath($model, $template, "BslaSpringDatabase") )
+
+    <!-- Dao hibernate -->
+    <import resource="classpath:${pathDaoHibernate}.xml"/>    
+
+    <!-- hibernate config to put in an appart config file-->
+    <bean id="$hibernateFactoryName" autowire="byName"
+        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="configLocation" value="classpath:${pathHibernateConfig}.cfg.xml" />
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+#if ($hasEhCache)
+                <!-- 2nd level cache config -->
+                <prop key="hibernate.cache.provider_class" >net.sf.ehcache.hibernate.SingletonEhCacheProvider</prop>
+                <prop key="hibernate.cache.provider_configuration" >$ehCacheConfig</prop>
+                <prop key="hibernate.cache.use_second_level_cache" >true</prop>
+                <prop key="hibernate.cache.use_query_cache" >true</prop>
+                <prop key="hibernate.cache.use_minimal_puts" >true</prop>
+                <prop key="hibernate.generate_statistics" >true</prop>
+                <prop key="hibernate.cache.use_structured_entries" >true</prop>
+                <!-- 2nd level cache config end -->
+#else   
+                <!-- Disable the second-level cache  -->
+                <prop key="hibernate.cache.provider_class" >org.hibernate.cache.NoCacheProvider</prop>                
+#end             
+            </props>
+        </property>
+        <property name="dataSource"><ref bean="${dataSourceName}"/></property>
+    </bean>
+    
+    <!-- Database -->
+    <import resource="classpath:${databaseConfig}.xml"/>    
+
+</beans>

@@ -1,0 +1,353 @@
+<technology-catalog>
+
+	<technologies>
+
+		<technology name="JPA2" target-name="JPA2" model-type="rdbms"
+			template-config-file-name="mp-template-config-JPA2.xml"
+			default-outputdir="JPA2" depends-on-targets="BSLA_LIB,CACHE-LIB"
+			template-dir="@templateRoot@/framework/jpa" status="released"
+			description="Generates:\JPA2 Domain entities with annotation\JPA2 metamodel for compilable criteria queries">
+			<frameworks>
+				<framework name="JPA" version="2"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="JPA2-bsla" target-name="JPA2-bsla" model-type="rdbms"
+			template-config-file-name="mp-template-config-JPA2-bsla.xml"
+			default-outputdir="bsla" template-dir="@templateRoot@/framework/bsla"
+			status="release" description="Generates comprehensive set of Extended CRUD DAO"
+			depends-on-targets="JPA2,MavenMaster" 
+			is-generable="true">
+			<property name="add-cache-implementation" value="ehcache"></property>
+		</technology>
+
+		<technology name="REST-JEE" target-name="REST-JEE"
+			model-type="rdbms" template-config-file-name="mp-template-config-REST.xml"
+			default-outputdir="REST-JEE" depends-on-targets="BSLA_LIB,JPA2,EJB3_LIB,MavenMaster"
+			templatedir-ref="@templateRoot@/framework/ejb" template-dir="@templateRoot@/framework/rest"
+			status="released"
+			description="Generates:\REST CRUD app\EJB3\CDI \JPA2 Domain entities with JAXB\with maven integration">
+			<frameworks>
+				<framework name="jersey" version="1.9"></framework>
+			</frameworks>
+			<property name="add-xmlbinding" value="true"></property>
+			<property name="use-temporal" value="true"></property>
+			<property name="add-rest-implementation-jersey-version"
+				value="1.9-ea03"></property>
+		</technology>
+		
+		<technology name="REST-SpringMVC" target-name="REST-SpringMVC"
+			model-type="rdbms" template-config-file-name="mp-template-config-REST-SpringMVC.xml"
+			default-outputdir="REST-Spring" depends-on-targets="JPA2,JPA2-bsla,REST_LIB,MavenMaster"
+			template-dir="@templateRoot@/framework/spring"
+			status="released"
+			description="Generates:\REST Spring MVC CRUD app\Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
+			<frameworks>
+				<framework name="spring" version="3.0.6"></framework>
+			</frameworks>
+            <property name="add-querydsl" value="2.1.2"></property>
+            <property name="add-jpa2-implementation" value="hibernate"></property>
+            <property name="add-domain-specific-method" value="true"></property>
+            <property name="add-xmlbinding" value="true"></property>	
+            <property name="add-xml-format" value="lowercase-hyphen"></property>		<!-- java-variable, uppercase-underscore, lowercase-hyphen, java-class -->
+			<property name="use-temporal" value="true"></property>
+		</technology>
+		
+		<technology name="REST-CXF" target-name="REST-CXF"
+			model-type="rdbms" template-config-file-name="mp-template-config-REST-CXF-Spring.xml"
+			default-outputdir="cxf" depends-on-targets="JPA2,JPA2-bsla,REST_LIB,SPRING-LIB,MavenMaster"
+			template-dir="@templateRoot@/framework/cxf"
+			status="released"
+			description="Generates:\REST CXF CRUD app\Spring\BSLA-DAO \JPA2 Domain entities with JAXB\with maven integration">
+			<frameworks>
+				<framework name="spring" version="3.0.6"></framework>
+				<framework name="spring" version="2.2.3"></framework>
+			</frameworks>
+            <property name="add-querydsl" value="2.1.2"></property>
+            <property name="add-jpa2-implementation" value="hibernate"></property>
+            <property name="add-domain-specific-method" value="true"></property>
+            <property name="add-xmlbinding" value="true"></property>	
+            <property name="add-xml-format" value="lowercase-hyphen"></property>		<!-- java-variable, uppercase-underscore, lowercase-hyphen, java-class -->
+			<property name="use-temporal" value="true"></property>
+			<property name="add-rest-implementation-jersey-version" value="2.2.3"></property>		
+		</technology>
+
+		<technology name="WS-JEE" target-name="WS-JEE" model-type="rdbms"
+			template-config-file-name="mp-template-config-WS-JEE-ejb.xml"
+			default-outputdir="EJB3" depends-on-targets="WS-JEE-war,BSLA_LIB,JPA2,MavenMaster"
+			templatedir-ref="@templateRoot@/framework/ejb" template-dir="@templateRoot@/framework/rest"
+			status="released"
+			description="Generates:\WebService CRUD app\EJB3\CDI \JPA2 Domain entities with JAXB\maven integration">
+			<property name="add-xmlbinding" value="true"></property>
+			<property name="use-temporal" value="true"></property>
+		</technology>
+
+		<technology name="JOOQ" target-name="JOOQ" model-type="rdbms"
+			template-config-file-name="mp-template-config-JOOQ.xml"
+			default-outputdir="JOOQ" depends-on-targets="BSLA_LIB"
+			template-dir="@templateRoot@/framework/jooq"
+			status="draft"
+			description="Generates:\JOOQ tables for tables and views\JOOQ enum\JOOQ store procedure interface">
+            <frameworks>
+                <framework name="jooq-version" version="2.0.2"></framework>
+            </frameworks>
+			<property name="version" value="2.0.2"></property>
+		</technology>
+
+		<technology name="JSF-primefaces" target-name="JSF-primefaces"
+			model-type="rdbms" template-config-file-name="mp-template-config-JSF.xml"
+			default-outputdir="JSF-primefaces" depends-on-targets="BSLA_LIB,JPA2,i18n_LIB,EJB3_LIB,MavenMaster"
+			templatedir-ref="@templateRoot@/framework/i18n,@templateRoot@/framework/ejb"
+			template-dir="@templateRoot@/framework/jsf" status="released"
+			description="Generates:\JSF2 CRUD app\EJB3 \JPA2 Domain entities\with maven integration">
+			<frameworks>
+				<framework name="primefaces" version="2.2"></framework>
+				<framework name="JSF" version="2"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="WS-JEE-war" target-name="WS-JEE-war"
+			model-type="rdbms" template-config-file-name="mp-template-config-WS-JEE-war.xml"
+			template-dir="@templateRoot@/framework/webservice" default-outputdir="WS"
+			is-generable="false">
+		</technology>
+
+
+		<technology name="EJB3_LIB" target-name="EJB3_LIB"
+			template-config-file-name="mp-template-config-EJB3-LIB.xml"
+			template-dir="@templateRoot@/framework/ejb" is-generable="false">
+		</technology>
+
+		<technology name="Maven Spring Hibernate" target-name="MVN_SPRING_HIBERNATE_LAST"
+			model-type="rdbms" template-config-file-name="mp-template-config-bsla-hibernate-last-features.xml"
+			default-outputdir="bslaSpringHibernate" template-dir="@templateRoot@/framework/bsla"
+			status="released"
+			description="Generates Maven Spring Hibernate backend and advanced DAOs layer.">
+			<frameworks>
+				<framework name="Spring" version="2.5+"></framework>
+				<framework name="Hibernate" version="3.2+"></framework>
+				<framework name="ehCache" version=""></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Maven Spring JPA/Hibernate" model-type="rdbms"
+			template-config-file-name="mp-template-config-bsla-JPA-last-features.xml"
+			default-outputdir="bslaSpringJPAHibernate" template-dir="@templateRoot@/framework/bsla"
+			status="released"
+			description="Generates Maven Spring JPA/Hibernate backend and advanced DAOs layer.">
+			<frameworks>
+				<framework name="Spring" version="2.5+"></framework>
+				<framework name="Hibernate" version="3.2+"></framework>
+				<framework name="JPA" version="1.0"></framework>
+				<framework name="ehCache" version=""></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="FitNesse" model-type="rdbms"
+			template-config-file-name="mp-template-config-fitnesse.xml"
+			default-outputdir="fitnesse" template-dir="@templateRoot@/framework/fitnesse"
+			depends-on-targets="BSLA_LIB" status="released"
+			description="Generates FitNesse fixtures and wiki artifacts to perform CRUD operations on your backend. 
+	   \Generates setup fixture to set the connection pool and reset database data.">
+			<frameworks>
+				<framework name="FitNesse" version=""></framework>
+				<framework name="Scriptella" version=""></framework>
+				<framework name="MP 4 FitNesse" version=""></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Spring Hibernate Standard" model-type="rdbms"
+			template-config-file-name="mp-template-config-hibernate.xml"
+			template-dir="@templateRoot@/framework/bsla" default-outputdir="springHibernate"
+			status="released" description="Generates Spring Hibernate backend and DAO layer.">
+			<frameworks>
+				<framework name="Spring" version="1.2.5+"></framework>
+				<framework name="Hibernate" version="3.2+"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Spring iBatis Standard" model-type="rdbms"
+			template-config-file-name="mp-template-config-ibatis.xml"
+			default-outputdir="springIbatis" template-dir="@templateRoot@/framework/bsla"
+			status="released" description="Generates Spring iBatis backend and DAO layer.">
+			<frameworks>
+				<framework name="Spring" version="1.2.5+"></framework>
+				<framework name="iBatis" version=""></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Spring JPA Standard" model-type="rdbms"
+			template-config-file-name="mp-template-config-jpa.xml"
+			default-outputdir="springJpa" template-dir="@templateRoot@/framework/bsla"
+			status="released" description="Generates Spring JPA/Hibernate backend and DAO layer.">
+			<frameworks>
+				<framework name="Spring" version="1.2.5+"></framework>
+				<framework name="Hibernate" version="3.2+"></framework>
+				<framework name="JPA" version="1.0"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="OpenXava" model-type="rdbms"
+			template-config-file-name="mp-template-config-openxava-last-features.xml"
+			default-outputdir="openxava" template-dir="@templateRoot@/framework/openxava"
+			depends-on-targets="BSLA_LIB,JPA2_LIB,CACHE-LIB" status="released" comment=""
+			description="Generates JPA and OX specific annotations as well as a web site to navigate and manipulate your datamodel.">
+			<frameworks>
+				<framework name="OpenXava" version="4.2.3"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Grails" model-type="rdbms"
+			template-config-file-name="mp-template-config-grails-last-features.xml"
+			default-outputdir="grails" template-dir="@templateRoot@/framework/grails"
+			depends-on-targets="BSLA_LIB,JPA2_LIB,JQUERY_LIB" status="released"
+			comment=""
+			description="Generates grails artifacts:
+        \gorm groovy files\controllers standard and serving rest URL (json, xml)
+        \jQuery sample client
+        \Configs:\UrlMapping, DataSouce, BuildConfig\Misc scripts.">
+			<conventions>
+				<convention name="version-convention" is-applied="true"
+					description="Apply version for entities having the version column"
+					helper="" defaultValue="version">
+				</convention>
+			</conventions>
+			<limitations>
+				<limitation name="Many-two-many" is-applied="true"
+					description="Not applied: code generated for m2m relationships is commented"
+					helper="" defaultValue="version" />
+				<limitation name="ID column not primary key" is-applied="true"
+					description="compilation error of gorm will result" helper=""
+					defaultValue="version" />
+				<!-- <limitation name="Version" is-applied="true" description="version 
+					column not handled for optimistic locking in this release" helper="" defaultValue="version"/> -->
+			</limitations>
+			<frameworks>
+				<framework name="Grails" version="1.3.5"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Play" model-type="rdbms"
+			template-config-file-name="mp-template-config-play-last-features.xml"
+			default-outputdir="play" template-dir="@templateRoot@/framework/play"
+			depends-on-targets="BSLA_LIB,JPA2_LIB,JQUERY_LIB" status="released"
+			comment=""
+			description="Generates play artifacts:
+         \Domain model extending GenericModel
+         \Controllers standard and serving rest URL (json, xml)
+         \jQuery sample client
+         \Routes, application conf\Misc scripts.">
+			<limitations>
+			</limitations>
+			<frameworks>
+				<framework name="Play" version="1.2.4"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Vaadin" model-type="rdbms"
+			template-config-file-name="mp-template-config-vaadin-last-features.xml"
+			default-outputdir="vaadin" template-dir="@templateRoot@/framework/vaadin"
+			depends-on-targets="MVN_SPRING_HIBERNATE_LAST" status="draft"
+			description="Generates Vaadin Front end on top of a Maven Spring JPA/Hibernate backend and advanced DAOs layer.">
+			<frameworks>
+				<framework name="Vaadin" version="6.3+"></framework>
+				<framework name="Toolkit productivity tools addon"
+					version="1.1+"></framework>
+			</frameworks>
+		</technology>
+
+		<technology name="Roo" model-type="rdbms"
+			template-config-file-name="mp-template-config-roo-last-features.xml"
+			default-outputdir="roo" template-dir="@templateRoot@/framework/roo"
+			status="draft" description="Generates Roo backend artifacts">
+			<frameworks>
+				<framework name="Roo" version="1.1"></framework>
+			</frameworks>
+		</technology>
+
+		<!-- webservice model technologies 
+		
+		<technology name="WebService+Spring-Hibernate" model-type="webservice"
+			template-config-file-name="mp-template-config-WSDL-API.xml"
+			default-outputdir="wsdl-api" template-dir="@templateRoot@/framework/soa/wsdl"
+			status="release" description="Generates mvn structure to import wsdl into java"
+			depends-on-targets="MVN_SPRING_HIBERNATE_LAST, WS-Impl, ServiceLayer" >
+			<frameworks>
+				<framework name="metro" version="2.1"></framework>
+			</frameworks>
+		</technology>
+		
+		<technology name="WS-API" model-type="webservice"
+			template-config-file-name="mp-template-config-WSDL-API.xml"
+			default-outputdir="wsdl-api" template-dir="@templateRoot@/framework/soa/wsdl"
+			status="release" description="Generates mvn structure to import wsdl into java">
+			<frameworks>
+				<framework name="metro" version="2.1"></framework>
+			</frameworks>
+		</technology>
+				
+		<technology name="WS-Impl" model-type="webservice"
+			template-config-file-name="mp-template-config-WSDL-Impl.xml"
+			default-outputdir="wsdl-impl" template-dir="@templateRoot@/framework/soa/wsdl"
+			status="release" description="Generates mvn structure to implement wsdl api" 
+			is-generable="false">
+		</technology>
+		
+		<technology name="ServiceLayer" model-type="webservice"
+			template-config-file-name="mp-template-config-WSDL-Service.xml"
+			default-outputdir="service" template-dir="@templateRoot@/framework/soa/wsdl"
+			status="release" description="Generates mvn structure to implement to nest backend to wsdl api" 
+			is-generable="false">
+		</technology>
+		-->
+		
+		<!-- libraries -->
+
+		<technology name="BSLA_LIB" target-name="BSLA_LIB"
+			template-config-file-name="mp-template-config-bsla-LIB-features.xml"
+			template-dir="@templateRoot@/framework/bsla" is-generable="false">
+		</technology>
+
+		<technology name="JQUERY_LIB" target-name="JQUERY_LIB"
+			template-config-file-name="mp-template-config-jquery-features.xml"
+			template-dir="@templateRoot@/framework/jquery" is-generable="false">
+		</technology>
+
+		<technology name="JPA2_LIB" target-name="JPA2_LIB"
+			template-config-file-name="mp-template-config-jquery-features.xml"
+			template-dir="@templateRoot@/framework/jpa" is-generable="false">
+		</technology>
+		
+		<technology name="MavenMaster" target-name="MavenMaster"
+			template-config-file-name="mp-template-config-maven.xml"
+			template-dir="@templateRoot@/framework/maven" is-generable="false">
+		</technology>
+
+		<technology name="COMMON_LIB" target-name="COMMON_LIB"
+			template-config-file-name="mp-template-config-COMMON-LIB.xml"
+			template-dir="@templateRoot@/framework/common" is-generable="false">
+		</technology>
+			
+		<technology name="i18n_LIB" target-name="i18n_LIB"
+			template-config-file-name="mp-template-config-i18n-LIB.xml"
+			template-dir="@templateRoot@/framework/i18n" is-generable="false">
+		</technology>
+		
+		<technology name="CACHE-LIB" target-name="CACHE-LIB"
+			template-config-file-name="mp-template-config-CACHE-LIB.xml"
+			template-dir="@templateRoot@/framework/cache" is-generable="false">
+		</technology>
+		
+		<technology name="REST-LIB" target-name="REST-LIB"
+			template-config-file-name="mp-template-config-REST-LIB.xml"
+			template-dir="@templateRoot@/framework/rest" is-generable="false">
+		</technology>
+		
+		<technology name="SPRING-LIB" target-name="SPRING-LIB"
+			template-config-file-name="mp-template-config-SPRING-LIB.xml"
+			template-dir="@templateRoot@/framework/spring" is-generable="false">
+		</technology>
+
+	</technologies>
+	
+</technology-catalog>

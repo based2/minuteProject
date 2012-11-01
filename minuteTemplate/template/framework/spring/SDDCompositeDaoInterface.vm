@@ -1,0 +1,34 @@
+#exposeCompositeSpecific()
+#putImportCompositeSDDBean()
+#set($thisClassName=$className)
+##exposeSDDCompositeSpring()
+#putImportCompositeSDDBean()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+
+import $sddInputCompositeBeanImport;
+import $sddOutputCompositeBeanImport;
+
+/**
+ *
+ * <p>Title: ${thisClassName}</p>
+ *
+ * <p>Description: Interface for ${thisClassName} service </p>
+ *
+ */
+public interface ${thisClassName} {
+
+#exposeCompositeUpdatedAreas("SDD_EXECUTE")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    public $sddOutputCompositeBeanClass execute ($sddInputCompositeBeanClass $sddInputCompositeBeanVariable) ;
+#end
+$!updatedAreaEnd
+
+$!updatedAreaImplementation
+
+}

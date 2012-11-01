@@ -1,0 +1,38 @@
+#exposeVariableModelDetailSpecific()
+#exposeVaadinModel()
+package $packageName;
+
+import $modelWindowImport;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+
+import eu.livotov.tpt.TPTApplication;
+
+public class $className extends TPTApplication {
+ 
+       
+    @Override
+    public void applicationInit() {   
+        Window w = new $modelWindowClass();
+        setMainWindow(w);       
+        System.out.println("SET MAIN WINDOW IN init()");
+    }
+
+	public void itemClick(ItemClickEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void buttonClick(ClickEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void firstApplicationStartup() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}

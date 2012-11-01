@@ -1,0 +1,30 @@
+#templateDefinition()
+#set ($dbProperties=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateDbProperties))
+#set ($resetDbScript=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateDBSchemaDeleteOrder))
+#set ($insertReferenceDataScript=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateDBInsertEnumeration))
+#set ($commitScript=$commonUtils.getArtifactRelativePathDirAndFullName($model, $template, $templateDBCommit))
+#exposeConnectionSpecific()
+#exposeJdbc()
+<!DOCTYPE etl SYSTEM "http://scriptella.javaforge.com/dtd/etl.dtd">
+<etl>
+
+    <description>Database reset script</description>
+    <properties>
+        <include href=".$dbProperties"/>
+    </properties>
+    <connection 
+#exposeJdbcParam($jdbcDriverClassName)    
+    	driver="${paramResult}" 
+#exposeJdbcParam($jdbcUrl)       	
+    	url="${paramResult}" 
+#exposeJdbcParam($jdbcUsername)      	
+    	user="${paramResult}" 
+#exposeJdbcParam($jdbcPassword)    	
+    	password="${paramResult}"/>
+    <script>
+		<include href=".$resetDbScript"/>
+		<include href=".$insertReferenceDataScript"/>
+		<include href=".$commitScript"/>
+    </script>
+
+</etl>

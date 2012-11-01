@@ -1,0 +1,20 @@
+Artifact to generate:
+	
+	1) front-end jsp : set in a <package-folder> = /package
+	2) validation : entity dep
+	3) bean
+	4) configuration glue:
+		4)1) naming struts-<package-name>.xml package dep
+		namespace = <package-folder>;to the package = MP package
+		for each entity: 
+			for each XCrud action add
+				create action with name, method, class
+				create result // check for the flow (maximize flow state)
+		4)2) struts-<model-name>.xml
+		4)3) struts.xml that imports the generated struts-<model-name>.xml and the none generated struts-xx.xml
+		
+		
+Still to discover:
+	Integration with Spring
+	How to pass i18n validation message
+	Validate

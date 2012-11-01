@@ -1,0 +1,66 @@
+#macro (jQueryXmlList $table)
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+						 var ${columnVar}_text = $(this).find('${columnVar}').text()							 
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+						 var ${columnVar}_text = $(this).find('${columnVar}').text()
+#end                          
+                         $('<li></li>')
+                             .html(
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+								 #if($cpt>0)+" - "+#else #end${columnVar}_text
+#set ($cpt=$cpt+1)								 
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+								 #if($cpt>0)+" - "+#else #end${columnVar}_text
+#set ($cpt=$cpt+1)	
+#end   
+#end
+
+#macro (jQuerySearchXmlList $table)
+                    $(data).find('${domainVariableName}').each(function(){
+#jQueryXmlList($table)                          
+                             )
+                             .appendTo('#search${domainClassName} ol')
+                     }) 
+#end
+
+#macro (jQuerySearchJsonList $table)
+                    jQuery.each(data.${domainVariableName}, function(i,${domainVariableName}){
+#jQueryJsonList($table)                          
+                             .appendTo('#search${domainClassName} ol')
+                     }) 
+#end
+
+#macro (jQueryJsonList $table)
+                         $('<li></li>')
+                             .html(
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+								 #if($cpt>0)+" - "+#else #end${domainVariableName}.${columnVar}
+#set ($cpt=$cpt+1)								 
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+								 #if($cpt>0)+" - "+#else #end${domainVariableName}.${columnVar}
+#set ($cpt=$cpt+1)	
+#end 
+                             )  
+#end
+
+#macro (exposeRestExchangeFormat)
+#getTemplatePropertyValue("REST_EXCHANGE_FORMAT")
+#set ($restExchangeFormat = $value)
+#getTemplatePropertyValue("REST_TECHNOLOGY")
+#set ($restTechnology = $value)
+#exposeRESTURLServer($restTechnology)
+#if ($restExchangeFormat == "xml")
+#set ($restServerUrl = $restXmlServerUrl)
+#else
+#set ($restServerUrl = $restJsonServerUrl)
+#end
+#end

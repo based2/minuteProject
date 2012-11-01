@@ -1,0 +1,47 @@
+#set ($updatedAreaI18nBegin=$updatedAreaUtils.getI18nBegin($template, $updatedAreas))
+#set ($updatedAreaI18nEnd=$updatedAreaUtils.getI18nEnd($template, $updatedAreas))
+$!updatedAreaI18nBegin
+#exposeVariableComponentSpecific()
+#foreach ($table in $modelEntities)
+#exposeVariableEntitySpecific()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+//$table.name
+#if ($tableUtils.isReferenceDataContentType($linktableDB))  
+#set ($entityPrefix="${tableLabel} ")
+#else
+#set ($entityPrefix="")
+#end
+$tableVariableName=$tableLabel
+$tableClassName=$tableLabel
+##$tableVariableName
+#foreach($column in $table.columns)
+#putColumnParams()
+#columnJavaNaming()
+#set($columnLabel=$i18nUtils.getI18nFromDBObject($column))
+$tableVariableName.$columnVar=${entityPrefix}${columnLabel}
+#set($columnDescription=$openXavaUtils.getColumnDescription($column))
+#if($columnDescription!="")
+$tableVariableName.$columnVar[description]=$column.description
+#else
+$tableVariableName.$columnVar[description]=${entityPrefix}${columnLabel}
+#end
+#end
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+#columnJavaNaming()
+#set($linkTableLabel=$i18nUtils.getI18nFromDBObject($linktableDB))
+#set($linkTableLabels=$i18nUtils.plurialize(${linkTableLabel}))
+$tableVariableName.${link}${columnclass}s=$linkTableLabels
+$tableVariableName.${link}${columnclass}s[description]=$linkTableLabels
+#end
+#end
+#foreach ($table in $modelEntities)
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#set($linkTableLabel=$i18nUtils.getI18nFromDBObject($linkReference.foreignTable))
+#set($linkTableLabels=$i18nUtils.plurialize(${linkTableLabel}))
+${targetTableVariableName}Via${linkTableName}By${localColumnName}s=$linkTableLabels
+${targetTableVariableName}Via${linkTableName}By${localColumnName}s[description]=$linkTableLabels
+#end
+#end
+$!updatedAreaI18nEnd

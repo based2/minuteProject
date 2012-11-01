@@ -1,0 +1,34 @@
+#exposeVariableModelSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+#exposeConnectionSpecific()
+#exposeJdbc()
+#exposeEnvironment()
+dataSource {
+    pooled = true
+    driverClassName = "$datasource.driverClassName"
+    username = "$datasource.username"
+    password = "$datasource.password"
+}
+hibernate {
+    cache.use_second_level_cache = true
+    cache.use_query_cache = true
+    cache.provider_class = 'net.sf.ehcache.hibernate.EhCacheProvider'
+}
+// environment specific settings
+environments {
+    development {
+        dataSource {
+            url = "$datasource.url"
+        }
+    }
+    test {
+        dataSource {
+            url = "$datasource.url"
+        }
+    }
+    production {
+        dataSource {
+            url = ""
+        }
+    }
+}

@@ -1,0 +1,97 @@
+    public List<$tableClassName> loadGraph($tableClassName graphMaskWhat, List<$tableClassName> whereMask) {
+        return loadGraphOneLevel(graphMaskWhat, whereMask);
+    }
+ 
+    public List<$tableClassName> loadGraphOneLevel($tableClassName graphMaskWhat, List<$tableClassName> whereMask) {
+        //first get roots element from where list mask
+        // this brings the level 0 of the graph (root level)
+#set($mask=$bslaLibraryUtils.getJavaDefaultMask($primaryKeyFirstColumn))		
+        graphMaskWhat.set${primaryKeyJavaNameClass}(graphMaskWhat.$mask);
+        List<$tableClassName> ${tableVariableName}s = searchPrototype$tableClassName (whereMask);
+        // for each sub level perform the search with a subquery then reassemble
+        // 1. get all sublevel queries
+        // 2. perform queries on the correct dao
+        // 3. reassemble
+        return getLoadGraphOneLevel (graphMaskWhat, ${tableVariableName}s);
+    }
+
+	private List<$tableClassName> copy(List<$tableClassName> inputs) {
+		List<$tableClassName> l = new ArrayList<$tableClassName>();
+		for ($tableClassName input : inputs) {
+			$tableClassName copy = new $tableClassName();
+			copy.copy(input);
+			l.add(copy);
+		}
+		return l;
+	}
+	   
+	private List<$tableClassName> getLoadGraphOneLevel ($tableClassName graphMaskWhat, List<$tableClassName> parents) {
+	    return loadGraphFromParentKey (graphMaskWhat, parents);
+	} 
+	
+	public List<$tableClassName> loadGraphFromParentKey ($tableClassName graphMaskWhat, List<$tableClassName> parents) {
+		//foreach children:
+		//check if not empty take first
+		parents = copy (parents); //working with detached entities to avoid unnecessary sql calls
+		if (parents==null || parents.isEmpty())
+		   return parents;
+		List<String> ids = getPk (parents);
+#foreach ($reference in $table.distinctChildrenType)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+#putDependenciesUML()
+		if (graphMaskWhat.get${linkedTableClass}${linkedColumnClass}s()!=null && !graphMaskWhat.get${linkedTableClass}${linkedColumnClass}s().isEmpty()) {
+			for (${linkedTableClass} childWhat : graphMaskWhat.get${linkedTableClass}${linkedColumnClass}s()) {
+#set($mask=$bslaLibraryUtils.getJavaDefaultMask($linkedColumn))
+				childWhat.set$linkedColumnClass(graphMaskWhat.$mask); // add to the what mask, usefull for reconciliation
+#if($beImplementation=="JPA")				
+				$dependentDaoExtentedImplementationJPAClassName $dependentDaoExtentedImplementationJPAVariableName = new $dependentDaoExtentedImplementationJPAClassName ();
+				List<${linkedTableClass}> children = ${dependentDaoExtentedImplementationJPAVariableName}.lookup${linkedTableClass}(childWhat, getFkCriteria(" $primaryKeyVariable ", ids), null, getEntityManager());
+#elseif($beImplementation=="hibernate")				
+				$dependentDaoExtentedImplementationHibernateClassName $dependentDaoExtentedImplementationHibernateVariableName = new $dependentDaoExtentedImplementationHibernateClassName ();
+				List<${linkedTableClass}> children = ${dependentDaoExtentedImplementationHibernateVariableName}.lookup${linkedTableClass}(childWhat, getFkCriteria(" $primaryKeyVariable ", ids), null, getSession());
+#end
+				reassemble${linkedTableClass} (children, parents);				
+				break;
+			}
+		}
+#end
+#end
+		return parents;
+	}
+	
+#foreach ($reference in $table.distinctChildrenType)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+	private void reassemble${linkedTableClass} (List<${linkedTableClass}> children, List<$tableClassName> parents) {
+		for (${linkedTableClass} child : children) {
+			for ($tableClassName parent : parents) {
+				if (parent.get${primaryKeyJavaNameClass}()!=null && parent.get${primaryKeyJavaNameClass}().toString().equals(child.get$linkedColumnClass()+"")) {
+					parent.add${linkedTableClass}${linkedColumnClass}(child);
+					child.set$linkedColumnClass(parent);
+					break;
+				}
+			}
+		}
+	}
+	
+#end
+#end
+	private List<String> getPk(List<$tableClassName> input) {
+		List<String> s = new ArrayList<String>();
+		for ($tableClassName t : input) {
+			s.add(t.get${primaryKeyJavaNameClass}()+"");
+		}
+		return s;
+	}
+
+	private Criteria getFkCriteria(String field, List<String> ids) {
+		Criteria criteria = new Criteria();
+		criteria.addCriterion(getInPk(field, ids));
+		return criteria;
+	}
+
+	private ClauseCriterion getInPk(String field, List<String> ids) {
+		InCriterion inCriterion = new InCriterion(field, ids, true);
+		return inCriterion;
+	}	    

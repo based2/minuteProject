@@ -1,0 +1,56 @@
+#exposeVariableEntitySpecific()
+#exposeSpringServiceDomainObject()
+#exposeSpringBslaDomainObject()
+#exposeJPA2DomainObject($table)
+#putImportParamsUML()
+package $packageName;
+
+import java.util.List;
+
+import $importDomainObjectUML;
+import net.sf.minuteProject.model.service.GenericService;
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Service layer Interface 
+ * It offers coarse grain methods over the fine grain DAO layer:
+ * It performs input and business validation.
+ * </p>
+ *
+ */
+public interface $className extends GenericService<$tableClassName> {
+
+    /**
+     * Inserts a $tableClassName entity $tCN 
+     * @param $tableClassName $tableVariableName
+     */
+    public void create ($tableClassName $tableVariableName) ;
+
+    /**
+     * Updates a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public $tableClassName update($tableClassName $tableVariableName) ;
+
+     /**
+     * Saves a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void save($tableClassName $tableVariableName);
+         
+    public List<$tableClassName> findAll ($tableClassName $tableVariableName) ;
+
+#if ($hasOnlyOnePrimaryKey)
+    /**
+     * Deletes a $tableClassName entity 
+     * @param $tableClassName $tableVariableName
+     */
+    public void delete($tableClassName $tableVariableName) ; 
+   
+	public $tableClassName findById ($primaryKeyFullType $primaryKeyVariable);
+	
+#end
+               
+}

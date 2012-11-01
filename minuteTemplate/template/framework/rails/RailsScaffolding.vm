@@ -1,0 +1,19 @@
+#exposeVariableModelSpecific()
+#set ($shell="call rails generate scaffold")
+
+call rails new $configuration.name
+cd $configuration.name
+#foreach ($package in ${businessPackages})
+#foreach ($table in ${package.listOfTables})
+##putRooEntityParams()
+#exposeVariableEntitySpecific()
+#if(!$isMany2Many)
+${shell} $domainVariableName #foreach ($column in ${table.attributes})#putColumnRuby() $columnVariable:$columnType #end
+
+#end
+#end
+#end
+
+call rake db:migrate
+
+call rails server

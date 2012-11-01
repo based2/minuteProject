@@ -1,0 +1,10 @@
+#exposeGrailsSpecific()
+set currentdir=%cd%
+
+call grails create-app $applicationGrails
+xcopy grails-app $applicationGrails\grails-app /y /s
+## to change want refactoring delivery
+xcopy %MP_HOME%\application\lib\extra\*.jar $applicationGrails\lib\*.* /y /s
+cd $applicationGrails
+
+grails run-app

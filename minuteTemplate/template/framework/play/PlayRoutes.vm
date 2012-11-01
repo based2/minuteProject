@@ -1,0 +1,20 @@
+#exposeVariableModelSpecific() 
+#putPlayTemplateDefinition()
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Import the default CRUD routes
+*			/admin						module:crud
+# Map static resources from the /app/public folder to the /public path
+GET			/public/					staticDir:public
+
+GET         /rest                       Rest.rest
+#foreach ($table in $model.businessModel.businessPackage.entities)
+#exposeVariableEntitySpecific()
+#exposeDOPlayParamsUML($table)
+GET         $restXmlServerUrl/{$primaryKeyVariable}      ${playControllerClassName}.show${domainClassName}(format:'xml')
+GET         $restJsonServerUrl/{$primaryKeyVariable}     ${playControllerClassName}.show${domainClassName}(format:'json')
+GET         $restXmlClientUrl      ${playControllerClassName}.searchXml${domainClassName}(format:'html')
+GET         $restJsonClientUrl     ${playControllerClassName}.searchJson${domainClassName}(format:'html')
+#end

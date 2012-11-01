@@ -1,0 +1,100 @@
+#exposeVariableEntitySpecific()
+#set ($action = "Search${table.name}")
+#set ($actionURL = "Search.do")
+#set ($htmlFormName = $table.name)
+<html>
+<head>
+	<title>$table.name search screen</title>
+</head>	
+<body>
+<div class="node">
+<script type='text/javascript' src='/minute/js/EmailValidator.js'> </script>
+<script type='text/javascript' src='/minute/js/engine.js'> </script>
+<script type='text/javascript' src='/minute/js/util.js'> </script>
+<script type='text/javascript' src='/minute/js/generic.js'> </script>
+<script type='text/javascript' src='/minute/js/validator.js'> </script>
+<script type='text/javascript'>
+
+#foreach ($column in ${table.columns})
+	#putColumnParams()
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")
+function isValidAlphaNum$columnVar() {
+  return validateData("alphanumeric",document.forms["$htmlFormName"].elements["$columnVar"],"")
+}
+#elseif ($column.type=="BIGINT" || $column.type=="INT")
+function isValidNum$columVar() {
+  return validateData("num",document.forms["$htmlFormName"].elements["$columVar"],"")
+}
+#end
+#end
+
+#foreach ($column in ${table.columns})
+	#putColumnParams()
+function check$columnVar() {
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")
+  if (!isValidAlphaNum$columnVar()) {
+    processReply(false, "$columnVar", "${columnVar}-error", "Please enter a valid $columnVar.");
+  }
+#elseif ($column.type=="BIGINT" || $column.type=="INT")
+  if (!isValidNum$$columnVar()) {
+    processReply(false, "$columnVar", "${columnVar}-error", "Please enter a valid $columnVar.");
+  }
+#end
+    processReply(true, "$columnVar", "${columnVar}-error", "");
+}
+#end
+
+function isToSubmit() {
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")
+  if (isValidAlphaNum$columnVar() == false) {
+    return false;
+  }
+#elseif ($column.type=="BIGINT" || $column.type=="INT")
+  if (isValidNum$columnVar() == false) {
+    return false;
+  }
+#end
+#end
+  return true;
+}
+
+function processReply(valid, id, errid, error) {
+  if (valid) {
+    DWRUtil.setValue(errid, "");
+    $(id).style.color = "black";
+  }
+  else {
+    DWRUtil.setValue(errid, error);
+    $(id).style.color = "red";
+  }
+}
+
+function init() {
+  DWRUtil.useLoadingMessage();
+}
+
+callOnLoad(init);
+</script>
+
+<style>
+.error { color: red; }
+</style>
+$table.name search parameters
+<form name="$htmlFormName" action="/minute/$actionURL" onSubmit="return isToSubmit();">
+<input type="hidden" name="action" value="$action">
+<table>
+#foreach ($column in ${table.columns})
+#putColumnParams()
+  <tr>
+  <td>$columnVar</td>
+  <td> <input type="text" name="$columnVar" onchange="check${columnVar}()"/></td>
+	  <td><span id="${columnVar}-error" class="error"></span></td>
+  </tr>
+#end
+<tr><td><input type="submit" value="Submit"></td><td></td></tr>
+</table>
+</form>
+</body>
+</html>

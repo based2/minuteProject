@@ -1,0 +1,118 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+
+import net.sf.minuteProject.architecture.bsla.factory.MyProjectFactory;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+#exposeImportParams($reference.table)
+import $importDomainObject;
+#end
+
+#putImportParamsUML()
+#getTemplatePropertyValue("uml")
+#if (!$value.equals("true"))
+#putImportParams()
+import $importDomainObject;
+import $importDaoInterface;
+#else
+#putImportParamsUML()
+import $importDomainObjectUML;
+import $importDaoInterfaceUML;
+#end
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Struts2 action for ${className} entity</p>
+ *
+ */
+public class ${className} extends ActionSupport {
+
+    Map session;
+#getTemplatePropertyValue("uml")
+#if (!$value.equals("true"))
+	${daoInterfaceName} dao = (${daoInterfaceName})MyProjectFactory.getBean("${tableVariableName}Dao");			
+#else
+	${daoInterfaceNameUML} dao = (${daoInterfaceNameUML})MyProjectFactory.getBean("${tableVariableName}Dao");			
+#end
+	$tableClassName $tableVariableName;
+			
+	public $tableClassName get$tableClassName () {
+	   return $tableVariableName;
+	}
+			
+	public void set$tableClassName ($tableClassName $tableVariableName) {
+	   this.$tableVariableName = $tableVariableName;
+	}
+			
+    public ${className}() {
+    }
+			
+    public String save() throws Exception {
+        dao.save$tableClassName($tableVariableName);    
+        return "success";
+    }
+
+    public String manage() throws Exception {
+        session = ActionContext.getContext().getSession();
+        session.put ("_ManagementScreenPurpose", "manage");
+        return "input";
+    }
+    
+    public String edit() throws Exception {
+        session = ActionContext.getContext().getSession();
+        String pk = (String)session.get("pk");
+        session.put ("_ManagementScreenPurpose", "update");
+        $tableVariableName  = dao.load$tableClassName(new $primaryKeyFullType(pk));
+        return "input";
+    }
+    
+    public String searchOnPk () throws Exception {
+	    session = ActionContext.getContext().getSession();
+    	String pk = (String)session.get("pk");
+$tableVariableName  = dao.loadFullFirstLevel$tableClassName(new $primaryKeyFullType(pk));
+		List list = new ArrayList();
+		list.add($tableVariableName);					
+		session.put("${tableClassName}SearchResultList",list);
+		return "display";
+	}
+				
+	public String search() throws Exception {
+		session = ActionContext.getContext().getSession();
+		List list = dao.search$tableClassName($tableVariableName);
+		session.put( "${tableClassName}SearchResultList", list);
+		return "display";
+	} 
+				
+    public String load() throws Exception {
+    	return "load";
+    }
+
+#getTemplatePropertyValue("uml")
+#if (!$value.equals("true"))
+	 public ${daoInterfaceName} getDao() {
+#else
+	public ${daoInterfaceNameUML} getDao() {
+#end
+		return dao;
+	}
+
+#getTemplatePropertyValue("uml")
+#if (!$value.equals("true"))
+	 public void setDao(${daoInterfaceName} dao) {
+#else
+	public void setDao(${daoInterfaceNameUML} dao) {
+#end
+		this.dao = dao;
+	}
+
+}

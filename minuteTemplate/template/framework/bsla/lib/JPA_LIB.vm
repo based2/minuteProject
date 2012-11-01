@@ -1,0 +1,40 @@
+#macro (exposeVariableEntitySpecificJPAMapConfig)
+#set ($template = $commonUtils.getTemplate($configuration,"JPAMapping"))
+#exposeVariableEntitySpecific()
+#exposeArtifactRelativePathDirAndFullName($template $table)
+#end
+
+#macro (exposeJPAProviderInfo)
+#getTemplatePropertyValue("jpa-provider")
+#if ($value.equals("KODO"))
+#exposeJPAKODOProviderInfo()
+#elseif ($value.equals("TOPLINK"))
+toplink
+#elseif ($value.equals("JPOX"))
+jpox
+#else
+provider to set
+#end
+#end
+
+#macro (exposeJPAKODOProviderInfo)
+        <properties>
+            <!--
+			<property name="kodo.ConnectionFactoryMode" value="managed"/>
+            <property name="kodo.ConnectionFactoryName" value="$datasource.jndi"/>
+			-->
+            <property name="openjpa.TransactionMode" value="local"/>
+            <property name="openjpa.ConnectionDriverName" value="$datasource.driverClassName"/>
+            <property name="openjpa.ConnectionURL" value="$datasource.url"/>
+            <property name="openjpa.ConnectionUserName" value="$datasource.username"/>
+            <property name="openjpa.ConnectionPassword" value="$datasource.password"/>
+        </properties>
+#end
+
+#macro (exposeJPAFKisPKAnnotation)
+#if($localColumn.isPrimaryKey())
+#set($insertableUpdatable=", insertable=false, updatable=false")
+#else
+#set($insertableUpdatable="")
+#end
+#end

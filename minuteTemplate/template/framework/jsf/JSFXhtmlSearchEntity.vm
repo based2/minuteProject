@@ -1,0 +1,110 @@
+#exposePrimefacesConfig()
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace"
+	template="/template/main.xhtml">
+	
+	<ui:define name="head">
+		<style type="text/css">
+			.yui-dt table {
+				width:95%;
+			}
+			
+			.label {
+				width:20%;
+				padding:4px;
+			}
+
+			.value {
+				width:80%;
+				padding:4px;
+			}
+			
+			.grid {
+				width:100%;
+			}
+			
+			.bold {
+				font-weight: bold;
+			}
+		</style>
+	</ui:define>
+	
+	<ui:define name="content">
+	
+		<h1><strong>Search Books</strong></h1>
+		
+		<p:growl id="messages" showDetail="true"/>
+		
+		<h:form prependId="false">
+		
+		<p:growl id="growl" showDetail="true" />
+		
+			<p:dataTable id="books" value="#{searchBooksController.books}" var="book" 
+					emptyMessage="No books found" rows="5" paginator="true">
+					
+				<p:column>
+					<f:facet name="header"><h:outputText value="Title" /></f:facet>
+					<h:outputText value="#{book.title}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header"><h:outputText value="Author" /></f:facet>
+					<h:outputText value="#{book.author}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header"><h:outputText value="Publisher" /></f:facet>
+					<h:outputText value="#{book.publisher}" />
+				</p:column>
+				
+				<p:column>
+					<f:facet name="header"><h:outputText value="" /></f:facet>
+					<p:commandLink update="detail" oncomplete="dialog.show();" title="view">
+						<p:graphicImage value="/images/zoom.png" style="border:0px;"/>
+			 			<f:setPropertyActionListener value="#{book}" target="#{searchBooksController.book}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+
+			<h:commandLink title="Export to Excel">
+				<h:graphicImage value="/images/excel.png" style="border:0" />
+				<p:dataExporter type="xls" target="books" fileName="books" excludeColumns="3" />
+			</h:commandLink>
+
+			<h:commandLink title="Export to PDF">
+				<h:graphicImage value="/images/pdf.png" style="border:0" />
+				<p:dataExporter type="pdf" target="books" fileName="books" excludeColumns="3" />
+			</h:commandLink>
+
+		</h:form>
+		    
+		      <p:dialog header="Book Details" widgetVar="dialog" fixedCenter="true" modal="true" draggable="false"
+						effect="fade" effectDuration="0.3">
+						<h:panelGrid id="detail" columns="2" styleClass="grid" columnClasses="label,value">
+							<h:outputText value="Title: " />
+			         		<h:outputText id="title" value="#{searchBooksController.book.title}" styleClass="bold"/>
+			         		
+			         		<h:outputText value="Author: " />
+			         		<h:outputText id="author" value="#{searchBooksController.book.author}" styleClass="bold"/>
+			         		
+			         		<h:outputText value="Pages: " />
+			         		<h:outputText id="pages" value="#{searchBooksController.book.pages}" styleClass="bold"/>
+			         		
+			         		<h:outputText value="Publisher: " />
+			         		<h:outputText id="publisher" value="#{searchBooksController.book.publisher}" styleClass="bold"/>
+			         		
+			         		<h:outputText value="ISBN: " />
+			         		<h:outputText id="isbn" value="#{searchBooksController.book.isbn}" mask="9-99999-999-9" styleClass="bold"/>
+			         		
+			         		<h:outputText value="Rating: " />
+			         		<h:outputText value="#{searchBooksController.book.rate}" styleClass="bold"/>
+							
+						</h:panelGrid>
+				</p:dialog>
+		
+	</ui:define>
+  
+</ui:composition>

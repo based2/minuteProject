@@ -1,0 +1,29 @@
+#exposeVariableModelSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+#set ($pathDaoIbatis = $bslaLibraryUtils.getModelLevelTemplateFullClassPath($model, $template, "BslaSpringConfigDaoIbatis2") )
+#set ($pathIbatisConfig = $bslaLibraryUtils.getModelLevelTemplateFullClassPath($model, $template, "BslaIbatisDaoSqlMapConfig") )
+#set ($databaseConfig = $bslaLibraryUtils.getModelLevelTemplateFullClassPath($model, $template, "BslaSpringDatabase") )
+
+    <!-- Dao ibatis -->
+    <import resource="classpath:${pathDaoIbatis}.xml"/>
+    <!-- SqlMap setup for iBATIS Database Layer -->
+    
+
+    <!-- ibatis config to put in an appart config file-->
+    <bean id="sqlMapClient${model.name}" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocation"><value>classpath:${pathIbatisConfig}.xml</value></property>
+    </bean>
+
+    <bean id="sqlMapClient${model.name}Template" class="org.springframework.orm.ibatis.SqlMapClientTemplate" singleton="false">
+        <property name="sqlMapClient"><ref bean="sqlMapClient${model.name}"/></property>
+        <property name="dataSource"><ref bean="${model.name}DataSource"/></property>
+    </bean>
+    
+    <!-- Database -->
+    <import resource="classpath:${databaseConfig}.xml"/>    
+
+</beans>

@@ -1,0 +1,303 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import net.sf.minuteProject.architecture.bsla.domain.AbstractDomainObject;
+#foreach ($reference in $table.children)
+#exposeImportParamsUML($reference.foreignTable)
+import $importDomainObjectUML;
+#end
+#foreach ($reference in $table.parents)
+#exposeImportParamsUML($reference.foreignTable)
+import $importDomainObjectUML;
+#end
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ */
+@SuppressWarnings("serial") 
+public class ${className} extends AbstractDomainObject {
+
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if($isLengthPrecisionColumn)    
+    public static final int     ${column.name}_FIELD_SIZE = $columLengthPrecisionSize;
+#end  
+#end
+#foreach ($column in ${table.columns})
+#putColumnParams()
+    public static final boolean IS_${column.name}_MANDATORY = $isMandatory;
+#end
+
+## get pks 
+## if pk is not fk => add
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+##// pk $column is also a fk? $isForeignKey
+#if(!$isForeignKey)
+    private $columnType _$columnVar; ##// pk not fk
+#end
+#end
+##if($hasPrimaryKey && !$isMany2Many && !$isForeignKey)
+##private $primaryKeyFullType $primaryKey;
+##end
+
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+    private $columnType _$columnVar; 
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+    private $localColumnType _$localColumnVariable;  
+    private $linkedTableClass _${linkedTableVariable}${localColumnClass}; 
+    
+#end
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+    private Set <$linkedTableClass> ${linkedTableVariable}${linkedColumnClass}s = new HashSet();
+
+#end
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+
+##patch for hibernate
+#if ($isMany2Many)
+    public ${className} get${className} () {
+    	return this;
+    }
+
+    public void set${className} (${className} _${variableName}) {
+    	new ${className}(
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       _${variableName}.get${columnClass}()#if ($velocityCount!=$table.columnCount),
+#end
+#end 		
+		);
+    }
+#end    
+    /**
+    * Constructor with all the attributes of the entity
+    */
+    public ${className}(
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       $columnType _$columnVar#if ($velocityCount!=$table.columnCount),
+#end
+#end   
+) 
+    {
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       set$columnClass (_$columnVar);
+#end
+    }
+
+    /**
+    * toString implementation
+    */
+	public String toString() {
+		return toString(this);
+	}
+
+	public ToStringBuilder getToStringBuilder(Object object) {
+	 	return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+#foreach ($column in ${table.columns})
+#putColumnParams()
+            .append("$columnVar", _$columnVar)
+#end	 	
+	 	    ;
+	} 
+		
+	public String toString(Object object) {
+	 	return getToStringBuilder(object).toString();
+	} 
+	
+	public String toStringWithParents() {
+	    ToStringBuilder toStringBuilder = getToStringBuilder(this);
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+        if (_${linkedTableVariable}${localColumnClass}!=null)
+             toStringBuilder.append("${linkedTableVariable}${localColumnClass}", _${linkedTableVariable}${localColumnClass}.toStringWithParents());
+#end
+	 	return toStringBuilder.toString();	
+	}
+	/**
+    * hashCode implementation
+    */
+	public int hashCode() {
+		return HashCodeBuilder.reflectionHashCode(flat());
+	}
+	
+	/**
+    * equals implementation
+
+	public boolean equals(Object object) {
+		return super.toEquals(flat(), object);
+	}
+    */
+	public boolean equals(Object object) {
+		if (object == null) return false;	
+		if (object == this) return true;
+		if (!(object instanceof ${className})) return false;
+		${className} ${variableName} = (${className}) object;
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+		if (${variableName}._${columnVar}==null || !${variableName}._${columnVar}.equals(_${columnVar})) return false;
+#end
+		return true;
+	}    
+        
+	public ${className} flat() {
+	   return new ${className}(
+#foreach ($column in ${table.columns})
+#putColumnParams()
+          get$columnClass()#if ($velocityCount!=$table.columnCount),
+#end
+#end
+
+	   );
+	}
+
+	public ${className} clone() {
+        ${className} ${variableName} = new ${className}(
+#foreach ($column in ${table.columns})
+#putColumnParams()
+             get$columnClass()#if ($velocityCount!=$table.columnCount),
+#end
+#end
+
+        );
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+        if (get$linkedTableClass${localColumnClass}()!=null) 
+            ${variableName}.set$linkedTableClass${localColumnClass} (get$linkedTableClass${localColumnClass}().clone());   
+#end	   
+        return ${variableName};
+	}
+	
+	public void copy (${className} ${variableName}) {
+#foreach ($column in ${table.columns})
+#putColumnParams()
+        set$columnClass (${variableName}.get$columnClass());
+#end	
+	}
+	
+	public static ${className} fullMask() {
+		return new ${className}(
+#foreach ($column in ${table.columns})
+#putDefaultMaskColumnValue()
+			$defaultMask #if ($velocityCount!=$table.columnCount),
+#end
+#end
+
+		);	    
+	}
+	
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey)
+	public $columnType get$columnClass() {
+        return _$columnVar;
+    }
+	
+    public void set$columnClass ($columnType _$columnVar) {
+        this._$columnVar = _$columnVar;
+    }
+    
+#end
+#end
+##if($hasPrimaryKey && !$isMany2Many && !$isForeignKey)
+##    public $primaryKeyFullType get$primaryKeyJavaNameClass() {
+##        return $primaryKey;
+##    }
+##	
+##    public void set$primaryKeyJavaNameClass ($primaryKeyFullType $primaryKey) {
+##        this.$primaryKey = $primaryKey;
+##    }
+###end
+
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+    public $columnType get$columnClass() {
+        return _$columnVar;
+    }
+	
+    public void set$columnClass ($columnType _$columnVarAsInput) {
+        this._$columnVar = _$columnVarAsInput; 
+    }
+    	
+#end
+    // parent generation
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+    public $localColumnType get$localColumnClass () {
+    	return _$localColumnVariable;
+    }
+	
+    public void set$localColumnClass ($localColumnType $localColumnVarAsInput) {
+    	this._$localColumnVariable = $localColumnVarAsInput; 
+    }
+
+    public $linkedTableClass get${localColumnClass}Object () {
+    	return _${linkedTableVariable}${localColumnClass};
+    }
+	
+	public void set${localColumnClass}Object ($linkedTableClass $linkedTableVarAsInput) {
+	    set$localColumnClass ($linkedTableVarAsInput);
+	}
+	
+    public void set$localColumnClass ($linkedTableClass $linkedTableVarAsInput) {
+    	this._${linkedTableVariable}${localColumnClass} = $linkedTableVarAsInput;
+    }
+        
+    @Deprecated 
+    public $linkedTableClass get$linkedTableClass${localColumnClass} () {
+    	return _${linkedTableVariable}${localColumnClass};
+    }
+	
+	@Deprecated 
+    public void set$linkedTableClass${localColumnClass} ($linkedTableClass $linkedTableVarAsInput) {//_${linkedTableVariable}${localColumnClass}) {
+    	this._${linkedTableVariable}${localColumnClass} = $linkedTableVarAsInput; //_${linkedTableVariable}${localColumnClass};
+    }
+    
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+    public Set<$linkedTableClass> get${linkedTableClass}${linkedColumnClass}s() {
+        if (${linkedTableVariable}${linkedColumnClass}s == null){
+            ${linkedTableVariable}${linkedColumnClass}s = new HashSet();
+        }
+        return ${linkedTableVariable}${linkedColumnClass}s;
+    }
+
+    public void set${linkedTableClass}${linkedColumnClass}s (Set<$linkedTableClass> ${linkedTableVariable}${linkedColumnClass}s) {
+        this.${linkedTableVariable}${linkedColumnClass}s = ${linkedTableVariable}${linkedColumnClass}s;
+    }	
+    
+    public void add${linkedTableClass}${linkedColumnClass} ($linkedTableClass $linkedColumnVarAsInput) {//${linkedTableVariable}) {
+    	    get${linkedTableClass}${linkedColumnClass}s().add($linkedColumnVarAsInput); //$linkedTableVariable);
+    }
+    
+#end
+
+}

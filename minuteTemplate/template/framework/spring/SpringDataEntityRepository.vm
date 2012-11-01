@@ -1,0 +1,33 @@
+package $packageName;
+
+import $domainEntityImport;
+import $modelRepositoryImport;
+
+/**
+ * Custom spring data select for {@link $domainEntity}.
+ */
+public interface $className extends $modelRepositoryClassName<$domainClassName, $primaryKeyType> {
+
+#foreach semantic reference
+## searchEqual, searchLike
+#end
+
+#if ($hasSemanticReference)
+#set($semanticReferenceMethod = $semanticReferenceUtils.getSemanticReferenceMethod($semanticReference))
+    public $tableClassName findBy$semanticReferenceMethod (
+#foreach ($chunk in $semanticReference.semanticReferenceBeanPath)    
+#set($column = $semanticReferenceUtils.convertPathToColumn($table, $chunk))
+#putColumnParams()
+       "$columnType $columnVar $#if ($velocityCount!=$semanticReference.semanticReferenceBeanPath.size()), "+
+#else "
+#end
+#end   
+    );
+    
+#end
+
+#foreach field searchable
+    //search like
+#end
+
+}

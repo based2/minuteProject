@@ -1,0 +1,18 @@
+check in the template metadata configuration the Bslalibrary.vm  library is in your path
+#putColumnParams()
+$isForeignKey 
+$isPkUserProvided
+$columnFullType
+$columnType 
+$columnTypeOnly 
+$columnClass 
+$columnVar 
+$isColumnUnique
+$isMandatory
+$isPrimaryKey 
+$resource 
+$isLengthPrecisionColumn
+$columLengthPrecisionSize 
+$columnVarAsInput 
+$enumImport 
+$enumClassName 

@@ -1,0 +1,199 @@
+#putVaadinClassObjectAndPackage()
+
+import $domainObjectContainerImport;
+import $domainObjectFormImport;
+import $domainObjectListViewImport;
+import $domainObjectListImport;
+import $domainObjectSearchViewImport;
+import $menuImport;
+
+import com.vaadin.Application;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.terminal.ThemeResource;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Button;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.SplitPanel;
+import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.Window.Notification;
+
+@SuppressWarnings("serial")
+public class ${className} extends Application implements
+		ClickListener, ValueChangeListener, ItemClickListener {
+
+	private Button new${domainClassName} = new Button("Add ${domainClassName}");
+	private Button search = new Button("Search");
+	//private Button share = new Button("Share");
+	//private Button help = new Button("Help");
+	private SplitPanel horizontalSplit = new SplitPanel(
+			SplitPanel.ORIENTATION_HORIZONTAL);
+
+	// Lazyly created ui references
+	private $domainObjectListViewClass listView = null;
+	private $domainObjectSearchViewClass searchView = null;
+	private $domainObjectListClass $domainObjectListVariable = null;
+	private $domainObjectFormClass ${domainObjectFormVariable} = null;
+	//private HelpWindow helpWindow = null;
+	//private SharingOptions sharingOptions = null;
+
+	private $domainObjectContainerClass dataSource = new $domainObjectContainerClass ();
+
+	@Override
+	public void init() {
+		buildMainLayout();
+		setMainComponent(getListView());
+	}
+
+	private void buildMainLayout() {
+		setMainWindow(new Window("$model.name MinuteProject 4 Vaadin Demo application"));
+
+		setTheme("contacts");
+
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSizeFull();
+
+		layout.addComponent(createToolbar());
+		layout.addComponent(horizontalSplit);
+		layout.setExpandRatio(horizontalSplit, 1);
+
+		horizontalSplit.setSplitPosition(200, SplitPanel.UNITS_PIXELS);
+		getMainWindow().setContent(layout);
+	}
+
+	private HorizontalLayout createToolbar() {
+		HorizontalLayout lo = new HorizontalLayout();
+		$menuClass menu = new $menuClass();
+		lo.addComponent(new${domainClassName});
+		//lo.addComponent(search);
+		lo.addComponent(menu);
+		
+		search.addListener((ClickListener) this);
+		new${domainClassName}.addListener((ClickListener) this);
+
+		search.setIcon(new ThemeResource("icons/32/folder-add.png"));
+		new${domainClassName}.setIcon(new ThemeResource("icons/32/document-add.png"));
+
+		lo.setMargin(true);
+		lo.setSpacing(true);
+
+		lo.setStyleName("toolbar");
+
+		lo.setWidth("100%");
+
+		Embedded em = new Embedded("", new ThemeResource("images/logo.png"));
+		lo.addComponent(em);
+		lo.setComponentAlignment(em, Alignment.MIDDLE_RIGHT);
+		lo.setExpandRatio(em, 1);
+
+		return lo;
+	}
+
+	private void setMainComponent(Component c) {
+		horizontalSplit.setSecondComponent(c);
+	}
+
+	/*
+	 * View getters exist so we can lazily generate the views, resulting in
+	 * faster application startup time.
+	 */
+	private $domainObjectListViewClass getListView() {
+		//if (listView == null) {
+			${domainObjectListVariable} = new ${domainObjectListClass}(this);
+			${domainObjectFormVariable} = new ${domainObjectFormClass}(this);
+			listView = new ${domainObjectListViewClass}(${domainObjectListVariable}, ${domainObjectFormVariable});
+		//}
+		return listView;
+	}
+
+	private $domainObjectSearchViewClass getSearchView() {
+		if (searchView == null) {
+			searchView = new $domainObjectSearchViewClass(this);
+		}
+		return searchView;
+	}
+
+	public $domainObjectContainerClass getElements(Integer size) {
+		return dataSource.getElements(size);
+	}
+
+	public void buttonClick(ClickEvent event) {
+		final Button source = event.getButton();
+
+		if (source == search) {
+			showSearchView();
+		} else if (source == new${domainClassName}) {
+			add${domainClassName}();
+		}
+	}
+
+
+	private void showListView() {
+		setMainComponent(getListView());
+	}
+
+	private void showSearchView() {
+		setMainComponent(getSearchView());
+	}
+
+	public void valueChange(ValueChangeEvent event) {
+		Property property = event.getProperty();
+		if (property == ${domainObjectListVariable}) {
+			Item item = ${domainObjectListVariable}.getItem(${domainObjectListVariable}.getValue());
+			if (item != ${domainObjectFormVariable}.getItemDataSource()) {
+				${domainObjectFormVariable}.setItemDataSource(item);
+			}
+		}
+	}
+
+	public void itemClick(ItemClickEvent event) {
+	}
+
+	public void refresh() {
+		getElements(100).removeAllContainerFilters();
+		showListView();
+	}
+	
+	private void add${domainClassName}() {
+		refresh();
+		${domainObjectFormVariable}.add${domainClassName}();
+	}
+
+/*
+	public void search(SearchFilter searchFilter) {
+		// clear previous filters
+		getDataSource().removeAllContainerFilters();
+		// filter contacts with given filter
+		getDataSource().addContainerFilter(searchFilter.getPropertyId(),
+				searchFilter.getTerm(), true, false);
+		showListView();
+
+		getMainWindow().showNotification(
+				"Searched for " + searchFilter.getPropertyId() + "=*"
+						+ searchFilter.getTerm() + "*, found "
+						+ getDataSource().size() + " item(s).",
+				Notification.TYPE_TRAY_NOTIFICATION);
+	}
+
+	public void saveSearch(SearchFilter searchFilter) {
+		tree.addItem(searchFilter);
+		tree.setParent(searchFilter, NavigationTree.SEARCH);
+		// mark the saved search as a leaf (cannot have children)
+		tree.setChildrenAllowed(searchFilter, false);
+		// make sure "Search" is expanded
+		tree.expandItem(NavigationTree.SEARCH);
+		// select the saved search
+		tree.setValue(searchFilter);
+	}
+*/
+
+}

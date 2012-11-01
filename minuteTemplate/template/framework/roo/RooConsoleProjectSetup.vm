@@ -1,0 +1,66 @@
+#rooCommand()
+#exposeVariableModelSpecific()
+#rooModel()
+#set ($datasource = $model.dataModel.basicDataSource)
+#exposeJdbc()
+${shell}project --topLevelPackage $modelRootPackage
+
+${shell}persistence setup --provider HIBERNATE --database $rooDatabase
+${shell}database properties set --key database.url --value $datasource.url
+#if($datasource.username!="")
+${shell}database properties set --key database.username --value $datasource.username
+#end
+#if($datasource.password!="")
+${shell}database properties set --key database.password --value $datasource.password
+#end
+${shell}database properties list
+
+##foreach ($package in ${businessPackages})
+##foreach ($table in ${package.listOfTables})
+#foreach ($table in $entities)
+#putRooEntityParams()
+#if(!$isMany2Many)
+${shell}entity --class ~.$entityAfterRootPackage --identifierField $identifierField --identifierColumn $identifierColumn --identifierType $identifierType --testAutomatically --permitReservedWords
+#end
+##end
+#end
+	
+##foreach ($package in ${businessPackages})
+##foreach ($table in ${package.listOfTables})	
+#foreach ($table in $entities)
+#exposeVariableEntitySpecific()
+#if(!$isMany2Many)
+#foreach ($column in ${table.attributes})
+#putRooColumnParams()
+#if(!$column.isPrimaryKey() && !$column.isVersion())
+#if(!$columnUtils.isForeignKey($column))
+${shell}field $rooConsoleType --fieldName ${rooColumnVariableName} --column $column.name ${typeChunk} ${minSizeChunk} ${notNullChunk} ${sizeMaxChunk} --class ~.domain.${tableClassName}
+#else
+#set($reference=$referenceUtils.getReference($column))
+#set($linkedTableClass = $formatUtils.getJavaName(${reference.foreignTableName}))
+${shell}field reference --fieldName ${rooColumnVariableName} --joinColumnName $column.name ${notNullChunk} --type ~.domain.$linkedTableClass --class ~.domain.$tableClassName
+#end
+#end
+#end
+#end
+#end
+##end	
+	
+##foreach ($package in ${businessPackages})
+##foreach ($table in ${package.listOfTables})
+#foreach ($table in $entities)
+#exposeVariableEntitySpecific()
+#if(!$isMany2Many)
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+##m2m not supported. Check if link table is m2m.
+#if(!$tableUtils.isMany2Many(${linktableDB}))
+${shell}field set --class ~.domain.${localTableClass} --fieldName ${linkedTableVariable}${linkedColumnClass}s --type ~.domain.${linkedTableClass} --mappedBy $linkedColumnVariable ${notNullChunk} --cardinality ONE_TO_MANY
+#end
+#end
+#end
+#end
+##end
+	
+${shell}perform eclipse
+

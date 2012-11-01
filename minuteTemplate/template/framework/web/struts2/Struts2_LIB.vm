@@ -1,0 +1,12 @@
+#macro(exposeVariableEntityStruts2Specific)
+##set ($template = $commonUtils.getArtifactFullClasspath($model,"Struts2ManageScreen"))
+#set ($manageScreen = $commonUtils.getTemplateArtifactMainName($table,"Struts2ManageScreen"))
+#set ($actionManageScreen = $commonUtils.getTemplateArtifactMainName($table,"Struts2ManageScreen"))
+#set ($actionClassPath = $commonUtils.getArtifactFullClasspath($table,"Struts2Action"))
+#set ($manageScreenFile = $commonUtils.getTemplateArtifactName($table,"Struts2ManageScreen"))
+#set ($manageScreenSuccessFile = $commonUtils.getTemplateArtifactName($table,"Struts2ManageScreenSuccess"))
+#end
+
+#macro(exposeSubmitActionProperties)
+#set ($actionSubmit = $struts2.getActionSubmit($table))
+#end

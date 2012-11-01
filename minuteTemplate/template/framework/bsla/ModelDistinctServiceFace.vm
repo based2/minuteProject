@@ -1,0 +1,38 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+##set($print = $printUtils.print("---------- packageName ---",$packageName))
+import java.util.ArrayList;
+import java.util.List;
+
+#set ($importDomainObject = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template,$templateDomainObjectUML))
+import $importDomainObject;
+
+public interface $className {
+
+#foreach ($index in $table.getIndices())
+$index
+$index.name
+#foreach ($column in $index.getColumns())
+$column
+$column.name
+
+#end
+#end
+
+// unique
+#foreach ($index in $table.getIndices())
+$index
+#foreach ($column in $index.getColumns())
+$column
+$column.name
+
+#end
+#end
+//
+#foreach ($column in ${table.noPrimaryKeyNoForeignKeyColumns})
+#putColumnParams()
+	<property name="$columnVar" column="$column.name" #if($column.isRequired())not-null="true"#else not-null="false"#end #if($isColumnUnique)unique="true"#else unique="false"#end/> 
+#end
+
+}

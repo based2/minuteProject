@@ -1,0 +1,14 @@
+#exposeVariableEntitySpecific()
+package ${packageName};
+
+import org.springframework.roo.addon.test.RooIntegrationTest;
+import $importDomainObject;
+import org.junit.Test;
+
+@RooIntegrationTest(entity = ${domainObject}.class)
+public class $className {
+
+    @Test
+    public void testMarkerMethod() {
+    }
+}

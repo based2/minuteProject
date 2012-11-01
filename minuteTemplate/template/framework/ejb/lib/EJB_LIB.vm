@@ -1,0 +1,42 @@
+#macro (exposeEJBDomainObjectSpecific)
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#exposeJPA2DomainObject($tableDB)
+#exposeEJBDomainObject()
+#set($implementInterface=$template.getPropertyValue("implement-interface",false))
+#end
+
+#macro (exposeEJBDomainObject)
+#exposeEJBTemplate()
+#set ($EJBDaoImplClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectEJBDaoImpl))
+#set ($EJBDaoImplVariable = $commonUtils.getJavaNameVariableFirstLetter($EJBDaoImplClass))
+#set ($EJBDaoImplImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectEJBDaoImpl))
+#set ($EJBDaoRemoteInterfaceClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectEJBDaoRemoteInterface))
+#set ($EJBDaoRemoteInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($EJBDaoRemoteInterfaceClass))
+#set ($EJBDaoRemoteInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectEJBDaoRemoteInterface))
+#set ($EJBFacadeImplClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectEJBFacadeImpl))
+#set ($EJBFacadeImplVariable = $commonUtils.getJavaNameVariableFirstLetter($EJBFacadeImplClass))
+#set ($EJBFacadeImplImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectEJBFacadeImpl))
+#set ($EJBFacadeRemoteInterfaceClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectEJBFacadeRemoteInterface))
+#set ($EJBFacadeRemoteInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($EJBFacadeRemoteInterfaceClass))
+#set ($EJBFacadeRemoteInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectEJBFacadeRemoteInterface))
+#end
+
+#macro (exposeEJBModelObject)
+#exposeEJBTemplate()
+#set ($EJBModelFacadeImplImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateModelEJBFacadeImpl))
+#end
+
+#macro (exposeEJBTemplate)
+#set ($templateDomainObjectEJBDaoImpl = "EJB3DaoImpl")
+#set ($templateDomainObjectEJBDaoRemoteInterface = "EJB3DaoRemoteInterface")
+#set ($templateDomainObjectEJBFacadeImpl = "EJB3FacadeImpl")
+#set ($templateDomainObjectEJBFacadeRemoteInterface = "EJB3FacadeRemoteInterface")
+#set ($templateModelEJBFacadeImpl = "EJB3ModelFacadeImpl")
+#end
+
+#macro (exposeEJBProperties)
+#set ($isRestified=$template.getPropertyValue("rest","false"))
+#set ($isWebservice=$template.getPropertyValue("webservice","false"))
+#set ($messageFormat=$template.getPropertyValue("message-format","message-format"))##java-variable-format, java-class-format, database-format
+#end

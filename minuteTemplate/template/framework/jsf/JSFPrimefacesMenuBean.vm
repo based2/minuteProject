@@ -1,0 +1,92 @@
+#exposeJSFModelSpecific()
+##exposeJSFEntitySpecific()
+#set ($applicationJSF=$configuration.name) 
+#set ($applicationLabel=$formatUtils.getJavaName($applicationJSF))
+package $packageName;
+
+#if($isSpringBackend)
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+#elseif($isEJBBackend)
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Default;
+import javax.inject.Inject;
+import javax.inject.Named;
+#end
+
+import org.primefaces.model.*;
+import org.primefaces.component.menuitem.*;
+import org.primefaces.component.submenu.Submenu;
+
+#if($isSpringBackend)
+@Service ("${modelBeanManagerMenuJSFVariable}")
+@Transactional
+#elseif($isEJBBackend)
+@Named(value = "$modelBeanManagerMenuJSFVariable")
+@Default
+@RequestScoped
+#end
+public class ${className} {
+
+    private MenuModel model;  
+  
+    public ${className}() {  
+        model = new DefaultMenuModel();  
+          
+#foreach ($package in ${businessPackages})
+#set($displayableEntities = $presentationUtils.getDisplayableEntityFromPackage($package))
+#set($displayableEntityGroups = $presentationUtils.getDisplayableEntityGroups($package))
+#set($packageLabel=$i18nUtils.getPackageName($package))
+#set($subMenuVar = "submenu${package.name}")
+#if(!$displayableEntities.isEmpty())
+        Submenu ${subMenuVar} = new Submenu();  
+        ${subMenuVar}.setLabel("${packageLabel}"); 	
+		
+#if($entitySecurityUtils.isEntityRoleSecured($package))
+#set($roles=$entitySecurityUtils.getEntitySecuredRoles($package))
+## <mp:isUserInRole role="${roles}"> if(!tx.isCallerInRole ("${roles}")
+#end
+#foreach ($groups in $displayableEntityGroups)	
+#foreach ($table in ${groups})
+#exposeJSFEntitySpecific()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+        MenuItem item${domainClassName} = new MenuItem();  
+        item${domainClassName}.setValue("$tableLabel");  
+        item${domainClassName}.setUrl("${entityListJSFLocation}");  
+        ${subMenuVar}.getChildren().add(item${domainClassName}); 
+		
+#end
+#end
+        model.addSubmenu(${subMenuVar});
+#end
+#end
+#if($model.hasStatementModel())
+        Submenu sdd = new Submenu();  
+        sdd.setLabel("SDD");
+        model.addSubmenu(sdd);
+#foreach ($query in $model.getStatementModel().getQueries().getQueries()) 
+#exposeQuerySpecific()
+#set($table=$query.inputBean)
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($domainClassName=$commonUtils.getJavaClassName($table))
+        MenuItem item${domainClassName} = new MenuItem();  
+        item${domainClassName}.setValue("$tableLabel");
+#if (!$isChartLayout)
+#set($sddJSFLocation=$commonUtils.getArtifactRelativePathDirAndFullName($table, $template, $templateSDDJSF))
+#else
+#set($sddJSFLocation=$commonUtils.getArtifactRelativePathDirAndFullName($table, $template, $templateChartJSF))
+#end
+        item${domainClassName}.setUrl("${sddJSFLocation}");
+        sdd.getChildren().add(item${domainClassName}); 
+        
+#end
+#end
+    }  
+      
+    public MenuModel getModel() {  
+        return model;  
+    }     
+}  

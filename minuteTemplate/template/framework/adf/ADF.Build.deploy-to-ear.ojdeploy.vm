@@ -1,0 +1,12 @@
+#exposeADFBuildSpecific()
+<?xml version = '1.0' standalone = 'yes' ?>
+<ojdeploy-build>
+  <deploy>
+    <parameter name="workspace" value="$projectJwsPhysicalPath"/>
+    <parameter name="profile" value="*"/>
+    <parameter name="nocompile" value="true"/>
+    <parameter name="nodatasources" value="true"/>
+    <parameter name="forcerewrite" value="true"/>
+    <parameter name="outputfile" value="${workspace.path}/deploy/${ear.filename}"/>
+  </deploy>
+</ojdeploy-build>

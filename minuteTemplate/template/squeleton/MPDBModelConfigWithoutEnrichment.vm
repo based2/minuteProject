@@ -1,0 +1,36 @@
+<!DOCTYPE root>
+<generator-config>
+	<configuration>
+		<model name="$model.name" version="$model.version" package-root="$model.packageRoot">
+			<data-model>
+			    <driver name="$driver.name" version="$driver.version" groupId="$driver.groupId" artifactId="$driver.artifactId"></driver>
+			    <dataSource>	
+				<driverClassName>$driver.className</driverClassName>
+					<url>$driver.url</url>
+					<username>$driver.username</username>
+					<password>$driver.password</password>	
+				</dataSource><!--	
+				<schema>$model.schema</schema>	 
+				--><primaryKeyPolicy oneGlobal="true" oneForEachTable="false">
+					<primaryKeyPolicyPattern prefix="" suffix="" name="sequencePattern" sequenceName="hibernate_sequence"></primaryKeyPolicyPattern>
+				</primaryKeyPolicy> 
+			</data-model>
+			<business-model>
+				<generation-condition>
+					<condition type="exclude" startsWith="DUAL"></condition>
+				</generation-condition>		
+				<business-package default="pet">
+					<condition type="package" startsWith="TB_" result="other"></condition>
+				</business-package>		
+
+#parse($mpEnrichmentFile)
+				
+				</business-model>
+		</model>
+					<target 
+			   fileName="$mpTemplateConfigXml" 
+			   outputdir-root="$mpOutputDirRoot"
+			   templatedir-root="$mpTemplateDirRoot">
+			</target> 
+	</configuration>
+</generator-config>

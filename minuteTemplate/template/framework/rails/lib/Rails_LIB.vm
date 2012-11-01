@@ -1,0 +1,63 @@
+#macro (exposeRailsDomainSpecific)
+#end
+
+#macro (putColumnRuby)
+#set ($isForeignKey = $columnUtils.isForeignKey($column))
+#set ($isPkUserProvided = $commonUtils.isPkUserProvided($column))
+#set ($columnFullType = $commonUtils.getFullType2($column))
+#set ($isColumnUnique = $tableUtils.isUnique($table, $column))
+#set ($isMandatory = $column.isRequired())
+#set ($isPrimaryKey = $column.isPrimaryKey())
+#set ($resource = "${table.name}.$columnVar")
+#set ($isLengthPrecisionColumn = $columnUtils.isLengthPrecisionColumn($column))
+#set ($columLengthPrecisionSize = $column.getSizeAsInt())
+#set ($columnType = $railsUtils.getRubyType($column))
+#set ($columnTypeOnly = $railsUtils.getRubyTypeOnly($column))
+#set ($columnClass = $railsUtils.getRubyName($column.name))
+#set ($columnVariable = $railsUtils.getRubyNameVariable($column.name))
+#end
+
+#macro (exposeRailsApplicationSpecific)
+#set($runtimeDatabaseDriverDependency=$railsUtils.getRuntimeDatabaseDriverDependency($database))
+#end
+
+#macro (exposeRailsSpecific)
+#set ($applicationRails=$configuration.name)
+#end
+
+#macro (printRailsDomainImport)
+#putRailsTemplateDefinition()
+#foreach ($reference in $table.children)
+#set ($thisTable = $reference.foreignTable)
+#exposeImportRailsParamParamsUML($reference.foreignTable)
+#if(!$thisTable.isManyToMany())
+import $importDomainObjectUML
+#end
+#end
+#foreach ($reference in $table.parents)
+#exposeImportRailsParamParamsUML($reference.foreignTable)
+#set ($thisTable = $reference.foreignTable)
+#if(!$thisTable.isManyToMany())
+import $importDomainObjectUML
+#end
+#end
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+#if($linktableDB.isManyToMany())
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeImportRailsParamParamsUML($targetTable)
+import $importDomainObjectUML
+#end
+#end
+#end
+#end
+
+#macro (exposeImportRailsParamParamsUML $tableDB)
+#set ($importDomainObjectUML = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateRailsDomainObject))
+#end
+
+#macro (putRailsTemplateDefinition)
+#set ($templateRailsDomainObject="RomDomainObject")
+#end
+

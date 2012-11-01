@@ -1,0 +1,23 @@
+#exposeColumnSpecific()
+package $packageName;
+
+enum $className {
+
+#if($columnUtils.hasCheckConstraint($column))
+#set($property=$columnUtils.getCheckConstraintProperty($column))
+#set($propertyList=$property.getPropertiesArray())
+#foreach ($prop in $propertyList)
+#exposeEnumerationSpecific()
+    $enumName("$enumValue")#if( $velocityHasNext ),
+#end
+#end
+#end
+;
+
+    final String value;
+
+    ${className}(String v) {
+        value = v;
+    }
+    
+}

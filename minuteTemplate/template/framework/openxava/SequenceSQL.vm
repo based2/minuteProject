@@ -1,0 +1,6 @@
+#exposeVariableModelDetailSpecific()
+#foreach($package in $businessPackages)
+#foreach($table in $package.listOfTables)
+CREATE SEQUENCE ${table.name}_SEQ;
+#end
+#end

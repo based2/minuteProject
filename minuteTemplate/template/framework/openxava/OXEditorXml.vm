@@ -1,0 +1,39 @@
+#macro (editor $list)
+#foreach($table in $list)
+#exposeVariableEntitySpecific()
+#foreach($column in $table.columns)
+#putColumnParams()
+#columnJavaNaming()
+#foreach ($property in $column.getPropertiesArray())
+#if($property.tag=="checkconstraint")
+#putColumnInfo()
+##${columnClass}Combo.jsp
+   <editor name="${domainClassName}${columnClass}ComboEditor" url="$editorComboListName" />
+#end
+#end
+#if ($column.isLob())
+   <editor name="${domainClassName}${columnClass}LobEditor" url="textAreaEditor.jsp" />
+#end
+#end
+#end
+#end
+<?xml version = "1.0" encoding = "ISO-8859-1"?>
+ 
+<!DOCTYPE editors SYSTEM "dtds/editors.dtd">
+ 
+<editors>
+
+#exposeVariableModelDetailSpecific()
+#foreach($package in $businessPackages)
+#editor($package.listOfTables)
+#end
+
+#foreach($package in $businessPackageViews)
+#editor($package.listOfViews)
+#end
+
+#foreach($package in $businessPackageTranferEntities)
+#editor($package.listOfTables)
+#end
+
+</editors>

@@ -1,0 +1,40 @@
+#exposeVariableModelSpecific()
+#addedAreas()
+package $packageName;
+
+import com.autobizlogic.abl.annotations.Constraint;
+import com.autobizlogic.abl.annotations.LogicContextObject;
+import com.autobizlogic.abl.logic.LogicContext;
+import com.autobizlogic.abl.util.LogicLogger;
+import com.autobizlogic.abl.util.LogicLogger.LoggerName;
+
+$!updatedAreaImport
+/**
+ * A trivial superclass for logic objects, demonstrating how logic can be inherited.
+ */
+public class ${className} {
+    
+    /**
+     * rarely enabled, just included here to illustrate debug options
+     */
+    public static final LogicLogger _sysLog = LogicLogger.getLogger(LoggerName.SYSDEBUG);
+
+    @LogicContextObject
+    public LogicContext logicContext;
+    
+    @Constraint
+    public void emptyConstraint() {
+        if (_sysLog.isDebugEnabled())
+            _sysLog.debug("emptyConstraint invoked for " + getClass());
+    }
+
+    /**
+     * shows old/new values etc.
+     */
+    @Override
+    public String toString() {
+        return logicContext.toString();
+    }
+$!updatedAreaImplementation
+
+}

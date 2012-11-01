@@ -1,0 +1,16 @@
+#exposeVariableModelSpecific()
+<domain-database>
+#foreach ($package in ${businessPackages})
+   <!-- $package.name -->
+#foreach ($table in ${package.listOfTables}) 
+#exposeVariableEntitySpecificBslaDomainObject()
+#exposeVariableEntitySpecific()  
+   <entity name="$variableName" table="$table.name" class="$className" package="$packageName">
+#foreach ($column in ${table.columns})
+	#putColumnParams()
+      <field name="$column.name" attribute="$columnVar"/>
+#end   
+   </entity>
+#end   
+#end   
+</domain-database>

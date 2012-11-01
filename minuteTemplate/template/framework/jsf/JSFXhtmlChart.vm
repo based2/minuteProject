@@ -1,0 +1,55 @@
+#exposeJSFModelSpecific()
+#exposeSeparator()
+#exposePrimefacesConfig()
+#putImportQuerySDDBean()
+#putImportSDDInputBean()
+#exposeQuerySpecific()
+#exposeChartSpecific()
+#set ($inputClass = $commonUtils.getTemplateClassName($inputBean, $model, $templateSDDInputBean))
+#set ($tableVariableName = $commonUtils.getJavaNameVariableFirstLetter($inputClass))
+#set($tableDB = $inputBean)
+#set ($entityControllerJSFClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateEntityControllerJSF))
+#set ($entityControllerJSFVariable = $commonUtils.getJavaNameVariableFirstLetter($entityControllerJSFClass))
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="$primefacesNamespace">
+<ui:composition template="$modelDecoratorJSFImport">
+    <ui:define name="title">#{i18n.manageSddChartTitle} for #{i18n.$tableVariableName}</ui:define>
+    <ui:define name="heading">#{i18n.$tableVariableName}</ui:define>
+    <ui:define name="body">
+<h:form prependId="false">
+    <p:growl id="growl" showDetail="true" />
+#if($isPieChart)
+    <p:pieChart id="pieChart" value="#{${entityControllerJSFVariable}.createPieModel()}" legendPosition="w"
+            title="Interactive Pie Chart" style="width:400px;height:300px">
+        <p:ajax event="itemSelect" listener="#{${entityControllerJSFVariable}.itemSelect}" update="growl" />
+    </p:pieChart>
+#elseif ($isBarChart)
+    <p:barChart id="barChart" value="#{${entityControllerJSFVariable}.createCategoryModel()}" legendPosition="ne"
+            title="Interactive Bar Chart" style="height:300px">
+        <p:ajax event="itemSelect" listener="#{${entityControllerJSFVariable}.itemSelect}" update="growl" />
+    </p:barChart>
+#end
+
+##TODO idem jsfxhtmlSDDinput.vm
+            <p:panel id="sddInputPanel" header="#{i18n.$tableVariableName}"
+                toggleable="true" closable="false" toggleSpeed="500"
+                onCloseUpdate="growl" closeSpeed="2000" onToggleUpdate="growl"
+                widgetVar="panel">
+                <p:messages id="messages" />
+                <h:panelGrid columns="3" cellpadding="10">
+#foreach($column in $inputBean.columns)
+#putColumnParams()
+#columnJavaNaming()
+#putJSFColumnSnippet()
+#end
+                <p:commandButton title="#{i18n.execute}" value="#{i18n.execute}" update="sddInputPanel,display"
+                    action="#{${entityControllerJSFVariable}.execute}" />
+                </h:panelGrid>
+            </p:panel>
+</h:form>
+    </ui:define>
+</ui:composition>
+</html>

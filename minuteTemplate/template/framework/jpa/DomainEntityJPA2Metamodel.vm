@@ -1,0 +1,59 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+package $packageName;
+
+import java.sql.*;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.metamodel.StaticMetamodel;
+import javax.persistence.metamodel.SetAttribute;
+
+#exposeJPA2Import()
+#exposeJPA2CompositeKeyImport()
+#exposeJPA2EnumImport()
+
+@StaticMetamodel(${domainClassName}.class)
+public class $className {
+
+#if ($tableUtils.isCompositePrimaryKeyNotMany2Many($table))
+    public static volatile SingularAttribute<${domainClassName}, $embeddedIdClass> $embeddedIdVariable;
+#else
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+    public static volatile SingularAttribute<${domainClassName}, $columnType> $columnVar;
+#end
+#end
+
+#foreach($column in ${table.attributes})
+#putColumnParams()
+#columnJavaNaming()
+#if($isEnum)
+#set($columnType=$enumClassName)
+#end
+    public static volatile SingularAttribute<${domainClassName}, $columnType> $columnVar;
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeEnrichedPk($localColumn)
+#if (!$isEnrichedPk)
+#set($colVar = ${localColumnVariable})
+#else
+#set($colVar = ${linkedTableVariable})
+#end
+    public static volatile SingularAttribute<${domainClassName}, $linkedTableClass> $colVar;
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+    public static volatile SetAttribute<${domainClassName}, $linkedTableClass> ${childrenListVariable};
+#end
+#end
+
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+    public static volatile SetAttribute<${domainClassName}, $targetTableName> ${childrenListVariable};
+#end
+
+}

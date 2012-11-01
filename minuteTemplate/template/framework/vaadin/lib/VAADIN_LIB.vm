@@ -1,0 +1,112 @@
+#macro (exposeVaadinDomainObject)
+#exposeVaadinTemplate()
+#set ($domainObjectViewClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectViewVaadin))
+#set ($domainObjectViewVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectViewClass))
+#set ($domainObjectViewImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectViewVaadin))
+#set ($domainObjectListClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectListVaadin))
+#set ($domainObjectListVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectListClass))
+#set ($domainObjectListImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectListVaadin))
+#set ($domainObjectListViewClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectListViewVaadin))
+#set ($domainObjectListViewVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectListViewClass))
+#set ($domainObjectListViewImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectListViewVaadin))
+#set ($domainObjectSearchViewClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectSearchViewVaadin))
+#set ($domainObjectSearchViewVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectListViewClass))
+#set ($domainObjectSearchViewImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectSearchViewVaadin))
+#set ($domainObjectFormClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectFormVaadin))
+#set ($domainObjectFormVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectFormClass))
+#set ($domainObjectFormImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectFormVaadin))
+#set ($domainObjectApplicationClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectApplicationVaadin))
+#set ($domainObjectApplicationVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectApplicationClass))
+#set ($domainObjectApplicationImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectApplicationVaadin))
+#set ($domainObjectContainerClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectContainerVaadin))
+#set ($domainObjectContainerVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectContainerClass))
+#set ($domainObjectContainerImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectContainerVaadin))
+#set ($domainObjectComponentClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateDomainObjectComponentVaadin))
+#set ($domainObjectComponentVariable = $commonUtils.getJavaNameVariableFirstLetter($domainObjectComponentClass))
+#set ($domainObjectComponentImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateDomainObjectComponentVaadin))
+#set ($containerServiceInterfaceClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateVaadinContainerServiceInterface))
+#set ($containerServiceInterfaceVariable = $commonUtils.getJavaNameVariableFirstLetter($containerServiceInterfaceClass))
+#set ($containerServiceInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateVaadinContainerServiceInterface))
+#set ($containerServiceImplClass = $commonUtils.getTemplateClassName($tableDB, $model, $templateVaadinContainerServiceImpl))
+#set ($containerServiceImplVariable = $commonUtils.getJavaNameVariableFirstLetter($containerServiceImplClass))
+#set ($containerServiceImplImport = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateVaadinContainerServiceImpl))
+#end
+
+#macro (exposeVaadinSpringConfig)
+#exposeVaadinTemplate()
+#set ($vaadinSpringContainerConfigFullPath = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $templateVaadinSpringContainerConfig))
+#set ($vaadinSpringApplicationContextFullPath = $commonUtils.getArtifactRelativePathDirAndFullName($tableDB, $templateVaadinSpringApplicationContext))
+#end
+
+#macro (exposeVaadinModel)
+#exposeVaadinTemplate()
+#set ($modelApplicationClass = $commonUtils.getTemplateClassName($model, $template, $templateModelApplicationVaadin))
+#set ($modelApplicationVariable = $commonUtils.getJavaNameVariableFirstLetter($modelApplicationClass))
+#set ($modelApplicationImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelApplicationVaadin))
+#set ($modelWindowClass = $commonUtils.getTemplateClassName($model, $template, $templateModelWindowVaadin))
+#set ($modelWindowVariable = $commonUtils.getJavaNameVariableFirstLetter($modelWindowClass))
+#set ($modelWindowImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateModelWindowVaadin))
+#set ($menuClass = $commonUtils.getTemplateClassName($model, $template, $templateMenuVaadin))
+#set ($menuVariable = $commonUtils.getJavaNameVariableFirstLetter($menuClass))
+#set ($menuImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateMenuVaadin))
+#set ($applicationControllerClass = $commonUtils.getTemplateClassName($model, $template, $templateVaadinApplicationController))
+#set ($applicationControllerVariable = $commonUtils.getJavaNameVariableFirstLetter($applicationControllerClass))
+#set ($applicationControllerImport = $commonUtils.getModelLevelTemplateFullPath($model, $template, $templateVaadinApplicationController))
+#end
+
+#macro (exposeVaadinApps)
+#set($vaadinApplications = $vaadinPlugin.getVaadinApplications($model))
+#end
+
+#macro (exposeFormParams)
+#putColumnParams()
+#if ($columnType=="java.math.BigDecimal")
+#set ($convertMethod = "getBigInteger")
+#else 
+#set ($convertMethod = "get${columnType}")
+#end
+#end
+
+#macro (exposeFormParentParams)
+#putReferenceParams2()
+#if ($localColumnType=="java.math.BigDecimal")
+#set ($convertMethod = "getBigInteger")
+#else 
+#set ($convertMethod = "get${localColumnType}")
+#end
+#end
+
+#macro (exposeVaadinApp)
+#set ($table = $vaadinApp.entity)
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+#set ($vaadinAppName = $domainObjectApplicationClass)
+#set ($vaadinAppClass = $domainObjectApplicationImport)
+#end
+
+#macro (exposeVaadinTemplate)
+#set ($templateDomainObjectFormVaadin = "DomainObjectFormVaadin")
+#set ($templateDomainObjectContainerVaadin = "DomainObjectContainerVaadin")
+#set ($templateDomainObjectListVaadin = "DomainObjectListVaadin")
+#set ($templateMenuVaadin = "MenuVaadin")
+#set ($templateModelApplicationVaadin = "ModelApplicationVaadin")
+#set ($templateDomainObjectListViewVaadin = "DomainObjectListViewVaadin")
+#set ($templateDomainObjectApplicationVaadin = "DomainObjectApplicationVaadin")
+#set ($templateDomainObjectComponentVaadin = "DomainObjectComponentVaadin")
+#set ($templateDomainObjectSearchViewVaadin = "DomainObjectSearchViewVaadin")
+#set ($templateModelWindowVaadin = "ModelWindowVaadin")
+#set ($templateDomainObjectViewVaadin = "DomainObjectViewVaadin")
+#set ($templateVaadinContainerServiceInterface = "VaadinContainerServiceInterface")
+#set ($templateVaadinContainerServiceImpl = "VaadinContainerServiceImpl")
+#set ($templateVaadinSpringContainerConfig = "VaadinSpringContainerConfig")
+#set ($templateVaadinSpringApplicationContext = "VaadinSpringApplicationContext")
+#set ($templateVaadinApplicationController = "VaadinApplicationController")
+#end
+
+#macro (putVaadinClassObjectAndPackage)
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+#putImportParamsUML()
+package ${packageName};
+#end
+

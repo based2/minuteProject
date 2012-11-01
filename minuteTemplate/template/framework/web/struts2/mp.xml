@@ -1,0 +1,144 @@
+<target name="Struts2">		
+	<architecture-target name="struts2" description="basic presentation"/>	
+	<plugin name="struts2" className="net.sf.minuteProject.plugin.struts.Struts2">
+	</plugin>
+
+	<template-target 
+	    rootdir="C:/DEV/JAVA/mysourceforge/MP/minuteTemplate/template-bsla" 
+		templatedir = "frontEnd/struts2" 
+		libdir="lib/BslaLibrary.vm,Struts2_LIB.vm,lib/FrontEndLibrary.vm"
+		tool="velocity"
+		outputdir="C:/DEV/JAVA/mysourceforge/MP/minuteArchitecture/project-bsla/Web-generated-Struts2"
+		package-root="sf.net.mp.sample"
+		belongToPackage="true"
+		name = "Struts2">
+		
+		<!--  struts2 templates -->
+		<template name="Struts2ConfigXml" templateFileName="Struts2ConfigXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="struts2"
+			file-extension="xml" file-prefix="struts2-" file-suffix="" 
+			entity-specific="false" package-specific="true" model-specific="false">
+		</template>
+		
+		<template 
+		    package-root="jsp"
+		    name="Struts2ManageScreen" templateFileName="Struts2ManageScreen.vm" 
+			subdir="" outputsubdir="jsp" technicalPackage="" 
+			file-extension="jsp" file-prefix="" file-suffix="ManageScreen" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			add-model-dir-name="false"
+			>
+		</template>			
+		
+		<template 
+		    package-root="jsp"
+		    name="Struts2ManageScreenSuccess" templateFileName="Struts2ManageScreenSuccess.vm" 
+			subdir="" outputsubdir="jsp" technicalPackage="" 
+			file-extension="jsp" file-prefix="" file-suffix="ManageScreenSuccess" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			add-model-dir-name="false"
+			>
+		</template>	
+		
+		<template name="Struts2Action" templateFileName="Struts2CRUDAction.vm" 
+			subdir="" outputsubdir="" technicalPackage="struts2" 
+			file-extension="java" file-prefix="" file-suffix="Action" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>				
+	
+	    <!-- to adapt MP here the value of the method wrapped by validation
+	    	 is hardcoded in template definition (Action-save-validation)
+	     -->
+		<template name="Struts2Validation" templateFileName="Struts2ActionValidationXml.vm" 
+			subdir="" outputsubdir="" technicalPackage="struts2" 
+			file-extension="xml" file-prefix="" file-suffix="-validation" 
+			entity-specific="true" package-specific="false" model-specific="false"
+			file-name-builder-plugin="struts2"
+			file-name-builder-method="getValidationFileName">
+		</template>	
+				
+		<template name="BslaDomainObject" templateFileName="BslaDomainObject.vm" 
+			subdir="" outputsubdir="" technicalPackage="domain"
+			file-extension="java" file-prefix="" file-suffix="" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>			
+				
+
+	</template-target>			
+	
+	<template-target 
+	    rootdir="C:/DEV/JAVA/mysourceforge/MP/minuteTemplate/template-bsla" 
+		templatedir = "frontEnd/struts2" 
+		libdir="lib/BslaLibrary.vm,Struts2_LIB.vm,lib/FrontEndLibrary.vm"
+		tool="velocity"
+		outputdir="C:/DEV/JAVA/mysourceforge/MP/minuteArchitecture/project-bsla/Web-generated-Struts2"
+		package-root="sf.net.mp.sample"
+		belongToPackage="true"
+		name = "Struts2 backend dependency">
+		<!-- BE dependency not generated -->
+		<template name="BslaDaoInterface" templateFileName="BslaDaoInterface.vm" 
+			subdir="" outputsubdir="" technicalPackage="dao.face"
+			file-extension="java" file-prefix="" file-suffix="Dao" 
+			entity-specific="true" package-specific="false" model-specific="false">
+			<property name="uml" value="false"/>
+		</template>		
+	</template-target>
+
+	<template-target 
+	rootdir="C:/DEV/JAVA/mysourceforge/MP/minuteTemplate"
+    templatedir = "template-bsla" 
+	libdir="lib/BslaLibrary.vm,lib/FrontEndLibrary.vm"
+	tool="velocity"
+	outputdir="C:/DEV/JAVA/mysourceforge/MP/minuteArchitecture/project-bsla/Web-generated-Struts2"
+	package-root="jsp"
+	belongToPackage="true">		
+	 
+		<template package-root="jsp"
+			name="WebManageScreen" templateFileName="GenRender1ManageScreen.vm" 
+			subdir="" outputsubdir="html" technicalPackage="" add-model-name="true"
+			file-extension="jsp" file-prefix="" file-suffix="ManageScreen" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+
+		<template package-root="html"
+			name="BslaWebSearchScreen" templateFileName="BslaWebSearchScreen.vm" 
+			subdir="" outputsubdir="html" technicalPackage="" add-model-name="true"
+			file-extension="html" file-prefix="" file-suffix="SearchScreen" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+		
+		<template package-root="html"
+			name="BslaWebMenu" templateFileName="BslaWebMenu.vm" 
+			subdir="" outputsubdir="html" technicalPackage="" add-model-name="false"
+			file-extension="jsp" file-prefix="" file-suffix="Menu" 
+			entity-specific="false" package-specific="false" model-specific="true">
+			<property name="framework" value="struts2Default"></property>
+		</template>													
+		
+		<template name="GenRender1SearchResultListScreen" templateFileName="GenRender1SearchResultListScreen.vm" 
+			subdir="" outputsubdir="jsp" technicalPackage="" add-model-name="true"
+			file-extension="jsp" file-prefix="" file-suffix="ResultListScreen" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>		
+		
+		<template name="GenRender1SearchResultListBody" templateFileName="GenRender1SearchResultListBody.vm" 
+			subdir="" outputsubdir="jsp" technicalPackage="" add-model-name="true"
+			file-extension="jsp" file-prefix="" file-suffix="ResultListBody" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>
+
+		<template name="GenRender1SearchResultOneBody" templateFileName="GenRender1SearchResultOneBody.vm" 
+			subdir="" outputsubdir="jsp" technicalPackage="" add-model-name="true"
+			file-extension="jsp" file-prefix="" file-suffix="ResultOneBody" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>	
+	
+		<template name="GenDojo1SearchResultOneScreen" templateFileName="GenDojo1SearchResultOneScreen.vm" 
+			subdir="" outputsubdir="jsp" technicalPackage="" add-model-name="true"
+			file-extension="jsp" file-prefix="" file-suffix="ResultOneScreen" 
+			entity-specific="true" package-specific="false" model-specific="false">
+		</template>							
+	</template-target>		
+
+	
+</target>	

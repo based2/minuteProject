@@ -1,0 +1,39 @@
+#exposeVariableEntitySpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="${importDomainObject}.$tableClassName" table="$tableVariableName">
+		<!--<cache usage="read-write" />-->
+
+		<id name="todoId" column="id">
+			<generator class="uuid.hex">
+			</generator>
+		</id>
+
+  <!-- map the fields of ${tableClassName} domain object  -->
+#foreach ($column in ${table.columns})
+#putColumnParams()
+		<property name="$columnVar" column="$columnVar" /> 
+#end
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+    <result property="$var" column="$column" select="load$linkclass"/>  
+    
+<many-to-one name="todoList $var" class="tudu.domain.model.TodoList $linkclass"
+			cascade="none" outer-join="auto" update="true" insert="true"
+			column="$column" />     	
+#end
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+    <!-- to change the primary key is not always id -->
+    <result property="${var}s" column="id" select="load${varclass}For${tableClassName}"/>
+#end  
+
+
+	</class>
+
+</hibernate-mapping>

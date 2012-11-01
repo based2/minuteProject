@@ -1,0 +1,185 @@
+#exposeRoot()
+#set ($complexElements = $xmlSchemaUtils.getComplexElement($elements))
+##macro(exposeScope)
+##set ($nameAttributeValue = $element.getNameAttributeValue())
+##set ($scopeName = $formatUtils.getJavaName($element.getNameAttributeValue()))
+##set ($scopeSpecificName = $formatUtils.getJavaName($scopeName))
+##end
+package $packageName;
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
+import $importRootElementClass;
+import net.sf.minuteProject.exception.MinuteProjectException;
+import net.sf.minuteProject.application.AbstractGenerator;
+import net.sf.minuteProject.configuration.bean.AbstractConfiguration;
+import net.sf.minuteProject.configuration.bean.AbstractConfigurationRoot;
+import net.sf.minuteProject.configuration.bean.GeneratorBean;
+import net.sf.minuteProject.configuration.bean.Target;
+import net.sf.minuteProject.configuration.bean.Template;
+import net.sf.minuteProject.loader.init.Init;
+import net.sf.minuteProject.loader.init.InitHolder;
+import net.sf.minuteProject.loader.init.node.Configuration;
+import net.sf.minuteProject.loader.init.node.Definition;
+import net.sf.minuteProject.loader.init.node.Targetlocation;
+import net.sf.minuteProject.plugin.xml.schema.XmlSchemaUtils;
+import net.sf.minuteProject.utils.BslaLibraryUtils;
+import net.sf.minuteProject.utils.CommonUtils;
+import net.sf.minuteProject.utils.ConvertUtils;
+import net.sf.minuteProject.utils.DatabaseUtils;
+import net.sf.minuteProject.utils.FormatUtils;
+import net.sf.minuteProject.utils.ModelUtils;
+import net.sf.minuteProject.utils.ViewUtils;
+
+import $importHolderElementClass;
+
+import org.apache.log4j.Logger;
+import org.apache.velocity.VelocityContext;
+
+public class ${className} extends AbstractGenerator {
+
+	private static Logger logger = Logger.getLogger(${className}.class);
+	
+	private ${holderElementName} $holderElementVar;
+	private InitHolder initholder;
+	private Targetlocation targetlocation;
+	private Target target;
+	
+	public ${className} (String configurationFile) {
+		super(configurationFile);
+	}
+	
+	public static void main(String args[]) throws MinuteProjectException {
+		if (args.length < 1) {
+			System.exit(1);
+		}
+		${className} generator = new ${className}(args[0]);
+		generator.init(args);
+
+	}
+	
+	private void init(String args[]) throws MinuteProjectException{
+		Date startDate = new Date();
+	    logger.info("start time = "+new Date());
+
+		loadInit(args[0]);
+		loadDefinition(initholder);
+		loadTarget(initholder);
+		
+		generate(initholder.getConfiguration().getTarget());
+		
+		Date endDate = new Date();
+		logger.info("time taken : "+(endDate.getTime()-startDate.getTime())+ "ms.");		
+	}
+	
+	private void loadInit(String filename) throws MinuteProjectException {
+	    Init loader = new Init(filename);
+		initholder = loader.load();	
+	}
+
+	private void loadTarget(InitHolder initholder) throws MinuteProjectException {
+		Configuration configuration = initholder.getConfiguration();
+		if (configuration!=null) {
+			Targetlocation target = configuration.getTargetlocation();
+			if (target!=null) {
+				loadTarget (target);	
+			}
+		}
+	}
+	
+	private void loadDefinition(InitHolder initholder) throws MinuteProjectException {
+		Configuration configuration = initholder.getConfiguration();
+		if (configuration!=null) {
+			Definition definition = configuration.getDefinition();
+			if (definition!=null) {
+				String filename = definition.getFilename();
+				String dir = definition.getDir();
+				loadDefinition (dir, filename);	
+			}
+		}
+	}
+
+	private void loadTarget(Targetlocation initTarget) throws MinuteProjectException {
+		target = populateTarget(initTarget);
+		loadTarget(initholder.getConfiguration(), target);	
+	}
+	
+	private void loadDefinition(String dir, String filename) throws MinuteProjectException {
+	    $loaderElementName loader = new $loaderElementName(dir, filename);
+		$holderElementVar = loader.load();		
+	}
+
+	private Target populateTarget (Targetlocation initTarget) {
+		Target target = new Target();
+		target.setDir(initTarget.getDir());
+		target.setFileName(initTarget.getFilename());
+		return target;
+	}
+	public void loadTarget (AbstractConfigurationRoot abstractConfigurationRoot, Target target) throws MinuteProjectException {
+		loadConfiguration(abstractConfigurationRoot, getTargetConfigurationInputStream(abstractConfigurationRoot, target), GENERATOR_TARGET_RULES);
+		complementWithTargetInfo(abstractConfigurationRoot, target);
+	}
+
+	@Override
+	public AbstractConfiguration getConfigurationRoot() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getConfigurationRulesFile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public String getPropertyConfigurationRulesFile() {
+		return null;
+	}
+
+	public void generate(Template template) throws MinuteProjectException {
+#foreach ($element in $complexElements)
+#exposeScope()
+	   if (template.getScopeSpecificValue().equals("$scopeName"))
+	      generate$scopeSpecificName(template);
+#end
+	}
+
+#foreach ($element in $complexElements)
+#exposeScope()
+	private void generate$scopeSpecificName (Template template) throws MinuteProjectException {	
+		$rootElementName $rootElementVar = ${holderElementVar}.get$rootElementName();
+		if ($rootElementVar != null) {
+			writeTemplateResult($rootElementVar, template);
+		}
+	}
+#end
+		
+	protected void writeTemplateResult(GeneratorBean bean, 
+			Template template) throws MinuteProjectException {
+		String outputFilename = template.getGeneratorOutputFileNameForConfigurationBean(bean, template);
+		VelocityContext context = getVelocityContext(template);
+		String beanName = getAbstractBeanName(bean);
+		context.put(beanName, bean);
+		context.put("template", template);
+		putCommonContextObject(context, template);
+		produce(context, template, outputFilename);
+	}
+	
+	protected void putCommonContextObject(VelocityContext context, Template template) {
+		putStandardContextObject(context);
+		putPluginContextObject(context, template);
+	}
+	
+	protected void putStandardContextObject(VelocityContext context) {
+		context.put("convertUtils", new ConvertUtils());
+		context.put("commonUtils", new CommonUtils());
+		context.put("viewUtils", new ViewUtils());
+		context.put("formatUtils", new FormatUtils());
+		context.put("bslaLibraryUtils", new BslaLibraryUtils());
+		context.put("databaseUtils", new DatabaseUtils());
+		context.put("modelUtils", new ModelUtils());
+	}
+
+}

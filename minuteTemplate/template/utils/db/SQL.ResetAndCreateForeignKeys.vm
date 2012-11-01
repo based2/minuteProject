@@ -1,0 +1,25 @@
+#exposeVariableModelSpecific()
+##-- drop entities
+#foreach ($package in ${businessPackages})
+##--package name is $package.name
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecific()
+#foreach($reference in $table.parents)
+#putReferenceParams2()
+##ALTER TABLE ${reference.localTable.name} DROP FOREIGN KEY ${reference.localTable.name}_${velocityCount}_FK;
+#end
+#end
+#end
+
+#foreach ($package in ${businessPackages})
+##--package name is $package.name
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecific()
+#foreach($reference in $table.parents)
+#putReferenceParams2()
+ALTER TABLE ${reference.localTable.name} ADD CONSTRAINT ${reference.localTable.name}_${velocityCount}_FK FOREIGN KEY (${reference.localColumn.name}) REFERENCES ${reference.foreignTable.name}(${reference.foreignColumn.name});
+#end
+#end
+#end
+
+commit;

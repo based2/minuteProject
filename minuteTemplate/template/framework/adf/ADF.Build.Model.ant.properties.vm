@@ -1,0 +1,17 @@
+#exposeADFBuildSpecific()
+oracle.jdeveloper.ant.library=${JDEV_HOME}/jdev/lib/ant-jdeveloper.jar
+output.dir=classes
+##oracle.home=../../../../../SOFT/SERVER/ORACLE/WLS/10.3.5.0-jdev-11.1.1.6.0/jdeveloper/
+oracle.home=$JDEV_HOME
+javac.deprecation=off
+##oracle.jdeveloper.workspace.path=D\:\\DEV\\JSF\\ADF\\nif2SDOApp\\nif2SDOApp.jws
+oracle.jdeveloper.workspace.path=${projectJwsPhysicalPath}
+oracle.jdeveloper.deploy.profile.name=*
+javac.debug=on
+##oracle.jdeveloper.deploy.dir=D\:\\DEV\\JSF\\ADF\\nif2SDOApp\\Model\\deploy
+oracle.jdeveloper.deploy.dir=${projectModelPhysicalDirPath}/deploy
+oracle.jdeveloper.ojdeploy.path=${JDEV_HOME}/jdev/bin/ojdeploy.exe
+javac.nowarn=off
+oracle.jdeveloper.project.name=$modelADFJprClass
+##oracle.jdeveloper.deploy.outputfile=D\:\\DEV\\JSF\\ADF\\nif2SDOApp\\Model\\deploy\\${profile.name}
+oracle.jdeveloper.deploy.outputfile=${projectModelPhysicalDirPath}/deploy/${profile.name}

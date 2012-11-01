@@ -1,0 +1,64 @@
+#exposeVariableModelSpecific() 
+#exposeJdbc()
+#set ($applicationOX=$configuration.name)
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  - Application context containing authentication, channel
+  - security and web URI beans.
+  -
+  - Only used by "filter" artifact.
+  -
+  -->
+
+<b:beans xmlns="http://www.springframework.org/schema/security"
+    xmlns:b="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <authentication-manager>
+      <authentication-provider>
+        <jdbc-user-service 
+          data-source-ref="dataSource" 
+          users-by-username-query="SELECT username,password,active FROM user_authentication WHERE username = ?"
+          authorities-by-username-query="SELECT username,role FROM user_authorisation WHERE username = ?" 
+          />
+      </authentication-provider> 
+    </authentication-manager>  
+    
+    <http realm="$model.name Realm">
+
+        <intercept-url pattern="/" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/index.jsp" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/hello.htm" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+
+        <!-- default url -->
+
+		<intercept-url pattern="/xava/homeMenu.jsp" access="ROLE_APPLICATION_USER"/>
+        <intercept-url pattern="/xava/**/*.jsp" access="ROLE_NOT_PRESENT"/>
+		
+#foreach ($table in $entities)
+#exposeVariableEntitySpecific()
+#if($entitySecurityUtils.isEntityRoleSecured($table))
+##	<!-- secured $table.name -->
+#set($roles=$entitySecurityUtils.getEntitySecuredRoles($table))
+#set($ROLES=$springSecurityUtils.getRoles($roles))
+        <intercept-url pattern="/MenuModules/$domainClassName" access="$ROLES"/>
+#end 
+#end       
+
+ 		<intercept-url pattern="/MenuModules/**" access="ROLE_APPLICATION_USER"/>
+		
+        <form-login login-page="/login.jsp" authentication-failure-url="/login.jsp?login_error=1"/>
+        <http-basic/>
+        <logout logout-success-url="/index.jsp"/>
+        <remember-me />
+        <access-denied-handler error-page="/accessDenied.jsp"/>
+    </http>
+
+    <b:bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <b:property name="jndiName"><b:value>java:comp/env/jdbc/${applicationOX}DS</b:value></b:property>
+    </b:bean>    
+         
+</b:beans>

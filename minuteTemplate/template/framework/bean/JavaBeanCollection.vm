@@ -1,0 +1,44 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#putImportSDDBean()
+#addedAreas()
+package $packageName;
+
+import java.util.List;
+import java.util.ArrayList;
+
+#if($addXmlBinding)
+import javax.xml.bind.annotation.*;
+#end
+
+import $beanImport;
+
+$!updatedAreaImport
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Java Bean ${className} </p>
+ *
+ */
+#if($addXmlBinding)
+@XmlRootElement (name="${className}")
+#end
+public class ${className} {
+
+#if($addXmlBinding)
+#set($xmlElementValue=$jaxbUtils.getXmlElementValue($listVariable, $xmlFormat))
+    @XmlElement (name="${beanClass}") //$!xmlElementValue
+#end
+    private List<${beanClass}> $listVariable;
+
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+	
+#putSetterGetterAdder($className, $listVariable, ${beanClass}, ${beanVariable})
+
+$!updatedAreaImplementation
+}

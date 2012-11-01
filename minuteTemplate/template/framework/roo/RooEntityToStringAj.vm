@@ -1,0 +1,17 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.lang.String;
+
+privileged aspect $className {
+    
+    public String ${domainClassName}.toString() {
+        StringBuilder sb = new StringBuilder();
+#foreach($column in $table.columns)
+#putRooColumnParams()
+        sb.append("$columnVar: ").append(get$rooColumnClassName()).append(", ");
+#end        
+        return sb.toString();
+    }
+    
+}

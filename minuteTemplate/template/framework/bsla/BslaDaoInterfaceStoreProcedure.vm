@@ -1,0 +1,19 @@
+#exposeVariableFunctionSpecific()
+package $packageName;
+
+import $functionInputImport;
+import $functionOutputImport;
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Data access object dealing with store procedure $className
+ * It provides the call of the procedure passing input parameters
+ *  and return store procedure output</p>
+ *
+ */
+public interface $className {
+
+    public $functionOutputClass $tableVariableName($functionInputClass $functionInputVariable) ;
+
+}

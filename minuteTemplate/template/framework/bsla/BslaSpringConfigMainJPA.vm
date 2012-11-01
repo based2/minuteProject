@@ -1,0 +1,30 @@
+#exposeVariableModelSpecific()
+#exposeArchitectureParams()
+#exposeSpringJPAArchitectureParams()
+#exposeJPASpecifics()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- Dao JPA -->
+    <import resource="classpath:${pathDaoJPA}.xml"/>    
+
+    <!-- hibernate config to put in an appart config file-->
+    <bean id="$JPAFactoryName" autowire="byName"
+        class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceXmlLocation" value="$persistenceXmlLocation" />
+		<property name="dataSource"><ref bean="${model.name}DataSource"/></property>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="databasePlatform" value="${hibernate.dialect}"></property>
+				<!--<property name="showSql" value="true"></property>-->
+			</bean>
+		</property>
+    </bean>
+    
+    <!-- Database -->
+    <import resource="classpath:${databaseConfig}.xml"/>    
+
+</beans>
+

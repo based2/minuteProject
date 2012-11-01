@@ -1,0 +1,261 @@
+#putVaadinClassObjectAndPackage()
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.sql.*;
+import java.util.Date;
+import java.util.Calendar;
+import java.util.List;
+import java.util.ArrayList;
+
+
+import com.vaadin.data.Item;
+import com.vaadin.data.util.BeanItem;
+import com.vaadin.data.validator.EmailValidator;
+import com.vaadin.data.validator.RegexpValidator;
+
+import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Component;
+import com.vaadin.ui.DefaultFieldFactory;
+import com.vaadin.ui.Field;
+import com.vaadin.ui.Form;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+
+//import ${importDomainObjectUML}; might enter in confict with vaadin class (ex: Item import)
+import $domainObjectApplicationImport;
+import $domainObjectContainerImport;
+
+@SuppressWarnings("serial")
+public class ${className} extends Form implements ClickListener {
+
+	public static final Object[] NATURAL_COL_ORDER = new Object[] {
+	
+#foreach($column in ${table.columns})
+#putColumnParams()
+       #if ($velocityCount!=1),#end"$columnVar"
+#end
+##	
+##foreach($column in ${table.primaryKeyColumns})
+##putColumnParams()
+##if(!$isForeignKey)
+##       #if ($velocityCount!=1),#end"$columnVar"
+##end
+##end
+##foreach ($column in ${table.attributes})
+##putColumnParams()
+##	   ,"$columnVar"
+##end
+##foreach ($reference in $table.parents)
+##putReferenceParams2()
+##	   ,"$localColumnVariable"
+##end
+##
+	};
+			
+	private Button save = new Button("Save", (ClickListener) this);
+	private Button cancel = new Button("Cancel", (ClickListener) this);
+	private Button edit = new Button("Edit", (ClickListener) this);
+	private Button delete = new Button("Delete", (ClickListener) this);
+
+	private $domainObjectApplicationClass $domainObjectApplicationVariable;
+	private boolean new${domainClassName}Mode = false;
+	private $importDomainObjectUML $domainVariableName = null;
+	private $domainObjectContainerClass $domainObjectContainerVariable = new $domainObjectContainerClass();
+
+	public ${className}($domainObjectApplicationClass $domainObjectApplicationVariable) {
+	    this();
+		this.$domainObjectApplicationVariable = $domainObjectApplicationVariable;
+	}
+	
+	public ${className}() {
+		/*
+		 * Enable buffering so that commit() must be called for the form before
+		 * input is written to the data. (Form input is not written immediately
+		 * through to the underlying object.)
+		 */
+		setWriteThrough(false);
+
+		HorizontalLayout footer = new HorizontalLayout();
+		footer.setSpacing(true);
+		footer.addComponent(save);
+		footer.addComponent(cancel);
+		footer.addComponent(edit);
+		footer.addComponent(delete);
+		footer.setVisible(false);
+
+		setFooter(footer);
+
+        //TODO populate DD list
+
+		/*
+		 * Field factory for overriding how the component for city selection is
+		 * created
+		 */
+		setFormFieldFactory(new DefaultFieldFactory() {
+			@Override
+			public Field createField(Item item, Object propertyId,
+					Component uiContext) {
+				Field field = super.createField(item, propertyId, uiContext);
+#foreach($column in ${table.columns})
+#putColumnParams()
+			   #if($velocityCount==1) if#else else if#end (propertyId.equals("$columnVar")) {
+					TextField tf = (TextField) field;
+					tf.setNullRepresentation("");
+#if($hasTypeValidator)
+					//@TODO change it. 
+#end
+#if($isMandatory && !$columnUtils.isPkUserProvided($column))
+					tf.setRequired(true);
+#end
+#if ($column.isPrimaryKey && !$columnUtils.isPkUserProvided($column))
+					tf.setVisible(false);
+#end									
+				}    			
+#end				
+				field.setWidth("200px");
+				return field;
+			}
+		});
+	}
+
+	public void buttonClick(ClickEvent event) {
+		Button source = event.getButton();
+
+		if (source == save) {
+			/* If the given input is not valid there is no point in continuing */
+			if (!isValid()) {
+				return;
+			}
+			${importDomainObjectUML} $domainVariableName = get${domainClassName}FromForm ();
+	        ${domainObjectContainerVariable}.saveAndUpdateList ($domainVariableName);
+		    //${domainObjectApplicationVariable}.refresh();
+			//commit();
+			if (new${domainClassName}Mode) {
+				/* We need to add the new person to the container */
+				//Item addedItem = app.getDataSource().addItem($domainVariableName);
+				/*
+				 * We must update the form to use the Item from our datasource
+				 * as we are now in edit mode (no longer in add mode)
+				 */
+				//setItemDataSource(addedItem);
+
+				new${domainClassName}Mode = false;
+			}
+			//setReadOnly(true);
+		} else if (source == cancel) {
+			if (new${domainClassName}Mode) {
+				new${domainClassName}Mode = false;
+				/* Clear the form and make it invisible */
+				setItemDataSource(null);
+			} else {
+				discard();
+			}
+			setReadOnly(true);
+		} else if (source == edit) {
+			setReadOnly(false);
+		} else if (source == delete) {
+			${importDomainObjectUML} $domainVariableName = get${domainClassName}FromForm ();
+	        ${domainObjectContainerVariable}.delete ($domainVariableName);
+		    //${domainObjectApplicationVariable}.refresh();
+		}
+	}
+
+	@Override
+	public void setItemDataSource(Item newDataSource) {
+		new${domainClassName}Mode = false;
+
+		if (newDataSource != null) {
+			List<Object> orderedProperties = Arrays.asList(NATURAL_COL_ORDER);
+			super.setItemDataSource(newDataSource, orderedProperties);
+
+			setReadOnly(true);
+			getFooter().setVisible(true);
+		} else {
+			super.setItemDataSource(null);
+			getFooter().setVisible(false);
+		}
+	}
+
+	@Override
+	public void setReadOnly(boolean readOnly) {
+		super.setReadOnly(readOnly);
+		save.setVisible(!readOnly);
+		cancel.setVisible(!readOnly);
+		edit.setVisible(readOnly);
+		delete.setVisible(readOnly);
+	}
+
+	public void add$domainClassName() {
+		$domainVariableName = new $importDomainObjectUML();
+		setItemDataSource(new BeanItem($domainVariableName));
+		new${domainClassName}Mode = true;
+		setReadOnly(false);
+	}
+
+	private ${importDomainObjectUML} get${domainClassName}FromForm () {
+		$importDomainObjectUML $domainVariableName = new $importDomainObjectUML();
+#foreach($column in ${table.primaryKeyColumns})
+#exposeFormParams()
+##if(!$isForeignKey && $columnUtils.isPkUserProvided($column))
+        if (getField("$columnVar").getValue()!=null)
+   		   ${domainVariableName}.set${columnClass}($convertMethod(getField("$columnVar").getValue()));
+##end
+#end
+#foreach ($column in ${table.attributes})
+#exposeFormParams()
+        if (getField("$columnVar").getValue()!=null)
+   		   ${domainVariableName}.set${columnClass}($convertMethod(getField("$columnVar").getValue())); 
+#end
+#foreach ($reference in $table.parents)
+#exposeFormParentParams()
+        if (getField("$localColumnVariable").getValue()!=null)
+   		   ${domainVariableName}.set${localColumnClass}($convertMethod(getField("$localColumnVariable").getValue())); 
+#end
+		return $domainVariableName;
+	}
+
+    protected Integer getInteger(Object stringObject) {
+	   return Integer.valueOf(getString(stringObject));
+	}
+	
+	protected String getString (Object stringObject) {
+	   return (String) stringObject;
+	}
+
+	protected java.math.BigDecimal getBigInteger (Object stringObject) {
+   	   return java.math.BigDecimal.valueOf(getDouble(stringObject));
+	}
+
+	protected Long getLong (Object stringObject) {
+   	   return Long.valueOf (getString(stringObject));
+	}
+	
+	protected Double getDouble (Object stringObject) {
+	   return Double.valueOf (getString(stringObject));
+	}
+
+	protected Date getDate (Object stringObject) {
+	   return new Date();
+	}
+
+	protected Boolean getBoolean (Object stringObject) {
+	   return Boolean.valueOf(getString(stringObject));
+	}
+		
+	protected Blob getBlob (Object stringObject) {
+	   return null;//TODO
+	}	
+	
+	protected Clob getClob (Object stringObject) {
+	   return null;//TODO
+	}	
+
+	protected Timestamp getTimestamp (Object date) {
+       return new Timestamp(Calendar.getInstance().getTimeInMillis());
+	}
+        
+}

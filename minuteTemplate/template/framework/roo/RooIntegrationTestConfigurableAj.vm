@@ -1,0 +1,11 @@
+#exposeVariableEntitySpecific()
+#exposeRooTestSpecific()
+package ${packageName};
+
+import org.springframework.beans.factory.annotation.Configurable;
+
+privileged aspect $className {
+    
+    declare @type: $rooIntegrationTestClassName: @Configurable;
+    
+}

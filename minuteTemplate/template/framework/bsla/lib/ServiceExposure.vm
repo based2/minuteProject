@@ -1,0 +1,32 @@
+#macro(exposeServiceParam)
+#exposeServiceTemplate()
+#set ($serviceName = $commonUtils.getTemplateClassName($tableDB, $model, $templateServiceName))
+#set ($serviceVariableName = $formatUtils.getJavaNameVariableFirstLetter($serviceName))
+#set ($importServiceImplName = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template,$templateServiceImplName))
+##set ($servicePackagePath = $commonUtils.getPackageLevelTemplateFullClassPath($model, $package, $template, $templateServicePackageName) )
+##set ($serviceModelPath = $commonUtils.getModelLevelTemplateFullClassPath($model, $template, $templateServiceModelName) )
+##set ($daoModelPath = $serviceUtils.getDaoModelPath($model))
+#set ($serviceInterfaceName = $commonUtils.getTemplateClassName($tableDB, $model, $templateServiceInterfaceName))
+#set ($importServiceInterface = $commonUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template,$templateServiceInterfaceName))
+#end
+
+#macro(exposePackageServiceParam)
+#exposeServiceTemplate()
+#set ($servicePackagePath = $commonUtils.getPackageLevelTemplateFullClassPath($model, $package, $template, $templateServicePackageName) )
+#end
+
+
+#macro(exposeModelServiceParam)
+#exposeServiceTemplate()
+#set ($serviceModelPath = $commonUtils.getModelLevelTemplateFullClassPath($model, $template, $templateServiceModelName) )
+#set ($daoModelPath = $commonUtils.getModelLevelTemplateFullClassPath($model, $template, $templateDaoModelName) )
+#end
+
+#macro(exposeServiceTemplate)
+#set ($templateServiceImplName = "ServiceInterfaceImpl")
+#set ($templateServiceName = "ServiceInterface")
+#set ($templateServicePackageName = "BslaSpringConfigService")
+#set ($templateServiceModelName = "BslaSpringConfigService2")
+#set ($templateDaoModelName = "BslaSpringConfigHibernate")
+#set ($templateServiceInterfaceName = "ServiceInterface")
+#end

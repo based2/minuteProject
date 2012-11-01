@@ -1,0 +1,85 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#putImportParamsUML()
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+    version="1.0">
+    <description>JPA Mapping file $model.name</description>
+    <package>$model.name</package>
+
+    <entity class="$importDomainObjectUML" name="${className}">
+        <table name="${table.name}"/>
+        <attributes>
+#if($hasPrimaryKey)
+#set ($column = $primaryKeyFirstColumn)
+#putColumnParams()
+			<id name="$primaryKeyVariable">     
+			    <column name="$column.name" #if($isLengthPrecisionColumn)length="$column.size"#end #if($column.isRequired())nullable="false"#else nullable="true"#end #if($isColumnUnique)unique="true"#else unique="false"#end />       
+#if (!$isPkUserProvided)
+#if ($isPrimaryKeyPolicySequence)
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+				<generated-value generator="$sequenceName"/>    
+				<sequence-generator name="$sequenceName" sequence-name="$sequenceName"/>     
+#elseif ($isPrimaryKeyPolicyIdentity)
+                <generated-value strategy="AUTO"/>
+                <generator class="identity">
+#elseif ($isPrimaryKeyPolicyIncrement)
+                <generated-value strategy="AUTO"/>
+#end			      
+#end
+			</id>
+#end		
+            <!-- map the fields of ${className} domain object  -->
+#foreach ($column in ${table.noPrimaryKeyNoForeignKeyColumns})
+#putColumnParams()
+            <basic name="$columnVar">
+                <column name="$column.name" #if($isLengthPrecisionColumn)length="$column.size"#end #if($column.isRequired())nullable="false"#else nullable="true"#end #if($isColumnUnique)unique="true"#else unique="false"#end />
+#if ($column.isLob())
+                <lob/>
+#end
+            </basic>
+            
+#end
+            <!-- parent links -->
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeImportParamsUML($reference.foreignTable)
+#if (!$referenceUtils.isReferenceInPrimaryKey($reference))
+            <basic name="$localColumnVariable">
+                <column name="$localColumn.name" #if($isLengthPrecisionColumnLocalColumn)length="$localColumn.size"#end #if($localColumn.isRequired())nullable="false"#else nullable="true"#end #if($isColumnUnique)unique="true"#else unique="false"#end />
+            </basic>
+
+#end
+#end
+            <!-- parent object links -->
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeImportParamsUML($reference.foreignTable)
+			<many-to-one name="${localColumnVariable}Object" fetch="LAZY" target-entity="$importDomainObjectUMLForeignTable" >
+				<join-column name="${localColumnName}" 
+							 referenced-column-name="$linkedColumnName" 
+							 #if($localColumn.isRequired())nullable="false"#else nullable="true"#end #if($columnDB.isUnique())unique="true"#else unique="false"#end insertable="false" updatable="false" />
+			</many-to-one>
+#end
+
+            <!-- children links -->
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#exposeImportParamsUML($reference.foreignTable)  
+			<one-to-many name="${linkedTableVariable}${linkedColumnClass}s" target-entity="$importDomainObjectUMLForeignTable" fetch="LAZY">
+				<join-column name="$linkedColumnName" 
+							 referenced-column-name="$localColumnName" 
+							 #if($columnDB.isRequired())nullable="false"#else nullable="true"#end #if($columnDB.isUnique())unique="true"#else unique="false"#end insertable="false" updatable="false" />
+			</one-to-many>    
+#end  
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#exposeImportParamsUML($reference.foreignTable)
+            <transient name="${linkedTableVariable}${localColumnClass}"/>
+#end
+        </attributes>
+    </entity>
+
+</entity-mappings>

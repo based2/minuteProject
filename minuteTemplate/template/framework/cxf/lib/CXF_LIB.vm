@@ -1,0 +1,31 @@
+#macro (exposeCXFModelSpecific)
+#exposeCXFTemplate()
+#set($controllerCxfPackageName=$commonUtils.getPackageName($model, $template, $templateCXFSpringRestServiceBean))
+#set($controllerDaoPackageName=$commonUtils.getPackageName($model, $template, $templateSDDSpringJPADao))
+#end
+
+#macro(exposeCXFEntitySpecific)
+#exposeCXFTemplate()
+#set ($CXFRestServiceBeanClass = $commonUtils.getTemplateClassName($table, $model, $templateCXFSpringRestServiceBean))
+#set ($CXFRestServiceBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($CXFRestServiceBeanClass))
+#end
+
+#macro(exposeCXFSDDSpecific)
+#exposeCXFTemplate()
+#set ($CXFRestServiceSDDXmlBeanClass = $commonUtils.getTemplateClassName($query, $template, $templateCXFSpringRestServiceSDDXmlBean))
+#set ($CXFRestServiceSDDXmlBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($CXFRestServiceSDDXmlBeanClass))
+#set ($CXFRestServiceSDDJsonBeanClass = $commonUtils.getTemplateClassName($query, $template, $templateCXFSpringRestServiceSDDJsonBean))
+#set ($CXFRestServiceSDDJsonBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($CXFRestServiceSDDJsonBeanClass))
+#end
+
+#macro (exposeCXFTemplate)
+#set ($templateCXFSpringRestServiceBean = "CXFSpringEntityResource")
+#set ($templateCXFSpringRestServiceSDDJsonBean = "CXFSpringSDDJsonResource")
+#set ($templateCXFSpringRestServiceSDDXmlBean = "CXFSpringSDDXmlResource")
+#set ($templateSDDSpringJPADao = "SDDSpringJPADao")
+#end
+
+
+#macro (exposeMavenCXF)
+#set($cxfVersion=$template.getPropertyValue("add-rest-implementation-cxf-version","2.2.3"))
+#end

@@ -1,0 +1,52 @@
+    //TODO put in upper class
+    
+	protected String getQueryWHERE_AND(boolean isWhereSet) {
+		if (isWhereSet)
+			return " AND ";
+		return " WHERE ";
+	}
+
+	protected String getQueryCommaSet(boolean isWhereSet) {
+		if (isWhereSet)
+			return " , ";
+		return " SET ";
+	}
+
+	protected static String getQuerySelectComma(boolean isSelectSet) {
+		if (isSelectSet)
+			return " , ";
+		return " select ";
+	}
+
+	protected static String getQueryBLANK_AND(boolean isBlankSet) {
+		if (isBlankSet)
+			return " AND ";
+		return " ";
+	}
+
+	protected static String getQueryBLANK_COMMA(boolean isBlankSet) {
+		if (isBlankSet)
+			return " , ";
+		return " ";
+	}
+
+	protected String getQueryComma(boolean isCommaSet) {
+		return (isCommaSet) ? " , " : "";
+	}
+
+	protected String getQueryOR(boolean isOrSet) {
+		return (isOrSet) ? " OR " : "";
+	}
+
+	protected String getQueryAND(boolean isAndSet) {
+		return (isAndSet) ? " AND " : "";
+	}
+
+	protected String getHQuery (String what, String where) {
+        String whereWord = getWhere (where);
+	    return what+whereWord+where;
+    }
+    
+    protected String getWhere (String where) {
+        return (where==null || where.trim().equals("") || where.trim()==null)?"":" WHERE ";
+    }

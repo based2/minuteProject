@@ -1,0 +1,79 @@
+#set ($packageName = $xmlSchemaUtils.getPackageName($element, $template))
+#set ($className = $commonUtils.getClassName($element, $template))
+##macro(putSequenceSpecifics)
+##set ($sequenceType = $xmlSchemaUtils.getSequenceJavaType($sequence))
+##set ($sequenceVariableName = $xmlSchemaUtils.getSequenceJavaVariableName($sequence))
+##set ($sequenceClassName = $xmlSchemaUtils.getSequenceJavaClassName($sequence))
+##set ($isCollection = $xmlSchemaUtils.isCollection($sequence))
+##end
+package $packageName;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ${className} {
+
+#foreach ($sequence in $element.sequenceAttribute)
+#putSequenceSpecifics()
+   private $sequenceType _$sequenceVariableName;
+#end
+#foreach ($sequence in $element.getSequenceElement())
+#putSequenceSpecifics()
+#if($isCollection)
+   private List<$sequenceType> _${sequenceVariableName}s;
+#else
+   private $sequenceType _$sequenceVariableName;
+#end
+#end
+
+   public ${className}() {
+   }
+
+#foreach ($sequence in $element.sequenceAttribute)
+#putSequenceSpecifics()
+   public $sequenceType get$sequenceClassName() {
+      return _$sequenceVariableName;
+   }
+	
+   public void set$sequenceClassName ($sequenceType _$sequenceVariableName) {
+      this._$sequenceVariableName = _$sequenceVariableName;
+   }
+   
+#end
+#foreach ($sequence in $element.sequenceElement)
+#putSequenceSpecifics()
+#if($isCollection)
+   public List<$sequenceType> get${sequenceClassName}s() {
+      if (_${sequenceVariableName}s == null){
+         _${sequenceVariableName}s = new ArrayList<$sequenceType>();
+      }
+      return _${sequenceVariableName}s;
+   }
+
+   public void set${sequenceClassName}s (List<$sequenceType> _${sequenceVariableName}s) {
+      this._${sequenceVariableName}s = _${sequenceVariableName}s;
+   }
+ 
+   public void set${sequenceClassName} ($sequenceType _$sequenceVariableName) {
+      add${sequenceClassName}(_$sequenceVariableName);
+   }
+      
+   public void add${sequenceClassName} ($sequenceType _$sequenceVariableName) {
+      get${sequenceClassName}s().add(_$sequenceVariableName);
+   }
+    
+#else
+   public $sequenceType get$sequenceClassName() {
+      return _$sequenceVariableName;
+   }
+	
+   public void set$sequenceClassName ($sequenceType _$sequenceVariableName) {
+      this._$sequenceVariableName = _$sequenceVariableName;
+   }
+   
+#end	
+#end
+
+}
+

@@ -1,0 +1,9 @@
+	<servlet>
+		<servlet-name>moduleHome</servlet-name>
+		<servlet-class>net.sf.minuteproject.openxava.web.servlet.ModuleHomeServlet</servlet-class>
+	</servlet>
+	
+	<servlet-mapping>
+		<servlet-name>moduleHome</servlet-name>
+		<url-pattern>/MenuModules/*</url-pattern>
+	</servlet-mapping>

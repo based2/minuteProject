@@ -1,0 +1,55 @@
+#exposeVariableEntitySpecific()
+#set ($entityInSession = "${tableClassName}SearchResultOne")
+<%@ include file="/WEB-INF/jsp/common/common-include.jsp"%>
+<fmt:setBundle basename="$bundle"/>
+<html>
+<head>
+	<title>$tableDB.name entity</title>
+</head>
+<body>
+<!-- main entity -->
+<div class="entityMainTitle">$tableDB.name</div>
+<jsp:include page="/jsp/$model.name/$businessPackageName/${tableClassName}ResultOneBody.jsp" />
+
+<!-parents-->
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+#exposeJstlEntity(${entityInSession} ${var})
+<c:set scope="session" var="${linkclass}SearchResultOne" value="${entity}" />
+<c:if test="${ not empty ${linkclass}SearchResultOne}">
+</br>
+<div class="entityParentTitle">Associated parent $linkclass :</div>
+<jsp:include page="/jsp/$model.name/$associatedPackageName/${linkclass}ResultOneBody.jsp" />
+</c:if>	
+#end
+
+<!--children-->
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+#exposeJstlEntity(${entityInSession} "${var}s")
+<c:set scope="session" var="${linkclass}SearchResultList" value="${entity}" />
+<!-- $entityInSession.${var}s-->
+<c:choose>
+	<c:when test="${ not empty ${linkclass}SearchResultList}">
+List of associated ${linkclass} via ${column} (${ fn:length(${linkclass}SearchResultList)})
+<jsp:include page="/jsp/$model.name/$associatedPackageName/${linkclass}ResultListBody.jsp" />
+</c:when>
+	<c:otherwise>
+No associated ${linkclass} via ${column}
+	</c:otherwise>
+</c:choose>
+#if ($hasPrimaryKey)
+#set ($actionURL = $URLUtils.getURLAddReferencedEntity($linktable, $column, $entityInSession, $pK))
+</br>
+		<a href="${ctx}/$actionURL"><img src="${ctx}/images/add.gif"></a>		
+#end
+</br>
+##<c:if test="${ not empty ${linkclass}SearchResultList}">
+##</br>
+##Associated children of type ${linkclass} via ${column}:
+##<jsp:include page="/jsp/$model.name/$associatedPackageName/${linkclass}ResultListBody.jsp" />
+##</c:if>
+#end  
+
+</body>
+

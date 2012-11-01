@@ -1,0 +1,17 @@
+#exposeVariableEntitySpecific()
+# entity ${model.name}  ${packageName}
+#foreach ($column in ${table.columns})
+#putColumnParams()
+$resource = $column.name
+#end
+# parents
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+$resource = ${linkclass} via ${column}
+#end
+# children
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+$resource = ${linkclass} via ${column}
+#end
+	

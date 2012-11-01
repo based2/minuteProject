@@ -1,0 +1,35 @@
+#exposeVariableEntitySpecific()
+<!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN" "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+
+<validators>
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if(!$column.isPrimaryKey())    
+#if ($column.type=="VARCHAR" || $column.type=="CHAR")
+#if($column.isRequired())
+    <field name="$columnVar">
+        <field-validator type="requiredstring">
+            <message>$columnVar is mandatory</message>
+        </field-validator>
+    </field>
+#end
+#end
+#if ($column.type=="INT" || $column.type=="BIGINT" || $column.type=="INTEGER")
+#if($column.isRequired())
+    <field name="$columnVar">
+        <field-validator type="required">
+            <message>$columnVar is mandatory</message>
+        </field-validator>
+    </field>        
+#end
+    <field name="$columnVar">
+        <field-validator type="int">
+            <message>$columnVar is of type integer</message>
+        </field-validator>
+    </field>
+#end
+
+#end
+#end
+</validators>
+

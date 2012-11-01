@@ -1,0 +1,5 @@
+#exposeVariableModelSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+#exposeConnectionSpecific()
+#exposeJdbc()
+#parse("./snippet/bslaDatasourceLocalProperties.vm")

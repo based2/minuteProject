@@ -1,0 +1,10 @@
+#exposeVariableModelSpecific()
+#exposeJdbc()
+#set ($datasource = $model.dataModel.basicDataSource)
+
+!3 Datasource connection information
+
+!|net.sf.minuteproject.fitnesse.fixture.DbConnectionFixture|
+|username| password| url| driverClassName|
+|$datasource.username| $datasource.password| $datasource.url | $datasource.driverClassName|
+

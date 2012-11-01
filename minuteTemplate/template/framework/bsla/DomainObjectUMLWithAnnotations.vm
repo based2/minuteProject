@@ -1,0 +1,111 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+
+import net.sf.minuteProject.architecture.bsla.domain.DomainObject;
+#foreach ($reference in $table.children)
+#exposeImportParamsUML($reference.foreignTable)
+import $importDomainObjectUML;
+#end
+#foreach ($reference in $table.parents)
+#exposeImportParamsUML($reference.foreignTable)
+import $importDomainObjectUML;
+#end
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object describing a ${className} entity</p>
+ *
+ */
+public class ${className} implements DomainObject {
+
+#if($hasPrimaryKey && !$isMany2Many)
+	private $primaryKeyFullType $primaryKey;
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+    private $columnType _$columnVar; // $column.name
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+    private $localColumnType _$localColumnVariable;  
+    
+    private $linkedTableClass _${linkedTableVariable}${localColumnClass}; 
+    
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+    private Set <$linkedTableClass> ${linkedTableVariable}${linkedColumnClass}s = new HashSet();
+#end
+
+    public ${className}() {
+    }
+
+#if($hasPrimaryKey && !$isMany2Many)
+	    public $primaryKeyFullType get$primaryKeyJavaNameClass() {
+        return $primaryKey;
+    }
+	
+    public void set$primaryKeyJavaNameClass ($primaryKeyFullType $primaryKey) {
+        this.$primaryKey = $primaryKey;
+    }
+#end
+
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+    public $columnType get$columnClass() {
+        return _$columnVar;
+    }
+	
+    public void set$columnClass ($columnType _$columnVar) {
+        this._$columnVar = _$columnVar;
+    }	
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+    public $localColumnType get$localColumnClass () {
+    	return _$localColumnVariable;
+    }
+	
+    public void set$localColumnClass ($localColumnType _$localColumnVariable) {
+    	this._$localColumnVariable = _$localColumnVariable;
+    }
+    
+    public $linkedTableClass get$linkedTableClass${localColumnClass} () {
+    	return _${linkedTableVariable}${localColumnClass};
+    }
+	
+    public void set$linkedTableClass${localColumnClass} ($linkedTableClass _${linkedTableVariable}${localColumnClass}) {
+    	this._${linkedTableVariable}${localColumnClass} = _${linkedTableVariable}${localColumnClass};
+    }
+    
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+    public Set<$linkedTableClass> get${linkedTableClass}${linkedColumnClass}s() {
+        if (${linkedTableVariable}${linkedColumnClass}s == null){
+            ${linkedTableVariable}${linkedColumnClass}s = new HashSet();
+        }
+        return ${linkedTableVariable}${linkedColumnClass}s;
+    }
+
+    public void set${linkedTableClass}${linkedColumnClass}s (Set<$linkedTableClass> ${linkedTableVariable}${linkedColumnClass}s) {
+        this.${linkedTableVariable}${linkedColumnClass}s = ${linkedTableVariable}${linkedColumnClass}s;
+    }	
+    
+#end
+
+}

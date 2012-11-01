@@ -1,0 +1,16 @@
+#exposeVariableEntitySpecific()
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+##	<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/xava/style/mp.css" />
+</head>
+<body bgcolor="#ffffff">
+##	<div id="menu">
+##		<%@ include file="../../mp/menu.jsp"%>
+##	</div>
+	<div id="content">
+Help file for entity $domainClassName.
+	</div>
+##	<div id="content">
+##		<%@ include file="../../mp/footer.jsp"%>
+##	</div>
+</html>

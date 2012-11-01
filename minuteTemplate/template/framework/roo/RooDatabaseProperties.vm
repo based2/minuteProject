@@ -1,0 +1,8 @@
+#exposeVariableModelSpecific()
+#set ($datasource = $model.dataModel.basicDataSource)
+#exposeConnectionSpecific()
+#exposeJdbc()
+database.driverClassName=$datasource.driverClassName
+database.url=$datasource.url
+database.username=$datasource.username
+database.password=$datasource.password

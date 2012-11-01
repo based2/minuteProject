@@ -1,0 +1,7 @@
+#exposeADFBuildSpecific()
+oracle.jdeveloper.workspace.path=D:\DEV\JSF\ADF\nif2SDOApp\nif2SDOApp.jws
+workspace.path=D:\DEV\JSF\ADF\nif2SDOApp
+workspace.name=nif2SDOApp.jws
+ear.filename=nif2SDOApp.ear
+autosync.true=<value n="Weblogic-JDBC-Auto-Sync-Key" v="true"/>
+autosync.false=<value n="Weblogic-JDBC-Auto-Sync-Key" v="false"/> 

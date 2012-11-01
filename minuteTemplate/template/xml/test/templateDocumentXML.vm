@@ -1,0 +1,42 @@
+#set ($indent = 0)
+#macro(indent $position)
+$xmlSchemaUtils.indent($position)
+#
+#end
+#macro (treeWalk $element $end)
+#set ($indent = $indent + 1)
+#foreach($ele in $element.getNodes())
+#if ($ele.name == "element" && $ele.isComplexType())
+#set ($padding = $xmlSchemaUtils.indent($indent))
+#set ($type = $ele.getType())
+#set ($name = $ele.getAttributeValue("name"))
+#set ($endPart = "${padding}</pattern>")
+$padding<pattern value="$name">
+$padding <object-create-rule classname="net.sf.minuteProject.configuration.bean.presentation.$type"/>
+	$padding<set-next-rule methodname="set$type" paramtype="net.sf.minuteProject.configuration.bean.presentation.$type"/>
+	$padding<set-properties-rule/>
+	##$ele.getPath() ----
+	#foreach($eleChild in $ele.getSequenceElement())
+	#set ($nameChild = $eleChild.getAttributeValue("name"))
+	$padding<bean-property-setter-rule pattern="$nameChild"/>	
+	#end
+	#else
+	#set ($endPart = "")
+	#end	
+#treeWalk($ele $endPart)
+#end
+#set ($indent = $indent - 1)
+#if ($ele.name == "element" && $ele.isComplexType())
+$end
+#end
+##if ($ele.name == "element" && $ele.isComplexType())
+##$padding</pattern>
+##end
+#end
+<!DOCTYPE digester-rules PUBLIC 
+        "-//Jakarta Apache //DTD digester-rules XML V1.0//EN" 
+        "http://jakarta.apache.org/commons/digester/dtds/digester-rules.dtd">
+<digester-rules>
+$xmlSchemaUtils.digesterContent($rootElement, $configuration)
+</digester-rules>
+

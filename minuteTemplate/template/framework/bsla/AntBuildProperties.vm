@@ -1,0 +1,8 @@
+#exposeVariableModelSpecific()
+project.name=$model.name
+#foreach($templateTarget in $distinctTemplateTargetList)
+#if($templateTarget.isBelongToPackage())
+src-generated-${templateTarget.name}.dir=${templateTarget.outputdir}
+#end
+#end
+project.src.dir=$architecture.dir

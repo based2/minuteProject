@@ -1,0 +1,25 @@
+#exposeVariableEntitySpecific()
+#templateDefinition()
+<?xml version="1.0"?>
+<!DOCTYPE compass-core-mapping PUBLIC 
+    "-//Compass/Compass Core Mapping DTD 2.2//EN"
+    "http://www.compass-project.org/dtd/compass-core-mapping-2.2.dtd">
+
+<compass-core-mapping package="$importDomainObjectUML">
+
+    <class name="$className" alias="$className">
+
+#if($hasPrimaryKey && !$isMany2Many)
+
+        <id name="$primaryKeyVariable" />    
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+        <property name="$columnVar">
+            <meta-data>${columnVar}</meta-data>
+        </property>
+#end
+
+    </class>
+    
+</compass-core-mapping>

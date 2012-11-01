@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:presentation="http://mp.org/presentation" 
+targetNamespace="http://mp.org/presentation">
+
+ <xs:complexType name="dictionary">
+ 	<xs:sequence>
+ 		<xs:element name="name" type="xs:string" />
+ 		<xs:element name="flow" type="presentation:flow" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="page" type="presentation:page" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="window" type="presentation:window" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="component" type="presentation:component" minOccurs="0" maxOccurs="unbounded"/> 		
+ 		<xs:element name="block" type="presentation:block" minOccurs="0" maxOccurs="unbounded"/>
+		<xs:element name="listBlock" type="presentation:listBlock" minOccurs="0" maxOccurs="unbounded"/>
+ 	</xs:sequence>
+  </xs:complexType>
+  
+ <xs:complexType name="flow">
+ 	<xs:sequence>
+ 		<xs:element name="name" type="xs:string" />
+ 		<xs:element name="id" type="xs:string" />
+ 		<xs:element name="pageRef" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="page" type="presentation:page" minOccurs="0" maxOccurs="unbounded"/>
+ 	</xs:sequence>
+  </xs:complexType>
+
+ <xs:complexType name="page">
+ 	<xs:sequence>
+ 		<xs:element name="name" type="xs:string" />
+ 		<xs:element name="id" type="xs:string" />
+ 		<xs:element name="windowRef" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="window" type="presentation:window" minOccurs="0" maxOccurs="unbounded"/>
+ 	</xs:sequence>
+  </xs:complexType>
+  
+   <xs:complexType name="window">
+ 	<xs:sequence>
+ 		<xs:element name="name" type="xs:string" />
+ 		<xs:element name="id" type="xs:string" />
+ 		<xs:element name="isForm" type="xs:boolean" />
+ 		<xs:element name="blockRef" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="block" type="presentation:block" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="listBlockRef" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="listblock" type="presentation:listBlock" minOccurs="0" maxOccurs="unbounded"/>
+ 	</xs:sequence>
+  </xs:complexType>
+  
+   <xs:complexType name="block">
+ 	<xs:sequence>
+ 		<xs:element name="name" type="xs:string" />
+ 		<xs:element name="id" type="xs:string" />
+ 		<xs:element name="isForm" type="xs:boolean" />
+ 		<xs:element name="componentRef" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="component" type="presentation:component" minOccurs="0" maxOccurs="unbounded"/>
+ 	</xs:sequence>
+  </xs:complexType>
+
+   <xs:complexType name="listBlock">
+ 	<xs:sequence>
+ 		<xs:element name="name" type="xs:string" />
+ 		<xs:element name="id" type="xs:string" />
+ 		<xs:element name="isForm" type="xs:boolean" />
+ 		<xs:element name="numberOfLineMax" type="xs:integer" />
+ 		<xs:element name="hasPagination" type="xs:boolean" />
+ 		<xs:element name="componentRef" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+ 		<xs:element name="component" type="presentation:component" minOccurs="0" maxOccurs="unbounded"/>
+ 	</xs:sequence>
+  </xs:complexType>
+    
+  <xs:complexType name="component" >
+ 	<xs:sequence>
+ 		<xs:element name="name" type="xs:string" />
+ 		<xs:element name="id" type="xs:string" />
+ 		<xs:element name="type" type="xs:string" />
+ 		<xs:element name="length" type="xs:integer" />
+ 		<xs:element name="height" type="xs:integer" />
+ 		<xs:element name="helper" type="xs:string" />
+ 		<xs:element name="validation" type="xs:string" />
+ 		<xs:element name="isMandatory" type="xs:boolean" />
+ 		<xs:element name="label" type="xs:string" />
+ 		<xs:element name="description" type="xs:string" />
+ 		<xs:element name="editable" type="xs:string" />
+ 		<xs:element name="visible" type="xs:string" />
+ 		<xs:element name="isActionForm" type="xs:boolean" />
+ 		<xs:element name="action" type="xs:string" />
+ 		<xs:element name="defaultValue" type="xs:string" />
+ 		<xs:element name="exampleValue" type="xs:string" />
+ 		<xs:element name="positionX" type="xs:integer" />
+ 		<xs:element name="positionY" type="xs:integer" />
+ 	</xs:sequence>
+  </xs:complexType>
+  
+</xs:schema>

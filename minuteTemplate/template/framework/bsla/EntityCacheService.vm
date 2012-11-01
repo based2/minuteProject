@@ -1,0 +1,26 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+$table.alias
+
+$table.properties
+
+#if ($enrichmentUtils.hasTag($table, "isCache"))
+test
+#end
+
+#foreach($linkedTable in $enrichmentUtils.getLinkedEntityByForeignKeyForTag($table, "isCache"))
+>> here
+#end
+
+array : $table.getPropertiesArray();
+#foreach ($property in $table.getPropertiesArray())
+>$property.name , $property.value
+
+#foreach ($property in $table.getPropertiesArray())
+>>$property.name , $property.value
+#end
+
+#end
+package $packageName;
+
+$table

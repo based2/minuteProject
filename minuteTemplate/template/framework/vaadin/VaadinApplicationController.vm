@@ -1,0 +1,38 @@
+#exposeVariableModelDetailSpecific()
+package $packageName;
+
+import eu.livotov.tpt.gui.widgets.TPTMultiView;
+#foreach ($package in ${businessPackages})
+#foreach ($tableDB in ${package.listOfTables})
+#if(!$tableDB.isManyToMany())
+#exposeVaadinDomainObject()
+import $domainObjectViewImport;
+#end
+#end
+#end
+
+@SuppressWarnings("serial")
+public class $className extends TPTMultiView {
+
+    private static $className controller;
+
+    public static $className getController() {
+        if (controller==null)
+            controller = new $className();
+        return controller;
+    }
+    
+    public $className () {
+        super(true);
+#foreach ($package in ${businessPackages})
+#foreach ($table in ${package.listOfTables})
+#if(!$table.isManyToMany())
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+        addView("$tableVariableName", new $domainObjectViewClass());
+#end
+#end
+#end        
+    }
+    
+}

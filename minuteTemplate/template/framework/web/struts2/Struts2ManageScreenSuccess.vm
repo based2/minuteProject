@@ -1,0 +1,26 @@
+#exposeVariableEntitySpecific()
+#set ($action = "save")
+#set ($htmlFormName = $table.name)
+#set ($entityInSession = "${tableClassName}SearchResultOne")
+<%@ taglib prefix="s" uri="/struts-tags" %>
+<html>
+<head>
+	<title>$table.name edit screen result</title>
+</head>	
+<body>
+
+$table.name field values
+<s:form name="$htmlFormName" method="post">
+	<input type="hidden" name="action" value="$action">
+	<input type="hidden" name="table" value="$table.name">
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#exposeJstlEntity($entityInSession $columnVar)
+#if(!$column.isPrimaryKey())
+	<s:textfield label="$columnVar" name="$columnVar"/>
+#end
+#end
+<s:submit/>
+</s:form>
+</body>
+</html>

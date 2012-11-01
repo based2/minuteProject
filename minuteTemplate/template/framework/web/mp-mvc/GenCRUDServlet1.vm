@@ -1,0 +1,140 @@
+#exposeVariableModelSpecific()
+package $packageName;
+
+import java.io.*;
+import java.util.*;
+import java.lang.reflect.InvocationTargetException;
+import javax.sql.DataSource;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import org.apache.commons.beanutils.BeanUtilsBean;
+import net.sf.minuteProject.architecture.bsla.factory.MyProjectFactory;
+
+#importBackEnd()
+
+   /**
+    * Handles a single guestbook request from the client.
+    */
+public class $className extends HttpServlet {
+	
+	private void doAction(HttpServletRequest req, HttpServletResponse res, String action) 
+	   throws IllegalAccessException, InvocationTargetException, ServletException, IOException {
+		HttpSession session = req.getSession();
+		String table = req.getParameter("table");
+		String pk = req.getParameter("pk");
+		Long id = null;
+				// empty session attribute
+		Enumeration enumeration = session.getAttributeNames();
+		while (enumeration.hasMoreElements()) {
+			String attributeName = (String) enumeration.nextElement();
+			session.removeAttribute(attributeName);
+		}
+		//if (pk!=null)
+		//   id = new Long(req.getParameter("pk"));
+#foreach ($package in ${businessPackages})
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecific()
+##putReferenceParams()
+#exposeJSPPath()
+        if (table.equals("$table.name")) {
+				$tableClassName entity = new $tableClassName();
+				populate(entity, req);
+				${tableClassName}Dao dao = (${tableClassName}Dao)MyProjectFactory.getBean("${tableVariableName}Dao");			
+				if (action.equals("insert")) {
+					dao.insert$tableClassName(entity);
+					doExit (req, res, entity, "${tableClassName}SearchResultOne", "$jspPath/${tableClassName}ResultOneScreen.jsp");
+				}
+				if (action.equals("manage")) {
+					doExit (req, res, entity, "${tableClassName}SearchResultOne", "$jspPath/${tableClassName}ManageScreen.jsp");
+				}
+				if (action.equals("searchOnPk")) {
+					entity  = dao.loadFullFirstLevel$tableClassName(new $primaryKeyFullType(pk));
+					List list = new ArrayList();
+					list.add(entity);					
+					session.setAttribute("${tableClassName}SearchResultList",list);
+					doExit (req, res, entity, "${tableClassName}SearchResultOne", "$jspPath/${tableClassName}ResultOneScreen.jsp");
+				}
+					if (action.equals("searchOnPkFull")) {
+					entity = dao.loadFullFirstLevel$tableClassName(entity);
+					doExit (req, res, entity, "${tableClassName}SearchResultOne", "$jspPath/${tableClassName}ResultOneScreen.jsp");
+				}
+				if (action.equals("edit")) {
+					entity  = dao.loadFullFirstLevel$tableClassName(new $primaryKeyFullType(pk));
+					doExit (req, res, entity, "${tableClassName}SearchResultOne", "$jspPath/${tableClassName}ManageScreen.jsp");
+				}
+				if (action.equals("add")) {
+					doExit (req, res, entity, "${tableClassName}SearchResultOne", "$jspPath/${tableClassName}ManageScreen.jsp");
+				}
+				if (action.equals("save")) {
+					dao.save$tableClassName(entity);
+					doExit (req, res, entity, "${tableClassName}SearchResultOne", "$jspPath/${tableClassName}ResultOneScreen.jsp");
+				}
+				if (action.equals("search")) {
+				List list = dao.search$tableClassName(entity);
+					doExit (req, res, list, "${tableClassName}SearchResultList", "$jspPath/${tableClassName}ResultListScreen.jsp");
+			}
+		}									
+#end
+#end
+}
+
+private void doExit(HttpServletRequest req, HttpServletResponse res, Object entity, String attribute, String path) throws ServletException, IOException{
+					HttpSession session = req.getSession();
+					session.setAttribute(attribute,entity);
+						forward(path,req,res);
+}
+
+	public void doGet (HttpServletRequest req, HttpServletResponse res)
+    throws ServletException, IOException {
+    	doPost (req, res);
+    }
+    
+	public void doPost (HttpServletRequest req, HttpServletResponse res)
+    throws ServletException, IOException {
+        //ServletOutputStream out = res.getOutputStream();
+        HttpSession session = req.getSession();
+        String table = req.getParameter("table");
+        String forward="";
+        try {
+##importChunkSearchAction()
+doAction (req, res, req.getParameter("action"));
+		} catch (IllegalAccessException iae) {
+			forward("/jsp/error/SearchScreenResultError.jsp",req,res);
+			//out.println("exception ex = "+iae.getMessage());
+		} catch (InvocationTargetException ite) {
+			forward("/jsp/error/SearchScreenResultError.jsp",req,res);
+			//out.println("exception ex = "+ite.getMessage());
+		}
+   }
+   
+    private static Map getParametersMap(HttpServletRequest request) {
+        Map parameters = new HashMap();
+        Enumeration e = request.getParameterNames();
+        while (e.hasMoreElements()) {
+            String key = (String) e.nextElement();
+        	String [] params = request.getParameterValues(key);
+        	if (params.length>0 && !params[0].equals("")) {
+            	parameters.put(key, params[0]);
+            	System.out.println("param = "+key+", "+params[0]);            		
+        	}
+        }
+        return parameters;
+    }   
+    
+    public static void populate(Object bean, HttpServletRequest request)
+        throws IllegalAccessException, InvocationTargetException {
+        Map parameters = getParametersMap(request);
+        BeanUtilsBean.getInstance().populate(bean, parameters);
+    }    
+
+    private void forward(
+    	    String aDestination, 
+    	    HttpServletRequest aRequest, 
+    	    HttpServletResponse aResponse
+    	  ) throws ServletException, IOException {
+    	    
+    	    RequestDispatcher dispatcher = aRequest.getRequestDispatcher(aDestination);
+    	    dispatcher.forward(aRequest, aResponse);
+    }      
+}

@@ -1,0 +1,124 @@
+#exposeMaven()
+#exposeWebService()
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>${rootPackage}.${model.name}</groupId>
+	<artifactId>${model.name}WebServiceApi</artifactId>
+	<name>${model.name}WebServiceApi</name>
+	<version>1.0-SNAPSHOT</version>
+	<description>${model.name} Web Service Interface Module</description>
+	
+	<dependencies>
+#addArea("custom-dependencies")		
+		<dependency>
+			<groupId>com.sun.xml.ws</groupId>
+			<artifactId>jaxws-rt</artifactId>
+			<version>2.1.3</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.jws</groupId>
+			<artifactId>jsr181-api</artifactId>
+			<version>1.0-MR1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.ws</groupId>
+			<artifactId>jaxws-api</artifactId>
+			<version>2.1</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>jsr181</artifactId>
+					<groupId>javax.jws</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+#addArea("custom-plugins")
+#if($hasWsdlRootDirectory)
+          <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-resources</id>
+                <!-- here the phase you need -->
+                <phase>validate</phase>
+                <goals>
+                  <goal>copy-resources</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${basedir}/src/main/resources</outputDirectory>
+                  <resources>          
+                    <resource>
+                      <directory>${wsdlRootDirectory}</directory>
+                      <filtering>true</filtering>
+                    </resource>
+                  </resources>              
+                </configuration>            
+              </execution>
+            </executions>
+          </plugin>
+#end
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxws-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsimport</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+#if($hasWsdlRootDirectory)
+					<wsdlDirectory>${basedir}/src/main/resources/${wsdlDirectory}</wsdlDirectory>
+#else
+					<wsdlDirectory>${wsdlDirectory}</wsdlDirectory>
+#end
+					<wsdlFiles>
+						<wsdlFile>${wsdlFile}</wsdlFile>
+					</wsdlFiles>
+					<xdebug>true</xdebug>
+					<destDir>${basedir}/target/classes</destDir>
+					<sourceDestDir>${basedir}/src/main/java</sourceDestDir>
+					<target>2.1</target>
+					<verbose>true</verbose>
+					<xnocompile>true</xnocompile>
+					<xjcArgs>
+						<xjcArg>-verbose</xjcArg>
+					</xjcArgs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<inherited>true</inherited>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/src/main/java</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+             </plugin>			
+		</plugins>
+	</build>
+#addArea("custom-pomization")	
+</project>

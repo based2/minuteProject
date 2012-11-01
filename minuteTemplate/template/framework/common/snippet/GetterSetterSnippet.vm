@@ -1,0 +1,8 @@
+	public ${class} get${class} () {
+		return ${variable};
+	}
+
+	public void set${class} (${class} ${variable}) {
+		this.${variable} = ${variable};
+	}
+

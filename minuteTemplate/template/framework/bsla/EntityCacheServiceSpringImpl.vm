@@ -1,0 +1,242 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+#set($print = $printUtils.print("packageName",$packageName))
+#set ($templateEntityCacheServiceFace = "EntityCacheServiceFace")
+#set ($importInterfaceName = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template,$templateEntityCacheServiceFace))
+#set ($interfaceName = $commonUtils.getTemplateClassName($tableDB, $model,$templateEntityCacheServiceFace))
+#set ($importTableDaoInterfaceExtendedNameUML = $importDaoInterfaceExtendedUML)
+##$bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template,$templateBslaDaoInterfaceExtendedUML))
+#set ($tableDaoInterfaceExtendedNameUML = $daoInterfaceExtendedNameUML)
+##$commonUtils.getTemplateClassName($tableDB, $model, $templateBslaDaoInterfaceExtendedUML))
+#set ($tableDaoInterfaceExtendedVariableNameUML = $daoInterfaceExtendedVariableNameUML)
+##$commonUtils.getJavaNameVariableFirstLetter($daoInterfaceExtendedNameUML))
+package $packageName;
+ 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Iterator;
+
+import com.opensymphony.oscache.base.NeedsRefreshException;
+import com.opensymphony.oscache.general.GeneralCacheAdministrator;
+
+import $importInterfaceName;
+#set ($importDomainObject = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template,$templateDomainObjectUML))
+import $importDomainObject;
+
+import $importTableDaoInterfaceExtendedNameUML;
+import $importDaoInterfaceUML; //$importTableDaoInterfaceNameUML; $importDaoInterfaceUML
+#foreach ($linkReference in $enrichmentUtils.getDistinctLinkedTargetReferenceByMany2ManyForTag($table, "isToCache"))
+#templateDefinition()
+#set ($linkedTableDBName = $linkReference.localTableName)
+#set ($linkedTableDB = $tableUtils.getTable($database, $linkedTableDBName))
+##set ($importDaoInterfaceNameUML = $commonUtils.getEntityLevelTemplateFullPath($model, $linkedTableDB, $template, $templateBslaDaoInterfaceUML))
+##set ($daoInterfaceVariableNameUML = $commonUtils.getJavaNameVariableFirstLetter($daoInterfaceNameUML))
+#set ($importDaoInterfaceExtendedNameUML = $commonUtils.getEntityLevelTemplateFullPath($model, $linkedTableDB, $template, $templateBslaDaoInterfaceExtendedUML))
+#set ($daoInterfaceExtendedVariableNameUML = $commonUtils.getJavaNameVariableFirstLetter($daoInterfaceExtendedNameUML))
+import $importDaoInterfaceExtendedNameUML;
+#end
+
+#foreach ($linkReference in $enrichmentUtils.getDistinctLinkedTargetReferenceByMany2ManyForTag($table, "isToCache"))
+#templateDefinition()
+#set ($linkedTableDBName = $linkReference.localTableName)
+#set ($linkedTableDB = $tableUtils.getTable($database, $linkedTableDBName))
+#set ($targetTable = $linkReference.foreignTable)
+#set ($importLinkedDomainObject = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $linkedTableDB, $template,$templateDomainObjectUML))
+#set ($importTargetDomainObject = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $targetTable, $template,$templateDomainObjectUML))
+import $importLinkedDomainObject;
+import $importTargetDomainObject;
+#end
+
+public class $className implements $interfaceName {
+
+   private $daoInterfaceClassNameUML $daoInterfaceVariableNameUML;
+   private $tableDaoInterfaceExtendedNameUML $tableDaoInterfaceExtendedVariableNameUML;
+#foreach ($linkReference in $enrichmentUtils.getDistinctLinkedTargetReferenceByMany2ManyForTag($table, "isToCache"))
+#templateDefinition()
+#set ($linkedTableDBName = $linkReference.localTableName)
+#set ($linkedTableDB = $tableUtils.getTable($database, $linkedTableDBName))
+#set ($daoInterfaceExtendedNameUML = $commonUtils.getTemplateClassName($linkedTableDB, $model, $templateBslaDaoInterfaceExtendedUML))
+#set ($daoInterfaceExtendedVariableNameUML = $commonUtils.getJavaNameVariableFirstLetter($daoInterfaceExtendedNameUML))
+   private $daoInterfaceExtendedNameUML $daoInterfaceExtendedVariableNameUML;
+#end
+
+   private GeneralCacheAdministrator generalCacheAdministrator;
+
+   public $className () {
+	   // to replace by spring injection
+	   generalCacheAdministrator = new GeneralCacheAdministrator();
+	   generalCacheAdministrator.setCacheCapacity(1000);
+	   generalCacheAdministrator.setOverflowPersistence(false);
+   }
+     
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2ManyForTag($table, "isToCache"))
+#set ($linkCacheTable = $linkReference.localTable)
+#templateDefinition()
+#set ($linkedTableDB = $tableUtils.getTable($database, $linkCacheTable.name))
+#set ($linkTableName = $formatUtils.getJavaName($linkCacheTable.name))
+#set ($linkTableVariableName = $formatUtils.getJavaNameVariable($linkCacheTable.name))
+##set ($targetTable = $enrichmentUtils.getLinkedEntityByMany2ManyForTag($table, $linkCacheTable, "isToCache"))
+#set ($targetTable = $linkReference.foreignTable)
+#set ($targetTableName = $formatUtils.getJavaName($targetTable.name))
+#set ($targetTableVariableName = $formatUtils.getJavaNameVariable($targetTable.name))
+#set ($daoInterfaceExtendedNameUML = $commonUtils.getTemplateClassName($linkedTableDB, $model, $templateBslaDaoInterfaceExtendedUML))
+#set ($daoInterfaceExtendedVariableNameUML = $commonUtils.getJavaNameVariableFirstLetter($daoInterfaceExtendedNameUML))
+#set ($targetColumnClass = $formatUtils.getJavaName($linkReference.localColumnName))
+#set ($linkLocalColumnClass = $formatUtils.getJavaName($linkReference.localColumnName))
+#set ($localColumnName = $formatUtils.getJavaName($linkReference.localColumnName))
+#set ($myRef = $referenceUtils.getReference($linkedTableDB, $table))
+#set ($fkRefColumn = $formatUtils.getJavaName($myRef.localColumnName))
+   
+   public List<$targetTableName> get${targetTableName}Via${linkTableName}By${localColumnName} ($domainClassName $domainVariableName) {
+      List<$targetTableName> result = new ArrayList<$targetTableName> ();
+      $linkTableName ${linkTableVariableName}Where = new $linkTableName();
+      ${linkTableVariableName}Where.set${domainClassName}${fkRefColumn} ($domainVariableName);
+      $linkTableName ${linkTableVariableName}What = new $linkTableName();
+      ${targetTableName} ${targetTableVariableName}What = new ${targetTableName}();
+#foreach ($column in $targetTable.columns)
+#putColumnParams ()
+#set ($defaultStuffing = $columnUtils.getDefaultStuffingForColumn($column))
+      ${targetTableVariableName}What.set$columnClass($defaultStuffing);
+#end     
+      ${linkTableVariableName}What.set${targetTableName}${targetColumnClass} (${targetTableVariableName}What);
+      
+      List<$linkTableName> list = ${daoInterfaceExtendedVariableNameUML}.partialLoadWithParent$linkTableName (${linkTableVariableName}What, ${linkTableVariableName}Where, null);
+      for ($linkTableName $linkTableVariableName : list) {
+         result.add (${linkTableVariableName}.get${targetTableName}${linkLocalColumnClass}());
+      }
+      
+      return result;
+   }
+
+#if ($targetTable.name ==$table.name)
+#set ($localColumnNameDB = $linkReference.localColumnName)
+#foreach ($column in $linkedTableDB.columns)
+#if ($column.name != $localColumnNameDB)
+#set ($foreignColumnNameDB = $column.name)
+#end
+#end
+
+   public List<$targetTableName> get${targetTableName}RecursiveVia${linkTableName}By${localColumnName} (List<$primaryKeyType> ${primaryKeyVariable}s, boolean useCache) {
+	   if (useCache) {
+		   return getCache${targetTableName}RecursiveVia${linkTableName}By${localColumnName}(${primaryKeyVariable}s);
+	   }
+	   return get${targetTableName}RecursiveVia${linkTableName}By${localColumnName}(${primaryKeyVariable}s);
+   }
+   
+   public List<$targetTableName> getCache${targetTableName}RecursiveVia${linkTableName}By${localColumnName} (List<$primaryKeyType> ${primaryKeyVariable}s) {
+      String key = "getCache${targetTableName}RecursiveVia${linkTableName}By${localColumnName}"+ids;
+      List<$targetTableName> returnList=null;
+      try {
+		    // Get from the cache
+         returnList = (List<$targetTableName>) generalCacheAdministrator.getFromCache(key, 20000);
+      } catch (NeedsRefreshException nre) {
+         try {
+		        // Get the value (probably from the database)
+            returnList = get${targetTableName}RecursiveVia${linkTableName}By${localColumnName}(${primaryKeyVariable}s);
+		        // Store in the cache
+            generalCacheAdministrator.putInCache(key, returnList);
+         } catch (Exception ex) {
+		        // We have the current content if we want fail-over.
+            returnList = (List<$targetTableName>) nre.getCacheContent();
+		        // It is essential that cancelUpdate is called if the
+		        // cached content is not rebuilt
+            generalCacheAdministrator.cancelUpdate(key);
+         }
+      }
+      return returnList;
+   }  
+    
+   public List<$targetTableName> get${targetTableName}RecursiveVia${linkTableName}By${localColumnName} (List<$primaryKeyType> ${primaryKeyVariable}s) {
+      List<$targetTableName> returnList = new ArrayList<$targetTableName>();
+      if (${primaryKeyVariable}s==null || ${primaryKeyVariable}s.isEmpty())
+         return returnList;
+      String query = getRecursiveQueryVia${linkTableName}By${localColumnName} (${primaryKeyVariable}s);
+      List<Object[]> objects = iamRoleExtDao.getSQLQueryResult(query);
+      List<$targetTableName> list = getRecursiveQueryVia${linkTableName}By${localColumnName}(objects);
+      if (list.isEmpty())
+         return returnList;
+      return ${daoInterfaceVariableNameUML}.load${targetTableName}ListBy${targetTableName}(list);  
+   }
+   
+   public List<$targetTableName> get${targetTableName}RecursiveVia${linkTableName}By${localColumnName} ($primaryKeyType $primaryKeyVariable, boolean useCache) {
+      List<$primaryKeyType> list = new ArrayList<$primaryKeyType>();
+      list.add($primaryKeyVariable);
+      return get${targetTableName}RecursiveVia${linkTableName}By${localColumnName} (list, useCache);
+   }
+
+   private String getRecursiveQueryVia${linkTableName}By${localColumnName} (List<$primaryKeyType> ${primaryKeyVariable}s) {
+      StringBuffer querySb = new StringBuffer();
+##      StringBuffer queryUnion = new StringBuffer();
+      querySb.append (" select connect_by_root ($localColumnNameDB) $localColumnNameDB, $foreignColumnNameDB " +
+         " from $linkedTableDB.name "+
+         " start with $localColumnNameDB in (");
+      Iterator<$primaryKeyType> iter = ${primaryKeyVariable}s.iterator();
+      while (iter.hasNext()) {
+         $primaryKeyType ${primaryKeyVariable} = ($primaryKeyType) iter.next();
+         querySb.append (${primaryKeyVariable});
+         if (iter.hasNext()) 
+            querySb.append(", ");
+##         queryUnion.append(" union select "+$primaryKeyVariable+" as $localColumnNameDB, "+$primaryKeyVariable+" as $foreignColumnNameDB from DUAL ");
+      }          
+      querySb.append(") connect by prior $foreignColumnNameDB = $localColumnNameDB ");
+##      querySb.append(queryUnion);
+      return querySb.toString(); 
+   }
+   
+	 private List<$targetTableName> getRecursiveQueryVia${linkTableName}By${localColumnName} (List<Object[]> objects) {
+		  ArrayList<$targetTableName> resultList = new ArrayList<$targetTableName>();
+		  for (Object[] row : objects) {		
+			   $targetTableName $targetTableVariableName = new $targetTableName();	
+			   ${targetTableVariableName}.set${primaryKeyJavaNameClass} (new ${primaryKeyType}(""+(BigDecimal)row[1]));
+			   resultList.add($targetTableVariableName);
+		  }
+		  return resultList;
+	 }
+     
+#end
+     
+#foreach ($column in $table.columns)   
+#putColumnParams ()
+##$column.name
+#if ($isColumnUnique)
+   public List<$targetTableName> get${targetTableName}Via${linkTableName} ($columnType $columnVar) {
+      
+   }
+#end
+#end
+#end
+
+   public $daoInterfaceClassNameUML get$daoInterfaceClassNameUML () {
+      return $daoInterfaceVariableNameUML;
+   } 
+   
+   public void set$daoInterfaceClassNameUML ($daoInterfaceClassNameUML $daoInterfaceVariableNameUML) {
+      this.$daoInterfaceVariableNameUML = $daoInterfaceVariableNameUML;
+   }
+      
+   public $tableDaoInterfaceExtendedNameUML get$tableDaoInterfaceExtendedNameUML () {
+      return $tableDaoInterfaceExtendedVariableNameUML;
+   } 
+   
+   public void set$tableDaoInterfaceExtendedNameUML ($tableDaoInterfaceExtendedNameUML $tableDaoInterfaceExtendedVariableNameUML) {
+      this.$tableDaoInterfaceExtendedVariableNameUML = $tableDaoInterfaceExtendedVariableNameUML;
+   } 
+   
+#foreach ($linkReference in $enrichmentUtils.getDistinctLinkedTargetReferenceByMany2ManyForTag($table, "isToCache"))
+#templateDefinition()
+#set ($linkedTableDBName = $linkReference.localTableName)
+#set ($linkedTableDB = $tableUtils.getTable($database, $linkedTableDBName))
+#set ($daoInterfaceExtendedNameUML = $commonUtils.getTemplateClassName($linkedTableDB, $model, $templateBslaDaoInterfaceExtendedUML))
+#set ($daoInterfaceExtendedVariableNameUML = $commonUtils.getJavaNameVariableFirstLetter($daoInterfaceExtendedNameUML))
+   public $daoInterfaceExtendedNameUML get$daoInterfaceExtendedNameUML () {
+      return $daoInterfaceExtendedVariableNameUML;
+   } 
+   
+   public void set$daoInterfaceExtendedNameUML ($daoInterfaceExtendedNameUML $daoInterfaceExtendedVariableNameUML) {
+      this.$daoInterfaceExtendedVariableNameUML = $daoInterfaceExtendedVariableNameUML;
+   } 
+   
+#end
+
+}

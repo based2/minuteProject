@@ -1,0 +1,24 @@
+#putColumnParams()
+
+$className
+#set($table=$column.table)
+#exposeVariableEntitySpecific()
+
+$table
+$column
+
+$column.name
+
+
+tableDB = $tableDB
+
+$className
+
+#foreach ($property in $column.getPropertiesArray())
+#set($propertyList=$property.getPropertiesArray())
+create check contraint $property.name on $tableDB.name ($column.name in 
+#foreach ($prop in $propertyList)
+ $prop.value #if($velocitycount!=$propertyList.length),#end
+#end
+);
+#end

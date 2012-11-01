@@ -1,0 +1,26 @@
+#exposeVariableModelSpecific()
+#foreach ($table in $entities)
+-- table $table.name
+#if ($tableUtils.hasInsertTrigger($table))
+CREATE OR REPLACE TRIGGER ${table.name}_IT 
+  BEFORE INSERT ON ${table.name}
+BEGIN
+#foreach ($trigger in $tableUtils.getInsertTriggers($table)) 
+#exposeVariableTriggerSpecific()
+    :NEW.$triggerColumnName = $triggerSqlExpressionChunk;
+#end
+END;
+
+#end
+#if ($tableUtils.hasUpdateTrigger($table))
+CREATE OR REPLACE TRIGGER ${table.name}_UT 
+  BEFORE UPDATE ON ${table.name}
+BEGIN
+#foreach ($trigger in $tableUtils.getUpdateTriggers($table)) 
+#exposeVariableTriggerSpecific()
+    :NEW.$triggerColumnName = $triggerSqlExpressionChunk;
+#end
+END;
+
+#end
+#end

@@ -1,0 +1,32 @@
+#exposeOXSpecific()
+set currentdir=%cd%
+
+##create OX project
+cd %OX_HOME%\workspace\OpenXavaTemplate
+call ant -f CreateNewProject.xml -Dproject=$applicationOX
+
+copy %MP_HOME%\target\mp-openxava\*.jar %OX_HOME%\workspace\\$applicationOX\web\WEB-INF\lib
+##copy generated artifacts into $applicationOX workspace
+cd %currentdir%
+xcopy * %OX_HOME%\workspace\\$applicationOX /y /s
+
+##overwrite tomcat context.xml
+copy other\tomcat\snippet\context.xml %OX_HOME%\tomcat\conf
+
+##add jdbc driver dep in tomcat\lib
+xcopy %MP_HOME%\application\lib\extra\*.jar %OX_HOME%\tomcat\lib\*.* /y /s
+
+## start tomcat in appart process
+cd %OX_HOME%\tomcat\bin
+call startup.bat
+
+cd %OX_HOME%\workspace\\$applicationOX
+call ant -f mp4openxava-build.xml
+call ant
+
+cd %OX_HOME%\workspace\\$applicationOX
+call ant generatePortlets
+
+call explorer http://localhost:8080/$applicationOX/xava/homeMenu.jsp
+
+cd %currentdir%

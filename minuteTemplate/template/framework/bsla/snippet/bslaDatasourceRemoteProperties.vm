@@ -1,0 +1,2 @@
+##$jdbcJNDI=$datasource.jndi
+$jdbcJNDI=jdbc/${model.name}

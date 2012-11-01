@@ -1,0 +1,154 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+#exposeJPASpecifics()
+package $packageName;
+
+$!updatedAreaImport
+
+import org.openxava.jpa.*;
+import org.openxava.model.*;
+import org.openxava.util.*;
+import org.openxava.validators.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+import $sddOXInputBeanImport;
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: SDD DAO Spring JPA implementation </p>
+ *
+ */
+public class ${className} extends org.openxava.actions.BaseAction {
+
+#set ($fullQuery = $queryUtils.getFullQueryQuestionMark($query))
+    public static final String QUERY_NATIVE = "$fullQuery";
+
+#exposeQueryUpdatedAreas("SDD_EXECUTE_GET")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    public $sddOutputBeanCollectionClass execute ($sddInputBeanClass $sddInputBeanVariable) {
+        $sddOutputBeanCollectionClass $sddOutputBeanCollectionVariable = new $sddOutputBeanCollectionClass();
+        List<$sddOutputBeanClass> list = executeJDBC ($sddInputBeanVariable);
+        ${sddOutputBeanCollectionVariable}.set$sddOutputBeanClasses (list);
+        return ${sddOutputBeanCollectionVariable};
+    }
+#end
+$!updatedAreaEnd
+
+#exposeQueryUpdatedAreas("SDD_EXECUTE_JDBC")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    public List<$sddOutputBeanClass> executeJDBC($sddInputBeanClass $sddInputBeanVariable) {
+        List<$sddOutputBeanClass> list = new ArrayList<$sddOutputBeanClass>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            pstmt = conn.prepareStatement(QUERY_NATIVE);
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+            pstmt.set$columnType($velocityCount, ${sddInputBeanVariable}.get$columnClass()); 
+#end            
+            rs = pstmt.executeQuery();
+            while (rs.next()) {
+                $sddOutputBeanClass $sddOutputBeanVariable = new $sddOutputBeanClass();
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+#set($columnType = $statementUtils.getJdbcType($column))
+                ${sddOutputBeanVariable}.set$columnClass(rs.get${columnType}($velocityCount)); 
+#end
+                list.add(${sddOutputBeanVariable});
+            }
+        } catch (Exception e) {
+              e.printStackTrace();
+        } finally {
+          try {
+            rs.close();
+            pstmt.close();
+            conn.close();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+        return list;
+    }
+#end
+$!updatedAreaEnd
+
+//if JPA2 implementation is hibernate
+    @SuppressWarnings("deprecation")   
+    public Connection getConnection() throws HibernateException {  
+        Session session = getSession();  
+        Connection connection = session.connection();  
+        return connection;  
+    } 
+    
+    private Session getSession() {  
+        Session session = (Session) XPersistence.getEntityManager().getDelegate();  
+        return session;  
+    }
+
+	public void execute() throws Exception {
+#exposeModelUpdatedAreas("execute")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+        //super.execute();
+        //TODO
+        Messages errors =
+            MapFacade.validate("$inputView", getView().getValues());
+        if (errors.contains()) throw new ValidationException(errors);
+        EntityManager em = XPersistence.getManager();
+#if($isCallAllowedRoutine)
+#if($hasRoutineOutput)
+        Query query = em.createNativeQuery(${routineName}_CALL, $routineOutputClassImport.class);
+#else
+        Query query = em.createNativeQuery(${routineName}_CALL);
+#end
+#foreach($column in $input.columns)
+#putColumnParamNaming()
+        query.setParameter($velocityCount, getView().getValueString("$columnVar"));
+#end
+
+#end
+        try {
+            query.getResultList();
+        } catch (Exception e) {
+            Messages errors = new Messages();
+            throw new ValidationException(errors);
+        }
+        //TODO return list
+        addInfo("call ${className} done!");
+#end
+$!updatedAreaEnd
+
+	}
+
+$!updatedAreaImplementation
+
+}

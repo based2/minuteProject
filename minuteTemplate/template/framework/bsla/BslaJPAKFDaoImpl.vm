@@ -1,0 +1,711 @@
+#exposeVariableEntitySpecific()
+#set($beImplementation="JPA")
+#putImportParamsUML()
+package $packageName;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Clob;
+import java.sql.Blob;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
+import javax.persistence.Query;
+import javax.persistence.EntityManager;
+
+import net.sf.minuteProject.architecture.query.QueryWhatInit;
+import net.sf.minuteProject.architecture.query.impl.QueryCountInit;
+import net.sf.minuteProject.architecture.query.impl.QuerySelectCountInit;
+import net.sf.minuteProject.architecture.query.impl.QuerySelectInit;
+import net.sf.minuteProject.architecture.query.impl.QuerySelectDistinctInit;
+import net.sf.minuteProject.architecture.cache.SimpleCache;
+import net.sf.minuteProject.architecture.filter.data.ClauseCriterion;
+import net.sf.minuteProject.architecture.filter.data.Criteria;
+import net.sf.minuteProject.architecture.filter.data.Criterion;
+import net.sf.minuteProject.architecture.filter.data.InCriterion;
+import net.sf.minuteProject.architecture.filter.data.OrderCriteria;
+import net.sf.minuteProject.architecture.utils.BeanUtils;
+import $importDaoInterfaceExtendedUML;
+import $importDomainObjectUML;
+import $importJPAImplName;
+
+#foreach ($reference in $table.distinctChildrenType)
+#putReferenceParams2()
+#putDependenciesUML()
+import $dependentImportDomainClassName;
+##import $dependentImportDaoInterface;
+import $dependentDaoExtentedImportImplementationJPAClassName;
+#end  
+
+#foreach ($reference in $table.parents)
+##exposeImportParamsUML($reference.foreignTable)
+#set ($importDaoImplExtendedJPAName = $commonUtils.getEntityLevelTemplateFullPath($model, $reference.foreignTable, $template, "BslaJPAExtendedDaoImplUML"))
+import $importDaoImplExtendedJPAName;
+#end
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Data access object dealing with $className
+ * persistence. It offers a set of methods which allow for saving,
+ * deleting and searching $className objects</p>
+ *
+ */
+
+public class $className extends $daoJPAImplClassName implements $daoInterfaceExtendedNameUML {
+
+    private Logger log = Logger.getLogger(this.getClass());
+    
+    private SimpleCache simpleCache = new SimpleCache();
+#foreach ($reference in $table.distinctChildrenType)
+#putReferenceParams2()
+#putDependenciesUML()
+##    private $dependentDaoInterfaceClassName $dependentDaoInterfaceVariableName;
+    private $dependentDaoExtentedImplementationJPAClassName $dependentDaoExtentedImplementationJPAVariableName;
+#end  
+    private EntityManager emForRecursiveDao; // dao that needs other dao in a recursive manner not support by spring configuration
+
+    public $className () {}
+
+    /**
+     * generic to move after in superclass
+     */
+    public $className (EntityManager emForRecursiveDao) {
+       this.emForRecursiveDao = emForRecursiveDao;
+    }
+            
+    /**
+     * generic to move after in superclass
+     */
+    public List<Object[]> getSQLQueryResult(String query) {
+##		   Query hquery = getSession().createSQLQuery(query);
+##		   return hquery.list();   
+		   Query queryJ = getEntityManager().createNativeQuery(query);
+		   return queryJ.getResultList();		        
+    }
+
+
+    /**
+     * Inserts a $tableClassName entity with cascade of its children
+     * @param $tableClassName $tableVariableName
+     */
+    public void insert${tableClassName}WithCascade($tableClassName ${tableVariableName}) {
+    	$className $variableName = new ${className}(getEntityManager());
+    	${variableName}.insert${tableClassName}WithCascade(${variableName}.getEntityManagerForRecursiveDao(), ${tableVariableName});
+    }
+     
+    public void insert${tableClassName}WithCascade(EntityManager emForRecursiveDao, $tableClassName ${tableVariableName}) {
+       insert$tableClassName(emForRecursiveDao, $tableVariableName);
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#putDependenciesUML()
+##       $dependentDaoExtentedImplementationJPAClassName $dependentDaoExtentedImplementationJPAVariableName = null;
+       if (!${tableVariableName}.get${linkedTableClass}${linkedColumnClass}s().isEmpty()) {
+          $dependentDaoExtentedImplementationJPAClassName $dependentDaoExtentedImplementationJPAVariableName = new $dependentDaoExtentedImplementationJPAClassName (emForRecursiveDao);
+          for (${linkedTableClass} _${linkedTableVariable}${linkedColumnClass} : ${tableVariableName}.get${linkedTableClass}${linkedColumnClass}s()) {
+             ${dependentDaoExtentedImplementationJPAVariableName}.insert${linkedTableClass}WithCascade(emForRecursiveDao, _${linkedTableVariable}${linkedColumnClass});
+          }
+       } 
+#end  
+    }
+        
+    /**
+     * Inserts a list of $tableClassName entity with cascade of its children
+     * @param List<$tableClassName> ${tableVariableName}s
+     */
+    public void insert${tableClassName}sWithCascade(List<$tableClassName> ${tableVariableName}s) {
+       for ($tableClassName ${tableVariableName} : ${tableVariableName}s) {
+          insert${tableClassName}WithCascade($tableVariableName);
+       }
+    } 
+        
+    /**
+     * lookup $tableClassName entity $tCN, criteria and max result number
+     */
+    public List<$tableClassName> lookup$tableClassName($tableClassName $tableVariableName, Criteria criteria, Integer numberOfResult, EntityManager em) {
+		boolean isWhereSet = false;
+        StringBuffer query = new StringBuffer();
+        query.append ("SELECT $tableVariableName FROM $tableClassName $tableVariableName ");
+        for (Criterion criterion : criteria.getClauseCriterions()) {
+            query.append (getQueryWHERE_AND (isWhereSet));
+            isWhereSet = true;   
+            query.append(criterion.getExpression());			
+        }
+        OrderCriteria orderCriteria = criteria.getOrderCriteria();
+        if (criteria.getOrderCriteria()!=null)
+        	query.append(orderCriteria.getExpression());		
+        Query hquery = em.createQuery(query.toString());
+        if (numberOfResult!=null)
+            hquery.setMaxResults(numberOfResult);
+        return hquery.getResultList();    
+    }
+    
+    public List<$tableClassName> lookup$tableClassName($tableClassName $tableVariableName, Criteria criteria, Integer numberOfResult) {
+		return lookup$tableClassName($tableVariableName, criteria, numberOfResult, getEntityManager());
+    }
+
+    public Integer updateNotNullOnly$tableClassName ($tableClassName $tableVariableName, Criteria criteria) {
+        String queryWhat = getUpdateNotNullOnly${tableClassName}QueryChunkPrototype ($tableVariableName);
+        StringBuffer query = new StringBuffer (queryWhat);
+        boolean isWhereSet = false;
+        for (Criterion criterion : criteria.getClauseCriterions()) {
+            query.append (getQueryWHERE_AND (isWhereSet));
+            isWhereSet = true;   
+            query.append(criterion.getExpression());			
+        }  
+##        //Query query = getEntityManager().createQuery(query.toString());//.setProperties($tableVariableName);   
+        Query jpaQuery = getEntityManager().createQuery(query.toString());
+        isWhereSet = false;
+#foreach ($column in ${table.columns})
+#putColumnParams()
+        if (${tableVariableName}.get$columnClass() != null) {
+           jpaQuery.setParameter ("${columnVar}", ${tableVariableName}.get$columnClass());
+        }   
+#end         
+		return jpaQuery.executeUpdate();           
+##		return query.executeUpdate();        
+    }
+	
+#parse("./snippet/orm/dao/referAssignAffectSnippet.vm") 
+	
+#parse("./snippet/orm/dao/partialLoadSnippet.vm")    
+		
+   public $tableClassName getFirst${tableClassName}WhereConditionsAre ($tableClassName $tableVariableName) {
+      List<$tableClassName> list = partialLoadWithParent$tableClassName(getDefault${tableClassName}What(), $tableVariableName, null, 1, false);
+      if (list.isEmpty()) {
+         return null;
+      }
+      else if (list.size()==1)
+         return list.get(0);
+      else 
+      //TODO log error
+         return list.get(0);	
+	}
+
+   private List getFirstResultWhereConditionsAre ($tableClassName $tableVariableName) {
+      return  partialLoadWithParent${tableClassName}QueryResult(getDefault${tableClassName}What(), $tableVariableName, null, 1, false);	
+   }
+   
+   protected $tableClassName getDefault${tableClassName}What() {
+      $tableClassName ${tableVariableName} = new $tableClassName();
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()      
+#set ($defaultStuffing = $columnUtils.getDefaultStuffingForColumn($column)) 
+      ${tableVariableName}.set$columnClass($defaultStuffing);
+#end      
+      return ${tableVariableName};
+   }
+   
+	public $tableClassName getFirst${tableClassName} ($tableClassName $tableVariableName) {
+		if (isAllNull($tableVariableName))
+			return null;
+		else {
+			List<$tableClassName> list = searchPrototype ($tableVariableName, 1);
+			if (list.isEmpty()) {
+				return null;
+			}
+			else if (list.size()==1)
+				return list.get(0);
+			else 
+				//TODO log error
+				return list.get(0);	
+		}
+	}
+	
+    /**
+    * checks if the $tableClassName entity exists
+    */           
+    public boolean exists$tableClassName ($tableClassName $tableVariableName) {
+       if (getFirst$tableClassName($tableVariableName)!=null)
+          return true;
+       return false;  
+    }
+        
+    public boolean exists${tableClassName}WhereConditionsAre ($tableClassName $tableVariableName) {
+       if (getFirstResultWhereConditionsAre ($tableVariableName).isEmpty())
+          return false;
+       return true;  
+    }
+
+
+	
+	private int countPartialField ($tableClassName $tableVariableName) {
+	   int cpt = 0;
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       if (${tableVariableName}.get$columnClass() != null) {
+          cpt++;
+       }
+#end 		
+       return cpt;
+	}   
+  	
+	public List<$tableClassName> partialLoadWithParent$tableClassName($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, QueryWhatInit queryWhatInit, Integer nbOfResult, Boolean useCache) {
+		Map beanPath = new Hashtable();
+##		Query hquery = getPartialLoadWithParent${tableClassName}JPAQuery (${tableVariableName}What, positive$tableClassName, negative$tableClassName, beanPath, queryWhatInit, nbOfResult);
+##		List list = hquery.list();
+		List list = partialLoadWithParent${tableClassName}JPAQueryResult (${tableVariableName}What, positive$tableClassName, negative$tableClassName, queryWhatInit, beanPath, nbOfResult, useCache);
+		if (beanPath.size()==1) {
+			return handlePartialLoadWithParent${tableClassName}WithOneElementInRow(list, beanPath, ${tableVariableName}What, true);
+		}
+		return handlePartialLoadWithParent$tableClassName(list, beanPath, ${tableVariableName}What, true);
+	}	
+
+	private List partialLoadWithParent${tableClassName}QueryResult($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, QueryWhatInit queryWhatInit, Integer nbOfResult, Boolean useCache) {
+		return partialLoadWithParent${tableClassName}JPAQueryResult (${tableVariableName}What, positive$tableClassName, negative$tableClassName, queryWhatInit, new Hashtable(), nbOfResult, useCache);
+##    Map beanPath = new Hashtable();
+##		Query hquery = getPartialLoadWithParent${tableClassName}JPAQuery (${tableVariableName}What, positive$tableClassName, negative$tableClassName, beanPath, queryWhatInit, nbOfResult);
+##		return hquery.list();
+  }	
+  
+	private List partialLoadWithParent${tableClassName}JPAQueryResult($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, QueryWhatInit queryWhatInit, Map beanPath, Integer nbOfResult, Boolean useCache) {
+		Query hquery = getPartialLoadWithParent${tableClassName}JPAQuery (${tableVariableName}What, positive$tableClassName, negative$tableClassName, beanPath, queryWhatInit, nbOfResult);
+		return hquery.getResultList();
+  }	
+   /**
+    * @returns an JPA Hsql query based on entity ${tableClassName} and its parents and the maximum number of result
+    */
+	protected Query getPartialLoadWithParent${tableClassName}JPAQuery ($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Map beanPath, QueryWhatInit queryWhatInit, Integer nbOfResult) {
+	   Query query = getEntityManager().createQuery(getPartialLoadWithParent${tableClassName}HsqlQuery (${tableVariableName}What, positive$tableClassName, negative$tableClassName, beanPath, queryWhatInit));
+	   if (nbOfResult!=null)
+	      query.setMaxResults(nbOfResult);
+	   return query;
+  }
+  
+	private List<$tableClassName> handlePartialLoadWithParent$tableClassName(List<Object[]> list, Map<Integer, String> beanPath, $tableClassName ${tableVariableName}What, boolean isJql) {
+		try {
+			return convertPartialLoadWithParent$tableClassName(list, beanPath, ${tableVariableName}What);
+		} catch (Exception ex) {
+			log.error("Error conversion list from handlePartialLoadWithParent$tableClassName, message:"+ex.getMessage());
+			return new ArrayList<$tableClassName>();
+		}
+    }
+
+	private List<$tableClassName> handlePartialLoadWithParent${tableClassName}WithOneElementInRow(List<Object> list, Map<Integer, String> beanPath, $tableClassName ${tableVariableName}What, boolean isJql) {
+		try {
+			return convertPartialLoadWithParent${tableClassName}WithOneElementInRow(list, beanPath, ${tableVariableName}What);
+		} catch (Exception ex) {
+			log.error("Error conversion list from handlePartialLoadWithParent${tableClassName}WithOneElementInRow, message:"+ex.getMessage());
+			return new ArrayList<$tableClassName>();
+		}
+    }
+    	
+	 private List<$tableClassName> convertPartialLoadWithParent$tableClassName(List<Object[]> list, Map<Integer, String> beanPath, $tableClassName ${tableVariableName}What) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+		 List<$tableClassName> resultList = new ArrayList<$tableClassName>();
+##		 //$tableClassName ${tableVariableName}Prototype = clone$tableClassName (${tableVariableName}What);
+##		 if (beanPath.size()==1) {
+##		   for (Object row : list) {		
+##			   $tableClassName ${tableVariableName} = clone$tableClassName (${tableVariableName}What);
+##			   Iterator<Entry<Integer, String>> iter = beanPath.entrySet().iterator();	
+##			   while (iter.hasNext()) {
+##				    Entry entry = iter.next();
+##				    populate$tableClassName (${tableVariableName}, row, (String)entry.getValue());
+##			   }
+##			   resultList.add(${tableVariableName});
+##		   }		 
+##		 } else {
+		 for (Object[] row : list) {		
+		    $tableClassName ${tableVariableName} = clone$tableClassName (${tableVariableName}What);
+		    Iterator<Entry<Integer, String>> iter = beanPath.entrySet().iterator();	
+		    while (iter.hasNext()) {
+		       Entry entry = iter.next();
+		       populate$tableClassName (${tableVariableName}, row[(Integer)entry.getKey()], (String)entry.getValue());
+		    }
+		    resultList.add(${tableVariableName});
+		 }
+##		 }
+		 return resultList;		
+	 }	
+    
+	 private List<$tableClassName> convertPartialLoadWithParent${tableClassName}WithOneElementInRow(List<Object> list, Map<Integer, String> beanPath, $tableClassName ${tableVariableName}What) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+		 List<$tableClassName> resultList = new ArrayList<$tableClassName>();
+		 for (Object row : list) {		
+		    $tableClassName ${tableVariableName} = clone$tableClassName (${tableVariableName}What);
+		    Iterator<Entry<Integer, String>> iter = beanPath.entrySet().iterator();	
+		    while (iter.hasNext()) {
+		       Entry entry = iter.next();
+		       populate$tableClassName (${tableVariableName}, row, (String)entry.getValue());
+		    }
+		    resultList.add(${tableVariableName});
+		 }		 
+		 return resultList;		
+	 }
+   
+	public List partialLoadWithParentForBean(Object bean, $tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName) {
+		Map beanPath = new Hashtable();
+		Query hquery = getPartialLoadWithParent${tableClassName}JPAQuery (${tableVariableName}What, positive$tableClassName, negative$tableClassName, beanPath, new QuerySelectInit(), null);
+        List<Object[]> list = hquery.getResultList();
+		return handlePartialLoadWithParentForBean(list, beanPath, bean);
+    }	
+//	 to set in super class
+	private List handlePartialLoadWithParentForBean(List<Object[]> list, Map<Integer, String> beanPath, Object bean) {
+		try {
+			return convertPartialLoadWithParentForBean(list, beanPath, bean);
+		} catch (Exception ex) {
+			//TODO log ex
+			return new ArrayList();
+		}
+    }
+	// to set in super class
+	private List convertPartialLoadWithParentForBean(List<Object[]> list, Map<Integer, String> beanPath, Object bean) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+		List resultList = new ArrayList();
+		for (Object[] row : list) {		
+		   Object result = getBeanObjectInstance(bean);
+		   Iterator<Entry<Integer, String>> iter = beanPath.entrySet().iterator();	
+		   while (iter.hasNext()) {
+			  Entry entry = iter.next();
+			  populateObject (result, row[(Integer)entry.getKey()], getFieldFromBeanPath((String)entry.getValue()));
+			}
+			resultList.add(result);
+		}
+		return resultList;		
+    }	
+	
+
+	
+	// to set in super class
+	private String getFieldFromBeanPath(String beanPath) {
+	   String result = StringUtils.substringAfterLast(beanPath, ".");
+	   if (result.equals(""))
+		 return beanPath;
+	   return result;
+	}
+
+## has been moved to partialLoad    
+##    	// to set in super class	
+##	private void populate$tableClassName ($tableClassName ${tableVariableName}, Object value, String beanPath) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+##	   BeanUtils.populateBeanObject(${tableVariableName}, beanPath, value);
+##	}
+##    	// to set in super class BEWARE: genericity is only one level!!!!! first level is a copy second level is a reference!!! change to ${tableVariableName}.clone() instead
+##	private $tableClassName clone$tableClassName ($tableClassName ${tableVariableName}) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+##		//return ($tableClassName) BeanUtils.cloneBeanObject(${tableVariableName});
+##	   return ${tableVariableName}.clone();
+##	}
+##    
+##    	// to set in super class
+##	private Object getBeanObjectInstance (Object bean) throws SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+##       return BeanUtils.getBeanObjectInstance(bean);	
+##	}
+##	// to set in super class
+##	private void populateObject (Object bean, Object value, String beanPath) throws IllegalAccessException, InvocationTargetException {
+##      BeanUtils.populateObject(bean, value, beanPath);
+##	}
+   /**
+	  * 
+    * partial on entity and its parents load enables to specify the fields you want to load explicitly
+    */
+	public String getPartialLoadWithParent${tableClassName}HsqlQuery ($tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Map beanPath, QueryWhatInit queryWhatInit) {
+		Hashtable aliasWhatHt = new Hashtable();
+		String what = getPartialLoadWithParent${tableClassName}Query ($tableVariableName, null, aliasWhatHt, null, null, beanPath, "", queryWhatInit);
+		Hashtable aliasWhereHt = new Hashtable();
+		String where = getPartialLoadWithParentWhere${tableClassName}Query (positive$tableClassName, null, aliasWhatHt, aliasWhereHt, null, null);
+		String whereHow = reconciliateWherePath(aliasWhatHt, aliasWhereHt);
+		String how = reconciliateHowPath(aliasWhatHt, aliasWhereHt);
+		String whereConcat = "";
+		if (where!=null && !where.equals("") && whereHow!=null && !whereHow.equals(""))
+			whereConcat=" AND ";
+		return what+" FROM "+how +" WHERE "+whereHow+ whereConcat +where;
+	}
+    
+	/**
+    * partial on a single entity load enables to specify the fields you want to load explicitly
+    */         
+	public List<$tableClassName> partialLoad$tableClassName($tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName) {
+	    Query hquery = getEntityManager().createQuery(getPartialLoad${tableClassName}Query ($tableVariableName, positive$tableClassName, negative$tableClassName));
+		int countPartialField = countPartialField($tableVariableName);
+		if (countPartialField==0) 
+		   return new ArrayList<$tableClassName>();
+		List list = hquery.getResultList();
+		Iterator iter = list.iterator();
+		List<$tableClassName> returnList = new ArrayList<$tableClassName>();
+		while(iter.hasNext()) {
+	       int index = 0;
+	       Object[] row;
+	       if (countPartialField==1) {
+	    	  row = new Object[1];
+	    	  row[0] = iter.next();
+	       } else 
+		      row = (Object[]) iter.next();
+		   $tableClassName ${tableVariableName}Result = new $tableClassName();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+           if (${tableVariableName}.get$columnClass() != null) {
+			  ${tableVariableName}Result.set$columnClass(($columnType) row[index]);
+              index++;
+           }
+#end 		   	
+           returnList.add(${tableVariableName}Result);
+        }
+	    return returnList;
+	}
+
+	public static String getPartialLoadWithParentWhere${tableClassName}Query (
+	   $tableClassName $tableVariableName, Boolean isWhereSet, Hashtable aliasHt, Hashtable aliasWhereHt, String childAlias, String childFKAlias) {
+	   if ($tableVariableName==null)
+	      return "";
+	   String alias = null;
+	   if (aliasWhereHt == null) {
+	      aliasWhereHt = new Hashtable();
+	   } 
+	   if (isLookedUp($tableVariableName)){
+	      alias = getNextAlias (aliasWhereHt, ${tableVariableName});
+		  aliasWhereHt.put (getAliasKey(alias), getAliasConnection(alias, childAlias, childFKAlias));
+	   }
+	   if (isWhereSet == null)
+          isWhereSet = false;
+       StringBuffer query = new StringBuffer();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       if (${tableVariableName}.get$columnClass() != null) {
+           query.append (getQueryBLANK_AND (isWhereSet));
+		   isWhereSet = true;
+#if ($sqlUtils.isQuotedColumn($column))        
+           query.append(" "+alias+".${columnVar} = '"+ ${tableVariableName}.get$columnClass()+"' ");
+#else
+           query.append(" "+alias+".${columnVar} = "+ ${tableVariableName}.get$columnClass() + " ");
+#end		  
+       }
+#end     
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#set ($importDaoImplExtendedJPAName = $commonUtils.getEntityLevelTemplateFullPath($model, $reference.foreignTable, $template, "BslaJPAExtendedDaoImplUML"))
+#set ($linkedDaoImplExtendedJPAName = $commonUtils.getTemplateClassName($model, $reference.foreignTable, $template, "BslaJPAExtendedDaoImplUML"))
+##-- var = ${localTableVariable} - ${localColumnClass}
+       if (${tableVariableName}.get${linkedTableClass}${localColumnClass}()!=null) {
+	      String chunck = ${importDaoImplExtendedJPAName}.getPartialLoadWithParentWhere${linkedTableClass}Query(
+		      ${tableVariableName}.get${linkedTableClass}${localColumnClass}(), 
+			  isWhereSet, aliasHt, aliasWhereHt, alias, "${localColumnVariable}");
+		  if (chunck!=null && !chunck.equals("")) {
+		     query.append(chunck);
+		     isWhereSet=true;
+		  }  	  
+	   }
+#end
+	   return query.toString(); 
+    }
+	
+	public static String reconciliateWherePath(Hashtable aliasWhatHt, Hashtable aliasWhereHt) {
+	   StringBuffer sb = new StringBuffer();
+	   boolean isBlankSet = false;
+	   aliasWhatHt.putAll(aliasWhereHt);
+	   Enumeration<String> elements = aliasWhatHt.elements();
+	   while (elements.hasMoreElements()) {
+		  String element = elements.nextElement();
+		  if (!element.equals("")) {
+		     sb.append (getQueryBLANK_AND (isBlankSet));
+		     isBlankSet=true;
+		     sb.append(element);
+		  }
+	   }
+	   return sb.toString();
+	}
+	
+	public static String reconciliateHowPath(Hashtable aliasWhatHt, Hashtable aliasWhereHt) {
+	   StringBuffer sb = new StringBuffer();
+	   boolean isBlankSet = false;
+	   aliasWhatHt.putAll(aliasWhereHt);
+	   Enumeration<String> keys = aliasWhatHt.keys();
+	   while (keys.hasMoreElements()) {
+		  String key = keys.nextElement();
+		  sb.append (getQueryBLANK_COMMA (isBlankSet));
+		  isBlankSet = true;
+		  sb.append(getAliasKeyDomain(key)+" "+getAliasKeyAlias(key));
+	   }
+	   return sb.toString();
+	}
+	
+	protected static String getRootDomainName (String domainName) {
+		return StringUtils.substringBefore(domainName, "_");
+	}
+	
+    public static String getPartialLoadWithParent${tableClassName}Query (
+	   $tableClassName $tableVariableName, Boolean isWhereSet, Hashtable aliasHt, String childAlias, String childFKAlias, Map beanPath, String rootPath, QueryWhatInit queryWhatInit) {
+	   if ($tableVariableName==null)
+	      return "";
+	   String alias = null;
+	   if (aliasHt == null) {
+	      aliasHt = new Hashtable();
+	   } 
+	   if (isLookedUp($tableVariableName)){
+	      alias = getNextAlias (aliasHt, ${tableVariableName});
+		  aliasHt.put (getAliasKey(alias), getAliasConnection(alias, childAlias, childFKAlias));
+	   }
+	   if (isWhereSet == null)
+          isWhereSet = false;
+       StringBuffer query = new StringBuffer();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       if (${tableVariableName}.get$columnClass() != null) {
+          query.append (queryWhatInit.getWhatInit (isWhereSet));
+          isWhereSet = true; 
+          beanPath.put(beanPath.size(), rootPath+"${columnVar}");
+          query.append(" "+alias+".${columnVar} ");
+       }
+#end     
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#set ($importDaoImplExtendedJPAName = $commonUtils.getEntityLevelTemplateFullPath($model, $reference.foreignTable, $template, "BslaJPAExtendedDaoImplUML"))
+#set ($linkedDaoImplExtendedJPAName = $commonUtils.getTemplateClassName($model, $reference.foreignTable, $template, "BslaJPAExtendedDaoImplUML"))
+##-- var : $localColumnVariable ; class = ${localColumnClass} 
+       if (${tableVariableName}.get${linkedTableClass}${localColumnClass}()!=null) {
+	      String chunck = ${importDaoImplExtendedJPAName}.getPartialLoadWithParent${linkedTableClass}Query(
+		      ${tableVariableName}.get${linkedTableClass}${localColumnClass}(), 
+			  isWhereSet, aliasHt, alias, "${localColumnVariable}", beanPath, rootPath+"${linkedTableVariable}${localColumnClass}.", queryWhatInit);
+		  if (chunck!=null && !chunck.equals("")) {
+		     query.append(chunck);
+		     isWhereSet=true;
+		  } 
+	   }  
+#end
+//       query.append(get${tableClassName}SearchEqualQuery (positive$tableClassName, negative$tableClassName));
+	   return query.toString(); 
+    }
+	
+	protected static String getAliasConnection(String existingAlias, String childAlias, String childFKAlias) {
+		if (childAlias==null)
+		   return "";
+		return childAlias+"."+childFKAlias+" = "+existingAlias+"."+"$primaryKeyVariable";
+	}
+	
+	protected static String getAliasKey (String alias) {
+	  //TODO this is a temporary solution use a dedicated object in BslaHiberateDaoSupport
+		return "${tableClassName}|"+alias;
+	}
+	
+	protected static String getAliasKeyAlias (String aliasKey) {
+	  //TODO this is a temporary solution use a dedicated object in BslaHiberateDaoSupport
+		return StringUtils.substringAfter(aliasKey, "|");
+	}
+	
+	protected static String getAliasKeyDomain (String aliasKey) {
+	  //TODO this is a temporary solution use a dedicated object in BslaHiberateDaoSupport
+	  return StringUtils.substringBefore(aliasKey, "|");
+	}
+	
+	protected static String getNextAlias (Hashtable aliasHt, $tableClassName $tableVariableName) {
+		int cptSameAlias = 0;
+		Enumeration<String> keys = aliasHt.keys();
+		while (keys.hasMoreElements()) {
+			String key = keys.nextElement();
+			if (key.startsWith("$tableVariableName"))
+				cptSameAlias++;
+		}
+		if (cptSameAlias==0)
+			return "$tableVariableName";
+		else
+			return "${tableVariableName}_"+cptSameAlias;
+	}
+	
+	
+	protected static boolean isLookedUp ($tableClassName $tableVariableName) {
+	   if ($tableVariableName==null)
+		  return false;
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       if (${tableVariableName}.get$columnClass() != null) {
+	      return true;
+       }
+#end    
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+       if (${tableVariableName}.get${linkedTableClass}${localColumnClass}()!=null) {
+	      return true;
+	   }  
+#end	
+       return false;   
+	}
+	
+    public String getPartialLoad${tableClassName}Query(
+	   $tableClassName $tableVariableName, 
+	   $tableClassName positive$tableClassName, 
+	   $tableClassName negative$tableClassName) {
+       boolean isWhereSet = false;
+       StringBuffer query = new StringBuffer();
+#foreach ($column in ${table.columns})
+#putColumnParams()
+       if (${tableVariableName}.get$columnClass() != null) {
+          query.append (getQuerySelectComma (isWhereSet));
+          isWhereSet = true; 
+          query.append(" ${columnVar} ");
+       }
+#end    
+       query.append(get${tableClassName}SearchEqualQuery (positive$tableClassName, negative$tableClassName));
+	   return query.toString(); 
+    }
+	
+	public List<$tableClassName> searchPrototypeWithCache$tableClassName($tableClassName $tableVariableName) {
+		SimpleCache simpleCache = new SimpleCache();
+		List<$tableClassName> list = (List<$tableClassName>)simpleCache.get(${tableVariableName}.toString());
+		if (list==null) {
+			list = searchPrototype$tableClassName($tableVariableName);
+			simpleCache.put(${tableVariableName}.toString(), list);
+		}
+		return list;
+	}
+
+#parse("./snippet/orm/dao/loadGraphSnippet.vm")
+    
+#if ($hasUniqueKey) 
+   /**
+   * uk<->pk
+   */
+   public $tableClassName load${tableClassName}FromUniqueKey ($tableClassName $tableVariableName) {
+      return null;
+   }
+
+   public $tableClassName load${tableClassName}FromUniqueKeyWithCacheOnResult ($tableClassName $tableVariableName) {
+      return null;
+   }
+
+#if ($hasOnlyOnePrimaryKey)
+   public $primaryKeyType load${tableClassName}PkFromUniqueKey ($tableClassName $tableVariableName) {
+      return null;
+   }
+
+   public $primaryKeyType load${tableClassName}PkFromUniqueKeyWithCacheOnResult ($tableClassName $tableVariableName) {
+      return null;
+   }
+   
+#end   
+#end
+    
+    public EntityManager getEntityManagerForRecursiveDao() {
+		return emForRecursiveDao;
+	}
+
+	public void setEntityManagerForRecursiveDao(EntityManager emForRecursiveDao) {
+		this.emForRecursiveDao = emForRecursiveDao;
+	}
+	
+#foreach ($reference in $table.distinctChildrenType)
+#putReferenceParams2()
+#putDependenciesUML()
+##$dependentDaoExtentedImplementationJPAClassName $dependentDaoExtentedImplementationJPAVariableName;
+    public void set$dependentDaoExtentedImplementationJPAClassName ($dependentDaoExtentedImplementationJPAClassName $dependentDaoExtentedImplementationJPAVariableName) {
+       this.$dependentDaoExtentedImplementationJPAVariableName = $dependentDaoExtentedImplementationJPAVariableName;
+    }
+    
+    public $dependentDaoExtentedImplementationJPAClassName get$dependentDaoExtentedImplementationJPAClassName () {
+       return $dependentDaoExtentedImplementationJPAVariableName;
+    }
+    
+##    public void set$dependentDaoInterfaceClassName ($dependentDaoInterfaceClassName $dependentDaoInterfaceVariableName) {
+##       this.$dependentDaoInterfaceVariableName = $dependentDaoInterfaceVariableName;
+##    }
+##    
+##    public $dependentDaoInterfaceClassName get$dependentDaoInterfaceClassName () {
+##       return $dependentDaoInterfaceVariableName;
+##    }
+##    
+#end  
+    
+}

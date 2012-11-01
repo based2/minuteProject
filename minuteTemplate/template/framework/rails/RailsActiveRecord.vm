@@ -1,0 +1,137 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#exposeRailsDomainSpecific()
+##putImportParamsUML()
+#set ($hasChild = $tableUtils.hasChild($table))
+#set ($hasParent = $tableUtils.hasParent($table))
+##package $packageName
+
+##printRailsDomainImport()
+
+class ${className} < ActiveRecord::Base 
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnRuby()
+#if (!$isMany2Many)
+#if ($isPkUserProvided)
+    set_primary_key : $columnVariable
+#end
+#end
+#end
+##no need of table column in rails at datamodel level
+##foreach ($column in ${table.attributes})
+##if(!$column.isVersion())
+##putColumnRuby()
+##    $columnType $columnVariable
+##end
+##end
+
+#if ($hasParent)
+    belongs_to 
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+        #if($velocityCount!=1), #end${localColumnVariable}: $linkedTableClass
+#end
+// m2m
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+#set($m2mVar = $railsUtils.getM2MVariableName($table, $targetTable.name, $linkedTableDB.name, $linkReference.localColumn.name))
+//      ${targetTableVariableName}Via${linkTableName}By${localColumnName}s  : $targetTableName //m2mVar = $m2mVar
+#end
+    ]
+#end
+
+#if ($hasChild)
+    has_many 
+#set($cpt=0)
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+#set($cpt=$cpt+1)
+##	static hasMany = [${linkedTableVariable}${linkedColumnClass}s: $linkedTableClass]
+        #if($cpt!=1), #end${linkedTableVariable}${linkedColumnClass}s: $linkedTableClass
+##else
+##        #if($velocityCount!=1), #end${linkedColumnClass}s: $linkedTableClass ##not correct todo
+#end
+#end
+//m2m
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+//        ,${targetTableVariableName}Via${linkTableName}By${localColumnName}s : $targetTableName // the name is a bit long but the variable has to be unique to prevent ambiguity
+#end
+
+    ]
+#end
+
+    static mapping = {
+        table '$table.name'
+#foreach($column in ${table.primaryKeyColumns})	
+#putColumnParams()
+#columnJavaNaming()
+        id (column: "$column.name" 
+#if ($isPkUserProvided)
+                     ,generator: 'assigned'
+#elseif($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))        
+                     ,generator:'sequence',params:[name:'$sequenceName'] 
+#end
+        )
+#end
+#if(!$table.hasVersion())
+        version false
+#else
+#set($versionField=$grailsUtils.getVersionField($table))
+        version "$versionField"
+#end
+// m2m
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+//      ${targetTableVariableName}Via${linkTableName}By${localColumnName}s  joinTable: [name:'$linkedTableDBName', column:'$targetColumn.name', key:'$linkReference.localColumnName'] 
+#end
+
+
+#if ($hasParent)
+        columns {
+#foreach ($reference in $table.parents)
+#putReferenceParams2()				
+             ${localColumnVariable} column : "$localColumnName" #if($columnUtils.isPkUserProvided(${reference.foreignColumn})), sqltype:'text' #end
+
+#end
+        }
+#end
+    }
+
+	static mappedBy = [
+#set($cpt=0)
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+#set($cpt=$cpt+1)
+        #if($cpt!=1), #end${linkedTableVariable}${linkedColumnClass}s: '$linkedColumnVariable'
+#end
+#end	
+    ]
+		
+    static constraints = {
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if ($isPkUserProvided) 
+        id (maxSize: $column.size)
+#end
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+        ${columnVar} (unique: #if($isColumnUnique) true#else false#end, blank: #if($column.isRequired())false #else true#end #if($isLengthPrecisionColumn),maxSize: $column.size#end)
+#end	
+
+    }
+    
+    String toString(){
+       return $grailsUtils.getToString($table)
+    }
+end

@@ -1,0 +1,100 @@
+#exposeVariableModelSpecific() 
+#set ($applicationOX=$configuration.name)
+##<?xml version = "1.0" encoding = "ISO-8859-1"?>
+##<!DOCTYPE controllers SYSTEM "dtds/controllers.dtd">
+<controllers> 
+
+	<controller name="MpTypical">
+	
+	  <extends controller="Typical" />
+    
+      <action  name="new" 
+			class="net.sf.minuteproject.openxava.view.CreateAction"
+			image="images/new.gif"
+			keystroke="Control N">
+			<set property="restoreModel" value="true"/>			
+	  </action>
+		
+      <action name="searchByViewKey"
+          by-default="if-possible" hidden="true"
+          class="net.sf.minuteproject.openxava.view.UpdateAction"
+          keystroke="F8" >
+      </action>
+      
+	</controller>		
+
+	<controller name="MpSearchAndPrint">
+		<extends controller="Print" />
+		<extends controller="MpSearchOnly" />
+	</controller>
+  	
+	<controller name="MpSearchOnly">
+
+		<action name="search" mode="detail"
+			class="org.openxava.actions.SearchAction" image="images/find.gif"
+			keystroke="control B">
+		</action>
+
+		<action name="searchByViewKey" hidden="true" 
+			class="org.openxava.actions.SearchByViewKeyAction">
+			<use-object name="xava_view" />
+		</action>
+
+		<action name="searchReadOnly" hidden="true" 
+			class="org.openxava.actions.SearchReadOnlyAction">
+			<use-object name="xava_view" />
+		</action>
+		
+	</controller>
+
+#exposeVariableModelDetailSpecific()
+#foreach($table in $model.businessModel.businessPackage.getEntities())
+#exposeVariableEntitySpecific()
+#foreach ($column in ${table.columns})
+#putColumnParams()
+#if ($columnUtils.hasFormulaStereotype($column))
+#set ($formula = $column.stereotype.formula)
+#set ($formulaName = $formatUtils.getJavaName($formula.name))
+	<controller name="${columnVar}${formulaName}Controller">
+		<action name="${columnVar}${formulaName}"  mode="detail"
+			class="net.sf.minuteproject.openxava.action.DummyAction">
+			<use-object name="xava_view" />
+		</action>	
+	</controller>
+#end
+#end
+#end
+
+    <!-- transfer entities -->
+#foreach ($table in $model.businessModel.businessPackage.transferEntities)
+#if(!$table.actions.isEmpty())
+#exposeVariableEntitySpecific()
+#set($controllerName=$openXavaUtils.getControllerName($table))
+	<controller name="$controllerName">
+#foreach ($action in $table.actions)
+#exposeOXActionSpecific()	
+#set($actionName=$openXavaUtils.getActionClassName($action))
+		<action name="$actionName" mode="detail" class="$actionImport">
+			<use-object name="xava_view" />
+		</action>	    
+#end		
+	</controller>
+#end
+#end
+    <!-- store procedure input-->
+#foreach ($function in $database.functions)
+#set ($inout = $commonUtils.getDirection("INOUT"))
+#set ($table = $function.getEntity($inout))
+#exposeVariableEntitySpecific()
+#set($controllerName=$openXavaUtils.getControllerName($table))
+    <controller name="$controllerName">
+#set($actionName="call${domainClassName}")
+#set($actionImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, "ActionOX.stored.proc"))
+        <view name=""/>
+        <action name="${actionName}" mode="detail" class="$actionImport">
+            <use-object name="xava_view" />
+        </action>       
+    </controller>
+#end
+
+</controllers>

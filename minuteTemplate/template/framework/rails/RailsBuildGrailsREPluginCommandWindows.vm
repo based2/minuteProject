@@ -1,0 +1,9 @@
+#exposeGrailsSpecific()
+set currentdir=%cd%
+
+call grails create-app $applicationGrails
+xcopy grails-app\conf $applicationGrails\grails-app\conf /y /s
+cd $applicationGrails
+
+call grails install-plugin reverse-engineer
+call grails reverse-engineer

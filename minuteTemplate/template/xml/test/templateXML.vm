@@ -1,0 +1,3 @@
+test
+
+document = $document.text - $document.name

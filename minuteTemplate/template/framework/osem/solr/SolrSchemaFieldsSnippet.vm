@@ -1,0 +1,24 @@
+#exposeVariableModelSpecific()
+#foreach ($table in $osemUtils.getSearchRootTables($database))
+#exposeVariableEntitySpecific()
+#foreach($column in $table.primaryKeyColumns)
+#putColumnParams()
+#set($solrColumnType=$solrUtils.getType($column))
+    <field name="$columnVar" type="$solrColumnType" indexed="true" stored="true" required="true" />
+#end
+#foreach($column in $table.attributes)
+#putColumnParams()
+#set($solrColumnType=$solrUtils.getType($column))
+    <field name="$columnVar" type="$solrColumnType" indexed="true" stored="true" />
+#end
+#foreach($reference in $osemUtils.getSearchableChildren($table))
+#putReferenceParams2()
+#set($link="${linkedTableVariable}s")##${linkedTableVariable}${linkedColumnClass}s
+#foreach($column in $reference.foreignTable.attributes)
+#putColumnParams()
+#set($solrColumnType=$solrUtils.getType($column))
+    <field name="${link}.$columnVar" type="$solrColumnType" indexed="true" stored="true"/> 
+#end
+#end
+
+#end

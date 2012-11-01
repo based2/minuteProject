@@ -1,0 +1,90 @@
+#exposeVariableEntitySpecific()
+#putImportParams()
+package $packageName;
+
+import $importDomainObjectUML;
+import java.util.List;
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+import net.sf.minuteProject.architecture.bsla.dao.face.DataAccessObject;
+
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Data access object dealing with $className
+ * persistence. It offers a set of methods which allow for saving,
+ * deleting and searching $tableVariableName objects</p>
+ *
+ */
+public interface $className extends DataAccessObject {
+
+    /**
+     * search all the duplicates for entity $tableClassName, based on the entity mask. 
+     * @param $tableClassName ${tableVariableName}Mask
+     */
+   public List<$tableClassName> searchDuplicates ($tableClassName ${tableVariableName}Mask) ;
+      // duplicate key
+      // form input entity mask
+
+    /**
+     * search all the duplicates for entity $tableClassName, based on the entity mask. 
+     * @param $tableClassName ${tableVariableName}M	ask
+     */
+   public List<$tableClassName> searchDuplicates ($tableClassName ${tableVariableName}Mask, $tableClassName what, $tableClassName wherePosi, $tableClassName whereNeg) ;
+      // duplicate key form mask
+      // get Pk
+      // return in list partial load (where clause plus id in duplicate pk list)
+         // business inject of (in list of duplication pk clause)
+         
+    /**
+     * search all the duplicates for entity $tableClassName, based on the entity mask. 
+     * @param $tableClassName ${tableVariableName}M	ask
+     */
+   public List<$tableClassName> searchDuplicatesWhereMaskValuesAre ($tableClassName ${tableVariableName}Mask, $tableClassName what, $tableClassName wherePosi, $tableClassName whereNeg) ;
+         // useless $tableClassName ${tableVariableName}Mask have to be merged with what
+         
+         // DO : merge (master, complement); add non set master value
+         //      deep merge (add list element?)
+   
+    /**
+     * Projection query
+     */
+   public List<$tableClassName> project ($tableClassName ${tableVariableName}ProjectionMask, $tableClassName wherePosi, projectionFunction) ; //projectionFunction in count,
+   // select a, b, count from .. where .. group by a, b (fill missing line)
+   // select a, b, sum(c), avg(ts2-ts1), day(date1)  from .. where .. group by a, b (fill missing line)
+   ${tableVariableName}ProjectionMask is a mask for a, b (in what+set manipulation)
+   ${tableVariableName}ProjectionMask gives function for function field (numeric)
+   
+    /**
+     * Search difference
+     */
+   public List<$tableClassName> searchDuplicatesWhereMaskValuesAre ($tableClassName ${tableVariableName}Mask, what, wherePosi, whereNeg) ;
+         
+//profile, function, geopath...olap  ... 
+...nb declaration, nb of related item order, max item, decl          first 20
+...= nb parent, nb child order by max nb child, nb parent first x
+
+.... idem + get pk
+
+..BI business injection
+
+.. outer join are deduce from what
+.. if in where there is a condition that explicitly refered to a field accessed by a not mandatory relationship it becomes stricter (inner join)
+
+#if ($hasUniqueKey) 
+   /**
+   * uk<->pk
+   */
+   public $tableClassName load${tableClassName}FromUniqueKey ($tableClassName $tableVariableName);
+
+   public $tableClassName load${tableClassName}FromUniqueKeyWithCacheOnResult ($tableClassName $tableVariableName);
+#if ($hasOnlyOnePrimaryKey)
+
+   public $primaryKeyFirstColumn load${tableClassName}FromUniqueKey ($tableClassName $tableVariableName);
+
+   public $primaryKeyFirstColumn load${tableClassName}FromUniqueKeyWithCacheOnResult ($tableClassName $tableVariableName);
+#end   
+#end
+
+}

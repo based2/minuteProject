@@ -1,0 +1,202 @@
+#set ($packageName = $xmlSchemaUtils.getPackageName($element, $template))
+#set ($className = $commonUtils.getClassName($element, $template))
+#set ($isPackageNameAvailable = $xmlSchemaUtils.isPackageNameAvailable($configuration))
+#macro(putSequenceSpecifics)
+#set ($sequenceType = $xmlSchemaUtils.getSequenceJavaType($sequence))
+#set ($sequenceVariableName = $xmlSchemaUtils.getSequenceJavaVariableName($sequence))
+#set ($sequenceClassName = $xmlSchemaUtils.getSequenceJavaClassName($sequence))
+#set ($isCollection = $xmlSchemaUtils.isCollection($sequence))
+#set ($isRefSequence = $xmlSchemaUtils.isRefElement($sequence))
+#set ($refSequence = $xmlSchemaUtils.getRefElement($sequence, $elements))
+#set ($refSequenceVariableName = $xmlSchemaUtils.getSequenceJavaVariableName($refSequence))
+#set ($refSequenceClassName = $xmlSchemaUtils.getSequenceJavaClassName($refSequence))
+#end
+#set ($holderElementVar = $xmlSchemaUtils.getDigesterHolderBeanNameVariable($configuration))
+#set ($holderElementName = $xmlSchemaUtils.getDigesterHolderBeanName($configuration))
+#set ($importHolderElementClass = $xmlSchemaUtils.getDigesterHolderBeanNameImport($configuration))
+#set ($baseElementClassName = $formatUtils.getJavaName($baseElement.name))
+#set ($baseElementVariableName = $formatUtils.getJavaNameVariable($baseElement.name))
+#set ($baseElementType = $baseElementClassName)
+#set ($isBaseElement = $xmlSchemaUtils.isBaseElement($baseElement, $element))
+package $packageName; //$rootElement.name $baseElement.name
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import $importHolderElementClass;
+import net.sf.minuteProject.configuration.bean.AbstractConfigurationLoader;
+import net.sf.minuteProject.configuration.bean.Template;
+
+public class ${className} extends AbstractConfigurationLoader{
+
+#if ($isPackageNameAvailable)
+    private String _packageName;
+#end
+#if (!$isBaseElement)
+   private $baseElementType _$baseElementVariableName;
+#end
+#foreach ($sequence in $element.sequenceAttribute)
+#putSequenceSpecifics()
+   private $sequenceType _$sequenceVariableName;
+#end
+#foreach ($sequence in $element.getSequenceElement())
+#putSequenceSpecifics()
+#if($isCollection)
+   private List<$sequenceType> _${sequenceVariableName}s;
+#if ($isRefSequence)    
+   private List <$refSequenceClassName> _ref${refSequenceVariableName}s;
+#end
+#else
+   private $sequenceType _$sequenceVariableName;
+#if ($isRefSequence)    
+   private $refSequenceClassName _ref${refSequenceVariableName};
+#end
+#end
+#end
+
+   public ${className}() {
+   }
+
+   public String getTechnicalPackage(Template template) {
+#if ($isPackageNameAvailable)
+      return getPackageName();
+#else
+      return template.getTechnicalPackage();
+#end
+   }
+#if ($isPackageNameAvailable)
+
+   public String getPackageName() {
+      if (_packageName == null)
+         _packageName = new String();
+      return _packageName;
+   }
+
+   public void setPackageName(String _packageName) {
+      this._packageName = _packageName;
+   }
+#end
+   
+#if (!$isBaseElement)   
+   public $baseElementType get$baseElementClassName() {
+      return ${holderElementName}.get$baseElementType(); 
+   }
+	
+#end      
+#foreach ($sequence in $element.sequenceAttribute)
+#putSequenceSpecifics()
+   public $sequenceType get$sequenceClassName() {
+      return _$sequenceVariableName;
+   }
+	
+   public void set$sequenceClassName ($sequenceType _$sequenceVariableName) {
+      this._$sequenceVariableName = _$sequenceVariableName;
+   }
+     
+#end
+#foreach ($sequence in $element.sequenceElement)
+#putSequenceSpecifics()
+#if($isCollection)
+   public List<$sequenceType> get${sequenceClassName}s() {
+      if (_${sequenceVariableName}s == null){
+         _${sequenceVariableName}s = new ArrayList<$sequenceType>();
+      }
+      return _${sequenceVariableName}s;
+   }
+   
+   public $sequenceType[] get${sequenceClassName}sArray() {
+      return ($sequenceType[])get${sequenceClassName}s().toArray(new $sequenceType[get${sequenceClassName}s().size()]);
+   }
+      
+   public void set${sequenceClassName}s (List<$sequenceType> _${sequenceVariableName}s) {
+      this._${sequenceVariableName}s = _${sequenceVariableName}s;
+   }
+ 
+   public void set${sequenceClassName} ($sequenceType _$sequenceVariableName) {
+      add${sequenceClassName}(_$sequenceVariableName);
+   }
+
+   public void add${sequenceClassName} ($sequenceType _$sequenceVariableName) {
+##if (!$isRefSequence)
+##if (!$isBaseElement)
+##      _${sequenceVariableName}.set$baseElementClassName(get$baseElementClassName());
+##else
+##      _${sequenceVariableName}.set$baseElementClassName(this);
+##end
+##end
+      get${sequenceClassName}s().add(_$sequenceVariableName);
+   }
+   
+   public $sequenceType getFirst${sequenceType}From${sequenceClassName}ByName (String name) {
+      if (name==null)
+         return null;
+      for ($sequenceType _${sequenceVariableName} : get${sequenceClassName}s()) {
+         if (_${sequenceVariableName}.getName().equals(name))
+            return _${sequenceVariableName};
+      }
+      return null;
+   } 
+
+#if ($isRefSequence)    
+   public List<$refSequenceClassName> get${refSequenceClassName}ByRefs() {
+      if (_ref${refSequenceVariableName}s==null) {
+         _ref${refSequenceVariableName}s = new ArrayList<$refSequenceClassName>();
+         List <$refSequenceClassName> ${refSequenceVariableName}s = get$baseElementClassName().get${refSequenceClassName}s();
+         for ($sequenceType ${sequenceVariableName} : get${sequenceClassName}s()) {
+            for ($refSequenceClassName $refSequenceVariableName : ${refSequenceVariableName}s) {
+               if (${refSequenceVariableName}.getId().equals(${sequenceVariableName}))
+                  _ref${refSequenceVariableName}s.add(${refSequenceVariableName});
+            }
+         }
+      }
+      return _ref${refSequenceVariableName}s;
+   }
+   
+   public $refSequenceClassName[] get${refSequenceClassName}ByRefsArray() {
+      List<$refSequenceClassName> list = get${refSequenceClassName}ByRefs();
+      return ($refSequenceClassName[])list.toArray(new $refSequenceClassName[list.size()]);
+   }
+   
+#end       
+#else
+#if($sequenceType=="Boolean")
+   public $sequenceType $sequenceVariableName() {
+      return get$sequenceClassName();
+   }
+   
+#end
+   public $sequenceType get$sequenceClassName() {
+	  if (_$sequenceVariableName == null)
+#if($sequenceType=="Boolean")
+#set($booleanValue=$xmlSchemaUtils.getBooleanDefaultValue($sequence))
+	     _$sequenceVariableName = new $sequenceType($booleanValue);
+	#else     
+	     _$sequenceVariableName = new $sequenceType();
+	#end
+      return _$sequenceVariableName;
+   }
+	
+   public void set$sequenceClassName ($sequenceType _$sequenceVariableName) {
+      this._$sequenceVariableName = _$sequenceVariableName;
+   }
+   
+#if ($isRefSequence)    
+   public $refSequenceClassName get${refSequenceClassName}ByRef() {
+      if (_ref${refSequenceVariableName}==null) {
+         List <$refSequenceClassName> ${refSequenceVariableName}s = get$baseElementClassName().get${refSequenceClassName}s();
+         for ($refSequenceClassName $refSequenceVariableName : ${refSequenceVariableName}s) {
+            if (${refSequenceVariableName}.getId().equals(get$sequenceClassName()))
+               _ref${refSequenceVariableName} = ${refSequenceVariableName};
+         }
+      }
+      return _ref${refSequenceVariableName};
+   }
+   
+#end       
+   
+#end	
+#end
+
+}
+

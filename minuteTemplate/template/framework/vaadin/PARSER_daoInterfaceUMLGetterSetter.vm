@@ -1,0 +1,7 @@
+    public $daoInterfaceNameUML get$daoInterfaceClassNameUML(){
+       return $daoInterfaceVariableNameUML;
+    }
+
+    public void set$daoInterfaceClassNameUML($daoInterfaceNameUML $daoInterfaceVariableNameUML) {
+       this.$daoInterfaceVariableNameUML = $daoInterfaceVariableNameUML;
+    }

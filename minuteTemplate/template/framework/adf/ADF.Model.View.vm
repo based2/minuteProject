@@ -1,0 +1,57 @@
+#exposeADFSDOEntitySpecific()
+#exposeADFEntitySpecific()
+#exposeSDOSpecific()
+#addedAreas()
+<?xml version="1.0" encoding="windows-1252" ?>
+<!DOCTYPE ViewObject SYSTEM "jbo_03_01.dtd">
+<!---->
+<ViewObject
+  xmlns="http://xmlns.oracle.com/bc4j"
+  Name="$className"
+  Version="11.1.1.61.92"
+  InheritPersonalization="true"
+  SelectList="
+#foreach ($column in $table.columns)
+#putColumnParams()
+	    ${tableClassName}.${column.name}#if($table.getColumnCount()>$velocityCount),#end 
+
+#end
+	   "
+  FromList="$table.name ${tableClassName}"
+  BindingStyle="OracleName"
+  CustomQuery="false"
+  PageIterMode="Full"
+  UseGlueCode="false"
+  SdoGen="true"
+  SdoName="${entityADFSDOViewImport}"
+  SdoNameSpace="${namespacePackage}">
+  <DesignTime>
+    <Attr Name="_codeGenFlag2" Value="Access|VarAccess"/>
+  </DesignTime>
+  <EntityUsage
+    Name="${domainClassName}"
+    Entity="${entityADFImport}"/>
+#foreach ($column in $table.columns)
+#putColumnParamNaming()
+  <ViewAttribute
+    Name="$columnClass"
+#if($column.isUnique())
+    IsUnique="true"
+#end
+#if($column.isRequired())
+    IsNotNull="true"
+#end
+    PrecisionRule="true"
+##    PrecisionRule="${adf.hasPrecisionRule($column)}"
+    EntityAttrName="$columnClass"
+    EntityUsage="${domainClassName}"
+    AliasName="$column.name"/>
+#end
+##foreach ($reference in $table.children)
+##  <ViewLinkAccessor
+##    Name="PersonsView"
+##    ViewLink="${ADFViewLinkImport}"
+##    Type="oracle.jbo.RowIterator"
+##    IsUpdateable="false"/>
+###end
+</ViewObject>

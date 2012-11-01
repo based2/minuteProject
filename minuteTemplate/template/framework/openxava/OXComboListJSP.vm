@@ -1,0 +1,54 @@
+#putColumnParams()
+<jsp:useBean id="style" class="org.openxava.web.style.Style" scope="request"/> 
+ 
+<%@ include file="validValueEditorCommon.jsp"%>
+
+<% 
+  String fvalue = (String) request.getAttribute(propertyKey + ".fvalue"); 
+  if (editable) {  
+%> 
+  <select name="$columnVar">
+  <option value="" ></option>
+<%
+#if($columnUtils.hasCheckConstraint($column))
+#set($property=$columnUtils.getCheckConstraintProperty($column))
+#set($propertyList=$property.getPropertiesArray())
+   String [] values = new String[] {
+#foreach ($prop in $propertyList)
+#exposeCheckConstraintProperties($prop)
+     "$checkConstraintPropertyValue"#if( $velocityHasNext ),#end
+
+#end
+   };
+#end
+
+  for (int i = 0; i<values.length; i++) { 
+    String aa = values[i];
+    String selected = (fvalue.equals(aa)) ?"selected":""; 
+    
+    //TODO if not mandatory=> introduce empty choice
+%>
+ <option value="<%=aa%>" <%=selected%>><%=aa%></option>
+<%
+ }
+%>
+  </select>
+ 
+<%  
+} else {
+%> 
+  <input type="text" disabled value="<%=fvalue%>" />
+<%
+}
+%>
+
+
+##putColumnParams()
+##<select name="_$columnVar">
+##foreach ($property in $column.getPropertiesArray())
+##foreach ($prop in $property.getPropertiesArray())
+## <option value="$prop.value">$prop.value</option>
+##end
+##end
+##</select>
+

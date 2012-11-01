@@ -1,0 +1,71 @@
+##exposeEJBDomainObjectSpecific()
+#exposeJPASpecifics()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import javax.annotation.Resource;
+import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+import javax.transaction.UserTransaction;
+
+#foreach ($table in $model.functions)
+#exposeVariableEntitySpecific()
+import $importDomainObjectUML;
+#end
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: remote interface for ${className} service </p>
+ *
+ */
+@Stateless
+public class ${className} {
+
+	@PersistenceContext(unitName = "$unitName", type = PersistenceContextType.EXTENDED)
+    private EntityManager em;
+	
+    public List<$tableClassName> findAll ($tableClassName $tableVariableName) {
+		Query query = em.createQuery("select $tableVariableName from $tableClassName $tableVariableName");
+		return query.getResultList();
+	}
+
+#if ($hasOnlyOnePrimaryKey)
+	public $tableClassName findById ($primaryKeyFullType $primaryKeyVariable) {
+		return em.find (${tableClassName}.class, $primaryKeyVariable);
+	}
+
+#end
+#if ($hasSemanticReference)
+	public $tableClassName findBySemanticReference ($primaryKeyFullType $primaryKeyVariable) {
+		return em.find (${tableClassName}.class, $primaryKeyVariable);
+	}
+	
+#end
+	public $tableClassName create ($tableClassName $tableVariableName) {
+		em.persist (${tableVariableName});
+		return $tableVariableName;
+	}
+	
+	public $tableClassName update ($tableClassName $tableVariableName) {
+		em.merge (${tableVariableName});
+		return $tableVariableName;
+	}
+	
+	public void delete ($tableClassName $tableVariableName) {
+		em.remove (${tableVariableName});
+	}
+
+$!updatedAreaImplementation
+}

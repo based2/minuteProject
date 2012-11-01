@@ -1,0 +1,13 @@
+#exposeVariableModelSpecific()
+class $className {
+	static mappings = {
+#foreach ($table in $model.businessModel.businessPackage.entities)
+#exposeVariableEntitySpecific()
+#exposeRESTURL()
+	  "$restXmlServerUrl/$id?" {controller = "$domainVariableName"; action = "xmlShow"}
+	  "$restJsonServerUrl/$id?" {controller = "$domainVariableName"; action = "jsonShow"}	
+	  "$restXmlClientUrl" {controller = "$domainVariableName"; action = "searchXml"}
+	  "$restJsonClientUrl" {controller = "$domainVariableName"; action = "searchJson"}	  
+#end
+  	} 
+}

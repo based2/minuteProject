@@ -1,0 +1,109 @@
+#set($mainStyleSheet="$"+"{resource(dir:'css',file:'main.css')}")
+#set($favicon="$"+"{resource(dir:'images',file:'favicon.ico')}")
+#set($spinner="$"+"{resource(dir:'images',file:'spinner.gif')}")
+#set($spinnerAlt="$"+"{message(code:'spinner.alt',default:'Loading...')}")
+#set($grailsControllers="$"+"{grailsApplication.controllerClasses.sort { it.fullName } }")
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><g:layoutTitle default="Grails" /></title>
+        <link rel="stylesheet" href="$mainStyleSheet" />
+        <link rel="shortcut icon" href="$favicon" type="image/x-icon" />
+        <g:layoutHead />
+        <g:javascript library="application" />
+        <style type="text/css" media="screen">
+
+        #nav {
+            margin-top:20px;
+            margin-left:30px;
+            width:228px;
+            float:left;
+
+        }
+        .homePagePanel * {
+            margin:0px;
+        }
+        .homePagePanel .panelBody ul {
+            list-style-type:none;
+            margin-bottom:10px;
+        }
+        .homePagePanel .panelBody h1 {
+            text-transform:uppercase;
+            font-size:1.1em;
+            margin-bottom:10px;
+        }
+        .homePagePanel .panelBody {
+            background: url(images/leftnav_midstretch.png) repeat-y top;
+            margin:0px;
+            padding:15px;
+        }
+        .homePagePanel .panelBtm {
+            background: url(images/leftnav_btm.png) no-repeat top;
+            height:20px;
+            margin:0px;
+        }
+
+        .homePagePanel .panelTop {
+            background: url(images/leftnav_top.png) no-repeat top;
+            height:11px;
+            margin:0px;
+        }
+        h2 {
+            margin-top:15px;
+            margin-bottom:15px;
+            font-size:1.2em;
+        }
+        #pageBody {
+            margin-left:280px;
+            margin-right:20px;
+        }
+        #mainWindow {
+            position: relative;
+        }
+        #innerWindow {
+            position: relative;
+        }
+        #menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+        }
+        #content {
+            position: absolute;
+            top: 0;
+            left: 200px;
+			width:100%;
+        }
+        </style>
+        
+    </head>
+    <body>
+        <div id="spinner" class="spinner" style="display:none;">
+            <img src="$spinner" alt="$spinnerAlt" />
+        </div>
+        <div id="mainWindow">
+            <div class="nav">
+                <div id="MinuteprojectLogo"><a href="http://minuteproject.sf.net">Powered by minuteproject</a></div>
+            </div>
+            <div id="innerWindow">
+                <div id="menu">
+                    <div class="homePagePanel">
+                        <div class="panelTop"></div>
+                        <div class="panelBody">
+                            <h1>Menu</h1>
+                            <ul>
+                                <g:each var="c" in="$grailsControllers">
+                                    <li class="controller"><g:link controller="${c.logicalPropertyName}">${c.logicalPropertyName}</g:link></li>
+                                </g:each>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div id="content">
+                    <g:layoutBody />
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

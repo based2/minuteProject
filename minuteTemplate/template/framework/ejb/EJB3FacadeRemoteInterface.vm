@@ -1,0 +1,42 @@
+#exposeEJBDomainObjectSpecific()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+
+import javax.ejb.Remote;
+import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+
+import $importDomainObjectUML;
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: remote interface for ${className} service </p>
+ *
+ */
+@Remote
+@WebService
+@SOAPBinding(style = javax.jws.soap.SOAPBinding.Style.DOCUMENT
+            ,use = javax.jws.soap.SOAPBinding.Use.LITERAL
+            ,parameterStyle = javax.jws.soap.SOAPBinding.ParameterStyle.WRAPPED)
+public interface ${className} {
+
+    public List<$tableClassName> findAll ($tableClassName $tableVariableName);
+		
+#if ($hasOnlyOnePrimaryKey)
+	public $tableClassName findById ($primaryKeyFullType $primaryKeyVariable);
+	
+#end
+	public $tableClassName create ($tableClassName $tableVariableName);	
+
+	public $tableClassName update ($tableClassName $tableVariableName);
+	
+	public void delete ($tableClassName $tableVariableName);
+
+$!updatedAreaImplementation
+}

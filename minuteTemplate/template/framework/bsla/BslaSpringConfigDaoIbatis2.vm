@@ -1,0 +1,20 @@
+#exposeVariableModelSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- Import Dao definitions for business components -->
+
+#foreach ($package in ${businessPackages})
+#set ($path = $bslaLibraryUtils.getPackageLevelTemplateFullClassPath($model, $package, $template, "BslaSpringConfigDaoIbatis") )
+   <!-- $package.name -->
+   <import resource="classpath:${path}.xml"/>
+#end
+#foreach ($package in ${businessPackageViews})
+#set ($path = $bslaLibraryUtils.getPackageLevelTemplateFullClassPath($model, $package, $template, "BslaSpringConfigDaoIbatis") )
+   <!-- $package.name -->
+   <import resource="classpath:${path}.xml"/>
+#end
+
+</beans>

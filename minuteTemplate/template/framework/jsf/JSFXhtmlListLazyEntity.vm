@@ -1,0 +1,155 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#exposeSeparator()
+#exposePrimefacesConfig()
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace">
+<ui:composition template="$modelDecoratorJSFImport">
+	<ui:define name="title">
+		<h:outputText value="#{i18n.listTitle} of ${tableClassName}" />
+	</ui:define>
+	<ui:define name="heading">
+		<h:outputText value="#{i18n.listHeading}" />
+	</ui:define>
+<ui:define name="body">
+		
+ <h:form id="form${tableClassName}"> 
+
+	         <h:panelGroup id="dataPanel">  
+						
+                <p:dataTable value="#{${entityControllerJSFVariable}.lazyModel}" 
+					id="${domainVariableName}Table" 
+					var="${domainVariableName}" 
+					paginator="true" rows="10"  
+##                            dynamic="true"  resizableColumns="true"
+                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                    rowsPerPageTemplate="10,20,50"> 
+                    <f:facet name="header">  
+                        List of #{i18n.${tableVariableName}s}  
+                    </f:facet>  
+	
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+        <p:column sortBy="#{${domainVariableName}.${columnVar}}" filterBy="#{${domainVariableName}.${columnVar}}" >  
+            <f:facet name="header">  
+                <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}" />  
+            </f:facet>  
+            <h:outputText value="#{${domainVariableName}.${columnVar}}" />  
+        </p:column> 
+#end
+#end		
+#foreach ($column in $table.attributes)
+#putColumnParams()
+#columnJavaNaming()	
+        <p:column sortBy="#{${domainVariableName}.${columnVar}}" filterBy="#{${domainVariableName}.${columnVar}}">  
+            <f:facet name="header">  
+                <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}" />  
+            </f:facet>  
+            <h:outputText value="#{${domainVariableName}.${columnVar}}" />  
+        </p:column>  
+#end
+                        <p:column>
+                        	<p:commandLink id="selectButton" update=":form2:panel" title="Edit" process="@this">
+                     			<h:outputText value="Edit" /> 
+                     			<f:setPropertyActionListener value="#{${domainVariableName}}" target="#{${entityControllerJSFVariable}.selected${tableClassName}}" />
+##                     			<f:setPropertyActionListener value="#{${domainVariableName}}" target="#{employeesController.current}" />
+                 			</p:commandLink >
+                 			|
+                 			<p:commandLink  id="detailButton" update=":form2:display" title="View Details" oncomplete="detailDialog.show()" process="@this">
+                 				<h:outputText value="View" />
+                     			<f:setPropertyActionListener value="#{${domainVariableName}}" target="#{${entityControllerJSFVariable}.selected${tableClassName}}" />
+##                     			<f:setPropertyActionListener value="#{${domainVariableName}}" target="#{employeesController.detailedEmployee}" />
+                 			</p:commandLink >
+                 			|
+                 			<p:commandLink  id="showDialogButton" update=":dialogForm:confirmDialog" title="Delete" oncomplete="confirmation.show()" process="@this">
+                 				<h:outputText value="Delete" />  
+##                 				<f:setPropertyActionListener value="#{${domainVariableName}}" target="#{employeesController.detailedEmployee}" />
+                 				<f:setPropertyActionListener value="#{${domainVariableName}}" target="#{${entityControllerJSFVariable}.selected${tableClassName}}" />
+                 			</p:commandLink >
+        				
+                    	</p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
+           </h:form>        
+        <br/>
+  			<h:form id="form2">
+				<p:messages id="messages" autoUpdate="true"/>  
+				<p:panelGrid columns="3" id="panel" >
+                   
+                    <f:facet name="header">
+                    Create/Update #{i18n.${tableVariableName}}
+                    </f:facet> 
+
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+#putJSFColumnSnippet2()
+##$columnVar =  $column.alias
+#end
+#end
+#foreach ($columnGroup in $tableUtils.extractFieldGroup(${table.attributes}, $table))
+#foreach ($column in $columnGroup)
+#putColumnParams()
+#columnJavaNaming()
+#putJSFColumnSnippet2()
+#end
+#end
+#foreach ($reference in $tableUtils.getParentOrderByReferenceData($table))
+#putReferenceParams2()
+#set ($column=$localColumn)
+#putColumnParams()
+#columnJavaNaming()
+#putJSFColumnSnippet()
+#end    
+        			<h:outputLabel />
+        			<h:outputLabel />
+        			<f:facet name="footer">  
+            	        <p:commandButton value="Save" icon="ui-icon-check"  actionListener="#{${entityControllerJSFVariable}.createOrUpdateListener}" update=":form${domainClassName}:${domainVariableName}Table,:form2:panel" />  
+            	        <p:commandButton value="Clear" immediate="true" icon="ui-icon-cancel" process="@this" actionListener="#{${entityControllerJSFVariable}.clearListener}" update=":form2:panel" style="margin:5px;"/>
+            	    </f:facet> 
+                </p:panelGrid>
+				
+			   <p:dialog id="basicDialog" header="#{${domainVariableName}} Details" widgetVar="detailDialog"  resizable="false" >  
+                <h:panelGrid columns="2" cellpadding="5"  styleClass="list_display_table_TR_even" id="display">
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end
+#end  
+#foreach ($column in $table.attributes)
+#putColumnParams()
+#columnJavaNaming() 
+            <h:outputText value="#{i18n.$tableVariableName$separator$columnVar}:" />  
+            <h:outputText value="#{${entityControllerJSFVariable}.selected${domainClassName}.$columnVar}" />  
+#end				
+                </h:panelGrid>
+			</p:dialog>   
+
+		</h:form>
+    
+    		<h:form id="dialogForm">
+    			<p:confirmDialog id="confirmDialog" header="Confirm Delete #{i18n.${tableVariableName}}" severity="alert" widgetVar="confirmation">  
+    	                  	<f:facet name="message">
+    						<h:outputText value="Delete #{i18n.${tableVariableName}} item ?" />
+    						</f:facet>
+    	                  
+    	        <p:commandButton id="confirm" value="Yes" oncomplete="confirmation.hide()"  update=":form${domainClassName}:${domainVariableName}Table" />
+    	                    ## actionListener="#{employeesController.destroyListener}"/>  
+    	        <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />   
+    	                  
+    			</p:confirmDialog>  
+    		</h:form>
+				
+        </ui:define>
+    </ui:composition>
+</html>

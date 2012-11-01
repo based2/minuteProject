@@ -1,0 +1,4 @@
+$jdbcDriverClassName=$datasource.driverClassName
+$jdbcUrl=$datasource.url
+$jdbcUsername=$datasource.username
+$jdbcPassword=$datasource.password

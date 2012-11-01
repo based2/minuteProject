@@ -1,0 +1,33 @@
+#exposeVariableModelDetailSpecific()
+#foreach($package in $businessPackages)
+#foreach($table in $package.listOfTables)
+-- table : $table.name
+#exposeVariableEntitySpecific()
+#foreach($column in $table.columns)
+#if($columnUtils.hasCheckConstraint($column))
+#set($property=$columnUtils.getCheckConstraintProperty($column))
+#set($propertyList=$property.getPropertiesArray())
+ALTER TABLE $table.name ADD CONSTRAINT $property.name CHECK ($column.name IN 
+ (
+#foreach ($prop in $propertyList)
+  '$prop.value'#if( $velocityHasNext ),#end
+#end
+ ) ENABLE
+);
+#end
+##putColumnParams()
+##foreach ($property in $column.getPropertiesArray())
+##if($property.tag=="checkconstraint")
+##set($propertyList=$property.getPropertiesArray())
+##ALTER TABLE $table.name ADD CONSTRAINT $property.name CHECK ($column.name IN 
+## (
+##foreach ($prop in $propertyList)
+##  '$prop.value'#if( $velocityHasNext ),#end
+##
+##end
+## ) ENABLE
+##);
+##end
+#end
+#end
+#end

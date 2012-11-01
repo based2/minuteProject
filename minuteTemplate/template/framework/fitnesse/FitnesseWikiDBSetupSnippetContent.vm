@@ -1,0 +1,9 @@
+#parse("./snippet/fitnesse/FitnesseHeader.vm")
+
+!define resetfilepathvar {etl.xml}
+
+!|net.sf.minuteproject.fitnesse.fixture.ScriptellaDbSetupFixture|
+|resetfilepath|setup()?|
+|${resetfilepathvar}|true|
+
+#parse("./snippet/fitnesse/FitnesseWikiDBConnection.vm")

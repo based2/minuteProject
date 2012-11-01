@@ -1,0 +1,157 @@
+#exposeVariableEntitySpecific()
+package $packageName;
+
+import java.sql.*;
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
+import net.sf.minuteProject.model.data.criteria.AbstractDomainObjectWhere;
+import net.sf.minuteProject.model.data.criteria.type.DateCriteria;
+import net.sf.minuteProject.model.data.criteria.type.IntegerCriteria;
+import net.sf.minuteProject.model.data.criteria.type.LongCriteria;
+import net.sf.minuteProject.model.data.criteria.type.StringCriteria;
+import net.sf.minuteProject.model.data.criteria.type.TimestampCriteria;
+
+#foreach ($reference in $table.parents)
+#exposeParamsCriteriaAPI($reference.foreignTable)
+import $importDomainObjectWhere;
+#end
+
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: Domain Object Where Criteria describing a ${domainVariableName} entity where criteria options</p>
+ *
+ */
+public class ${className} extends AbstractDomainObjectWhere {
+
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+##// pk $column is also a fk? $isForeignKey
+#if(!$isForeignKey)
+#set ($columnWhereType = $criteriaUtils.getColumnTypeCriteria($column))
+    private $columnWhereType _$columnVar; ##// pk not fk
+#end
+#end
+
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+#set ($columnWhereType = $criteriaUtils.getColumnTypeCriteria($column))
+    private $columnWhereType _$columnVar; 
+#end
+
+#foreach ($reference in $table.parents)
+#exposeParamsCriteriaAPI($reference.foreignTable)
+#putReferenceParams2()
+#set ($columnWhereType = $criteriaUtils.getColumnTypeCriteria($reference.localColumn))
+    private $columnWhereType _$localColumnVariable;  
+    private ${domainObjectWhereClassName} _${domainObjectWhereVariableName}${localColumnClass}; 
+    
+#end
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+       super("$tableVariableName");
+    }
+
+    /**
+    * toString implementation
+    */
+	public String toString() {
+		return toString(this);
+	}
+	
+	public String toString(Object object) {
+	 	return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+#foreach ($column in ${table.columns})
+#putColumnParams()
+            .append("$columnVar", _$columnVar)
+#end	 	
+	 	    .toString();
+	} 
+	
+	/**
+    * hashCode implementation
+    */
+	public int hashCode() {
+		return super.hashCode();
+	}
+	
+	/**
+    * equals implementation
+
+	public boolean equals(Object object) {
+		return super.toEquals(flat(), object);
+	}
+    */
+	public boolean equals(Object object) {
+		if (object == this) return true;
+		if (!(object instanceof ${className})) return false;
+		if (object == null) return false;
+		${className} ${variableName} = (${className}) object;
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+		if (${variableName}._${columnVar}==null || !${variableName}._${columnVar}.equals(_${columnVar})) return false;
+#end
+		return true;
+	}    
+	
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey)
+#set ($columnWhereType = $criteriaUtils.getColumnTypeCriteria($column))
+	public $columnWhereType get$columnClass() {
+        return _$columnVar;
+    }
+	
+    public void set$columnClass ($columnWhereType _$columnVar) {
+        this._$columnVar = _$columnVar;
+    }
+    
+#end
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+#set ($columnWhereType = $criteriaUtils.getColumnTypeCriteria($column))
+    public $columnWhereType get$columnClass() {
+        return _$columnVar;
+    }
+	
+    public void set$columnClass ($columnWhereType _$columnVar) {
+        this._$columnVar = _$columnVar;
+    }
+    	
+#end
+    // parent generation
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+#set ($columnWhereType = $criteriaUtils.getColumnTypeCriteria($reference.localColumn))
+    public $columnWhereType get$localColumnClass () {
+    	return _$localColumnVariable;
+    }
+	
+    public void set$localColumnClass ($columnWhereType _$localColumnVariable) {
+    	this._$localColumnVariable = _$localColumnVariable;
+    }
+#exposeParamsCriteriaAPI($reference.foreignTable)
+    
+    public ${domainObjectWhereClassName} get$linkedTableClass${localColumnClass} () {
+    	return _${domainObjectWhereVariableName}${localColumnClass};
+    }
+	
+    public void set${domainObjectWhereClassName}${localColumnClass} (${domainObjectWhereClassName} _${domainObjectWhereVariableName}${localColumnClass}) {
+    	this._${domainObjectWhereVariableName}${localColumnClass} = _${domainObjectWhereVariableName}${localColumnClass};
+    }
+    
+#end
+
+}

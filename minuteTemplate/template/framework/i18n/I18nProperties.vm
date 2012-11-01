@@ -1,0 +1,73 @@
+#set ($updatedAreaI18nBegin=$updatedAreaUtils.getI18nBegin($template, $updatedAreas))
+#set ($updatedAreaI18nEnd=$updatedAreaUtils.getI18nEnd($template, $updatedAreas))
+$!updatedAreaI18nBegin
+#exposeVariableModelDetailSpecific()
+##set($separator=$template.getPropertyValue("separator","."))
+#set($separator=$i18nUtils.getSeparator($template))
+#parse("I18nStaticProperties.vm")
+#foreach ($table in $entities)
+#exposeVariableEntitySpecific()
+#set($tableLabel=$i18nUtils.getI18nFromDBObject($table))
+#set($tableLabelVar=$commonUtils.getJavaNameVariableFirstLetter($tableLabel))
+# $table.name
+#if ($tableUtils.isReferenceDataContentType($linktableDB))  
+#set ($entityPrefix="${tableLabel} ")
+#else
+#set ($entityPrefix="")
+#end
+$tableVariableName=$tableLabelVar
+$tableClassName=$tableLabel
+#set ($tableVariableNames=$i18nUtils.plurialize($tableLabelVar))
+#set ($tableClassNames=$i18nUtils.plurialize($tableLabel))
+${tableVariableName}s=$tableVariableNames
+${tableClassName}s=$tableClassNames
+##$tableVariableName
+#foreach($column in $table.columns)
+#putColumnParams()
+#columnJavaNaming()
+#set($columnLabel=$i18nUtils.getI18nFromDBObject($column))
+##$columnVar =  $column.alias
+$tableVariableName$separator$columnVar=${entityPrefix}${columnLabel}
+#set($columnDescription=$i18nUtils.getColumnDescription($column))
+#if($columnDescription!="")
+$tableVariableName$separator${columnVar}[description]=${column.description}
+#else
+$tableVariableName$separator${columnVar}[description]=${entityPrefix}${columnLabel}
+#end
+#end
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+#columnJavaNaming()
+#set($linkTableLabel=$i18nUtils.getI18nFromDBObject($linktableDB))
+#set($linkTableLabels=$i18nUtils.plurialize(${linkTableLabel}))
+$tableVariableName$separator${link}${columnclass}s=$linkTableLabels
+$tableVariableName$separator${link}${columnclass}s[description]=$linkTableLabels
+#end
+#end
+#foreach ($table in $modelEntities)
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#set($linkTableLabel=$i18nUtils.getI18nFromDBObject($linkReference.foreignTable))
+#set($linkTableLabels=$i18nUtils.plurialize(${linkTableLabel}))
+${targetTableVariableName}Via${linkTableName}By${localColumnName}s=$linkTableLabels
+${targetTableVariableName}Via${linkTableName}By${localColumnName}s[description]=$linkTableLabels
+#end
+#end
+##TODO
+# SDD
+#foreach ($query in $model.getStatementModel().getQueries().getQueries()) 
+#exposeQuerySpecific()
+#putImportQuerySDDBean()
+${sddInputBeanVariable}=$i18nUtils.getI18nFromDBObject($inputBean)
+#foreach($column in $inputBean.columns)
+#putColumnParamNaming()
+${sddInputBeanVariable}$separator${columnVar}=$i18nUtils.getI18nFromDBObject($column)
+#end
+${sddOutputBeanVariable}=$i18nUtils.getI18nFromDBObject($outputBean)
+#foreach($column in $outputBean.columns)
+#putColumnParamNaming()
+${sddOutputBeanVariable}$separator${columnVar}=$i18nUtils.getI18nFromDBObject($column)
+#end
+#end
+
+$!updatedAreaI18nEnd

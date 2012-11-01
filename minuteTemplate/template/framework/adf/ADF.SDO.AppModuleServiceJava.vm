@@ -1,0 +1,191 @@
+#exposeVariableModelSpecific()
+#exposeSDOSpecific()
+#set($thisClassName = $className)
+package $packageName;
+
+import java.util.List;
+
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebResult;
+import javax.jws.soap.SOAPBinding;
+
+import javax.xml.ws.Action;
+import javax.xml.ws.RequestWrapper;
+import javax.xml.ws.ResponseWrapper;
+
+#foreach($table in $entities)
+#exposeADFSDOEntitySpecific()
+import $entityADFSDOViewImport;
+#end
+
+import oracle.jbo.common.service.types.FindControl;
+import oracle.jbo.common.service.types.FindCriteria;
+import oracle.jbo.common.service.types.ProcessControl;
+import oracle.jbo.common.service.types.ProcessData;
+import oracle.jbo.service.errors.ServiceException;
+
+import oracle.webservices.annotations.PortableWebService;
+import oracle.webservices.annotations.SDODatabinding;
+import oracle.webservices.annotations.async.AsyncWebService;
+import oracle.webservices.annotations.async.CallbackMethod;
+
+@SOAPBinding(parameterStyle = SOAPBinding.ParameterStyle.WRAPPED, style = SOAPBinding.Style.DOCUMENT)
+@PortableWebService(targetNamespace="$namespacePackage", name="$thisClassName",
+    wsdlLocation="${namespacePackage}serviceinterface/AppModuleService.wsdl")
+@SDODatabinding(schemaLocation="${namespacePackage}serviceinterface/${thisClassName}.xsd")
+@AsyncWebService
+public interface $thisClassName {
+    public static final String NAME = "{${namespacePackage}}${thisClassName}";
+
+#foreach($table in $entities)
+#exposeADFSDOEntitySpecific()
+// for PK
+    @WebMethod(action="${namespacePackage}get${domainClassName}View1", operationName="get${domainClassName}View1")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="get${domainClassName}View1")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="get${domainClassName}View1Response")
+    @WebResult(name="result")
+    @CallbackMethod(exclude=true)
+    $entityADFSDOViewClass get${domainClassName}View1(@WebParam(mode = WebParam.Mode.IN, name="$primaryKeyVariable")
+        $primaryKeyFullType $primaryKeyVariable) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}create${domainClassName}View1", operationName="create${domainClassName}View1")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="create${domainClassName}View1")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="create${domainClassName}View1Response")
+    @WebResult(name="result")
+    @CallbackMethod(exclude=true)
+    $entityADFSDOViewClass create${domainClassName}View1(@WebParam(mode = WebParam.Mode.IN, name="${domainClassName}View1")
+        $entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}update${domainClassName}View1", operationName="update${domainClassName}View1")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="update${domainClassName}View1")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="update${domainClassName}View1Response")
+    @WebResult(name="result")
+    @CallbackMethod(exclude=true)
+    $entityADFSDOViewClass update${domainClassName}View1(@WebParam(mode = WebParam.Mode.IN, name="${domainClassName}View1")
+        $entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}delete${domainClassName}View1", operationName="delete${domainClassName}View1")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="delete${domainClassName}View1")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="delete${domainClassName}View1Response")
+    @CallbackMethod(exclude=true)
+    void delete${domainClassName}View1(@WebParam(mode = WebParam.Mode.IN, name="${domainClassName}View1")
+        $entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}merge${domainClassName}View1", operationName="merge${domainClassName}View1")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="merge${domainClassName}View1")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="merge${domainClassName}View1Response")
+    @WebResult(name="result")
+    @CallbackMethod(exclude=true)
+    $entityADFSDOViewClass merge${domainClassName}View1(@WebParam(mode = WebParam.Mode.IN, name="${domainClassName}View1")
+        $entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}find${domainClassName}View1", operationName="find${domainClassName}View1")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="find${domainClassName}View1")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="find${domainClassName}View1Response")
+    @WebResult(name="result")
+    @CallbackMethod(exclude=true)
+    List<$entityADFSDOViewClass> find${domainClassName}View1(@WebParam(mode = WebParam.Mode.IN,
+            name="findCriteria")
+        FindCriteria findCriteria, @WebParam(mode = WebParam.Mode.IN, name="findControl")
+        FindControl findControl) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}process${domainClassName}View1", operationName="process${domainClassName}View1")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="process${domainClassName}View1")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="process${domainClassName}View1Response")
+    @WebResult(name="result")
+    @CallbackMethod(exclude=true)
+    List<$entityADFSDOViewClass> process${domainClassName}View1(@WebParam(mode = WebParam.Mode.IN,
+            name="changeOperation")
+        String changeOperation, @WebParam(mode = WebParam.Mode.IN, name="${domainClassName}View1")
+        List<$entityADFSDOViewClass> ${domainVariableName}View1, @WebParam(mode = WebParam.Mode.IN,
+            name="processControl")
+        ProcessControl processControl) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}processCS${domainClassName}View1",
+        operationName="processCS${domainClassName}View1")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="processCS${domainClassName}View1")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="processCS${domainClassName}View1Response")
+    @WebResult(name="result")
+    @CallbackMethod(exclude=true)
+    ProcessData processCS${domainClassName}View1(@WebParam(mode = WebParam.Mode.IN, name="processData")
+        ProcessData processData, @WebParam(mode = WebParam.Mode.IN, name="processControl")
+        ProcessControl processControl) throws ServiceException;
+#if($isAsync)
+    @WebMethod(action="${namespacePackage}delete${domainClassName}View1Async",
+        operationName="delete${domainClassName}View1Async")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="delete${domainClassName}View1Async")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="delete${domainClassName}View1AsyncResponse")
+    @Action(input="${namespacePackage}delete${domainClassName}View1Async", output="${namespacePackage}delete${domainClassName}View1AsyncResponse")
+    void delete${domainClassName}View1Async(@WebParam(mode = WebParam.Mode.IN, name="${domainClassName}View1")
+        $entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}merge${domainClassName}View1Async",
+        operationName="merge${domainClassName}View1Async")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="merge${domainClassName}View1Async")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="merge${domainClassName}View1AsyncResponse")
+    @WebResult(name="result")
+    @Action(input="${namespacePackage}merge${domainClassName}View1Async", output="${namespacePackage}merge${domainClassName}View1AsyncResponse")
+    $entityADFSDOViewClass merge${domainClassName}View1Async(@WebParam(mode = WebParam.Mode.IN,
+            name="${domainClassName}View1")
+        $entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}find${domainClassName}View1Async",
+        operationName="find${domainClassName}View1Async")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="find${domainClassName}View1Async")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="find${domainClassName}View1AsyncResponse")
+    @WebResult(name="result")
+    @Action(input="${namespacePackage}find${domainClassName}View1Async", output="${namespacePackage}find${domainClassName}View1AsyncResponse")
+    List<$entityADFSDOViewClass> find${domainClassName}View1Async(@WebParam(mode = WebParam.Mode.IN,
+            name="findCriteria")
+        FindCriteria findCriteria, @WebParam(mode = WebParam.Mode.IN, name="findControl")
+        FindControl findControl) throws ServiceException;
+
+// for PK
+    @WebMethod(action="${namespacePackage}get${domainClassName}View1Async",
+        operationName="get${domainClassName}View1Async")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="get${domainClassName}View1Async")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="get${domainClassName}View1AsyncResponse")
+    @WebResult(name="result")
+    @Action(input="${namespacePackage}get${domainClassName}View1Async", output="${namespacePackage}get${domainClassName}View1AsyncResponse")
+    $entityADFSDOViewClass get${domainClassName}View1Async(@WebParam(mode = WebParam.Mode.IN,
+            name="$primaryKeyVariable")
+        $primaryKeyFullType $primaryKeyVariable) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}processCS${domainClassName}View1Async",
+        operationName="processCS${domainClassName}View1Async")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="processCS${domainClassName}View1Async")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="processCS${domainClassName}View1AsyncResponse")
+    @WebResult(name="result")
+    @Action(input="${namespacePackage}processCS${domainClassName}View1Async", output="${namespacePackage}processCS${domainClassName}View1AsyncResponse")
+    ProcessData processCS${domainClassName}View1Async(@WebParam(mode = WebParam.Mode.IN,
+            name="processData")
+        ProcessData processData, @WebParam(mode = WebParam.Mode.IN, name="processControl")
+        ProcessControl processControl) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}process${domainClassName}View1Async",
+        operationName="process${domainClassName}View1Async")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="process${domainClassName}View1Async")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="process${domainClassName}View1AsyncResponse")
+    @WebResult(name="result")
+    @Action(input="${namespacePackage}process${domainClassName}View1Async", output="${namespacePackage}process${domainClassName}View1AsyncResponse")
+    List<$entityADFSDOViewClass> process${domainClassName}View1Async(@WebParam(mode = WebParam.Mode.IN,
+            name="changeOperation")
+        String changeOperation, @WebParam(mode = WebParam.Mode.IN, name="${domainClassName}View1")
+        List<$entityADFSDOViewClass> ${domainVariableName}View1, @WebParam(mode = WebParam.Mode.IN,
+            name="processControl")
+        ProcessControl processControl) throws ServiceException;
+
+    @WebMethod(action="${namespacePackage}update${domainClassName}View1Async",
+        operationName="update${domainClassName}View1Async")
+    @RequestWrapper(targetNamespace="${namespacePackage}types/", localName="update${domainClassName}View1Async")
+    @ResponseWrapper(targetNamespace="${namespacePackage}types/", localName="update${domainClassName}View1AsyncResponse")
+    @WebResult(name="result")
+    @Action(input="${namespacePackage}update${domainClassName}View1Async", output="${namespacePackage}update${domainClassName}View1AsyncResponse")
+    $entityADFSDOViewClass update${domainClassName}View1Async(@WebParam(mode = WebParam.Mode.IN,
+            name="${domainClassName}View1")
+        $entityADFSDOViewClass ${domainVariableName}View1) throws ServiceException;
+
+#end
+#end
+}

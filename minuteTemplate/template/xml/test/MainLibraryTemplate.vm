@@ -1,0 +1,25 @@
+#exposeRoot()
+#set ($complexElements = $xmlSchemaUtils.getComplexElement($elements))
+#macro(exposeMacro)
+#exposeScope()
+#set ($macroName = "expose$scopeName")
+#set ($macro="macro")
+#set ($end="end")
+#set ($macroDefinition="#${macro}(${macroName})")
+#set ($VM_end="#${end}")
+#end
+	#foreach ($element in $complexElements)
+#exposeMacro()
+$macroDefinition
+##
+#foreach ($sequence in $element.sequenceElement)
+#putSequenceSpecifics()
+#set($varValue="${scopeVariableName}.${sequenceVariableName}")
+#set($var="${sequenceVariableName}")
+#set($set="set")
+#set($exp="#$set ($${var}=$${varValue})")
+$exp
+#end
+$VM_end
+#end
+	

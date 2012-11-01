@@ -1,0 +1,56 @@
+#exposeOXVariableActionSpecific()
+
+package $packageName;
+
+import org.openxava.jpa.*;
+import org.openxava.model.*;
+import org.openxava.util.*;
+import org.openxava.validators.*;
+
+$!updatedAreaImport
+
+public class ${className} extends org.openxava.actions.BaseAction {
+
+#if($isCallAllowedRoutine)
+    public static final String ${routineName}_CALL = "{call ${routineName}($routineArgs)";
+#end
+
+	public void execute() throws Exception {
+#exposeModelUpdatedAreas("execute")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else 
+        //super.execute();
+        //TODO
+        Messages errors =
+            MapFacade.validate("$inputView", getView().getValues());
+        if (errors.contains()) throw new ValidationException(errors);
+        EntityManager em = XPersistence.getManager();
+#if($isCallAllowedRoutine)
+#if($hasRoutineOutput)
+        Query query = em.createNativeQuery(${routineName}_CALL, $routineOutputClassImport.class);
+#else
+        Query query = em.createNativeQuery(${routineName}_CALL);
+#end
+#foreach($column in $input.columns)
+        query.setParameter(1, getView().getValueString("firstname"));
+#end
+
+#end
+        try {
+            query.getResultList();
+        } catch (Exception e) {
+            Messages errors = new Messages();
+            throw new ValidationException(errors);
+        }
+        //TODO return list
+        addInfo("call ${className} done!");
+#end
+$!updatedAreaEnd
+
+	}
+
+$!updatedAreaImplementation
+
+}

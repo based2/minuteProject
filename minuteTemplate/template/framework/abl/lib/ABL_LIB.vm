@@ -1,0 +1,31 @@
+#macro(exposeABLContraintSpecific)
+#set($constraintName = $ablUtils.getConstraintName($table, $constraint))
+#set($comment = $template.getTextComment($constraint.comment))
+#end
+#macro(exposeABLDerivedSpecific)
+#set($derivationName = $ablUtils.getDerivationName($column, $derivation))
+#set($comment = $template.getTextComment($derivation.comment))
+#end
+#macro(exposeABLActionSpecific)
+#set($actionName = $ablUtils.getActionName($table, $action))
+#set($comment = $template.getTextComment($action.comment))
+#end
+#macro(exposeABLEntitySpecific)
+#exposeVariableEntitySpecific()
+#exposeABLTemplate()
+#set ($logicBaseClass = $commonUtils.getTemplateClassName($model, $template, $templateABLLogicBase))
+#set ($logicBaseImport = $commonUtils.getEntityLevelTemplateFullPath($model, $template, $templateABLLogicBase))
+#end
+
+#macro(exposeABLModelSpecific)
+#exposeVariableModelSpecific()
+#exposeABLTemplate()
+#set($ablPackages=$ablUtils.getPackageList($model, $templateABLLogic))
+#set ($constraintExceptionTranslatorJCAImport = $commonUtils.getLevelTemplateFullPath($model, $template, $templateABLConstraintExceptionTranslatorJCA))
+#end
+
+#macro(exposeABLTemplate)
+#set ($templateABLLogic = "ABL.Logic")
+#set ($templateABLLogicBase = "ABL.LogicBase")
+#set ($templateABLConstraintExceptionTranslatorJCA = "ABL.ConstraintExceptionTranslatorJCA")
+#end

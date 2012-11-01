@@ -1,0 +1,80 @@
+#exposeVaadinApps()
+#exposeVaadinModel()
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
+	<display-name>Vaadin</display-name>
+	<description> Vaadin examples </description>
+
+	<!--
+		Turn off productionMode (off by default). Setting productionMode=true
+		disables debug features. In when this is off, you can show debug
+		window by adding ?debug to your application URL. Always set this true
+		in production environment.
+	-->
+	<context-param>
+		<param-name>productionMode</param-name>
+		<param-value>true</param-value>
+		<description>Vaadin production mode</description>
+	</context-param>
+
+<!--
+	<listener>
+    	<listener-class>
+        	org.springframework.web.context.ContextLoaderListener
+    	</listener-class>
+	</listener>
+
+
+	<context-param>
+    	<param-name>contextConfigLocation</param-name>
+    	<param-value>/$applicationContextXml</param-value>
+	</context-param>
+-->
+#foreach ($table in $model.businessModel.businessPackage.entities)
+#if ($vaadinPlugin.isVaadinApplication($table))
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+    <servlet>
+		<servlet-name>$domainObjectApplicationClass</servlet-name>
+		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+		<init-param>
+			<param-name>application</param-name>
+			<param-value>$domainObjectApplicationImport</param-value>
+		</init-param>
+	</servlet>
+#end
+#end
+    <servlet>
+		<servlet-name>$modelApplicationClass</servlet-name>
+		<servlet-class>com.vaadin.terminal.gwt.server.ApplicationServlet</servlet-class>
+		<init-param>
+			<param-name>application</param-name>
+			<param-value>$modelApplicationImport</param-value>
+		</init-param>
+	</servlet>
+
+#foreach ($table in $model.businessModel.businessPackage.entities)
+#if ($vaadinPlugin.isVaadinApplication($table))
+#exposeVariableEntitySpecific()
+#exposeVaadinDomainObject()
+	<servlet-mapping>
+		<servlet-name>$domainObjectApplicationClass</servlet-name>
+		<url-pattern>/$domainObjectApplicationClass/*</url-pattern>
+	</servlet-mapping>	
+#end
+#end
+	<servlet-mapping>
+		<servlet-name>$modelApplicationClass</servlet-name>
+		<url-pattern>/$modelApplicationClass/*</url-pattern>
+	</servlet-mapping>
+		
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+	</welcome-file-list>
+</web-app>

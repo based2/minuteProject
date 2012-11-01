@@ -1,0 +1,24 @@
+#exposeVariablePackageSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+#foreach ($table in ${package.listOfTables})
+#putImportParamsUML()
+#if(!$table.isManyToMany())
+#exposeArchitectureParams()
+    <bean id="$daoInterfaceVariableNameUML" class="$importHibernateImplName" singleton="false">
+        <property name="sessionFactory"><ref bean="$hibernateFactoryName"/></property>
+    </bean>
+#end
+#end
+#foreach ($table in ${package.listOfViews})
+#putImportParamsUML()
+#exposeArchitectureParams()
+    <bean id="$daoInterfaceVariableNameUML" class="$importHibernateImplName" singleton="false">
+        <property name="sessionFactory"><ref bean="$hibernateFactoryName"/></property>
+    </bean>
+#end
+
+
+</beans>

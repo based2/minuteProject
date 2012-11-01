@@ -1,0 +1,169 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+
+import $importDomainObjectUML;
+import java.util.List;
+import net.sf.minuteProject.architecture.filter.data.Criteria;
+import net.sf.minuteProject.architecture.bsla.dao.face.DataAccessObject;
+import net.sf.minuteProject.model.dao.GenericDao;
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Data access object dealing with $className
+ * persistence. It offers extended DAO functionalities</p>
+ *
+ */
+public interface $className extends GenericDao<$tableClassName> {##DataAccessObject { {
+     
+     /**
+     * Inserts a $tableClassName entity with cascade of its children
+     * @param $tableClassName $tableVariableName
+     */
+    public void insert${tableClassName}WithCascade($tableClassName ${tableVariableName}) ;
+    
+    /**
+     * Inserts a list of $tableClassName entity with cascade of its children
+     * @param List<$tableClassName> ${tableVariableName}s
+     */
+    public void insert${tableClassName}sWithCascade(List<$tableClassName> ${tableVariableName}s) ;        
+   
+    /**
+     * lookup $tableClassName entity $tCN, criteria and max result number
+     */
+    public List<$tableClassName> lookup$tableClassName($tableClassName $tableVariableName, Criteria criteria, Integer numberOfResult);
+	
+	public Integer updateNotNullOnly$tableClassName ($tableClassName $tableVariableName, Criteria criteria);
+
+	/**
+	 * Affect the first $tableVariableName retrieved corresponding to the $tableVariableName criteria.
+	 * Blank criteria are mapped to null.
+	 * If no criteria is found, null is returned.
+	 */
+    public $tableClassName affect$tableClassName ($tableClassName $tableVariableName);
+    
+    public $tableClassName affect${tableClassName}UseCache ($tableClassName $tableVariableName);
+    	
+	/**
+	 * Assign the first $tableVariableName retrieved corresponding to the $tableVariableName criteria.
+	 * Blank criteria are mapped to null.
+	 * If no criteria is found, null is returned.
+	 * If there is no $tableVariableName corresponding in the database. Then $tableVariableName is inserted and returned with its primary key(s). 
+	 */
+    public $tableClassName assign$tableClassName ($tableClassName $tableVariableName);
+
+	/**
+	 * Assign the first $tableVariableName retrieved corresponding to the mask criteria.
+	 * Blank criteria are mapped to null.
+	 * If no criteria is found, null is returned.
+	 * If there is no $tableVariableName corresponding in the database. 
+	 * Then $tableVariableName is inserted and returned with its primary key(s). 
+	 * Mask servers usually to set unique keys or the semantic reference
+	 */
+    public $tableClassName assign$tableClassName ($tableClassName $tableVariableName, $tableClassName mask);
+	
+    public $tableClassName assign${tableClassName}UseCache ($tableClassName $tableVariableName);
+         
+    /**
+    * return the first $tableClassName entity found
+    */           
+    public $tableClassName getFirst$tableClassName ($tableClassName $tableVariableName);
+    
+    /**
+    * checks if the $tableClassName entity exists
+    */           
+    public boolean exists$tableClassName ($tableClassName $tableVariableName);    
+    
+    public boolean exists${tableClassName}WhereConditionsAre ($tableClassName $tableVariableName);
+
+    /**
+    * partial load enables to specify the fields you want to load explicitly
+    */            
+    public List<$tableClassName> partialLoad$tableClassName($tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName);
+
+    /**
+    * partial load with parent entities
+    * variation (list, first, distinct decorator)
+    * variation2 (with cache)
+    */
+    public List<$tableClassName> partialLoadWithParent$tableClassName($tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName);
+
+    public List<$tableClassName> partialLoadWithParent${tableClassName}UseCache($tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Boolean useCache);
+
+    public List<$tableClassName> partialLoadWithParent${tableClassName}UseCacheOnResult($tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Boolean useCache);
+
+    /**
+    * variation first
+    */
+    public $tableClassName partialLoadWithParentFirst$tableClassName($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName);
+    
+    public $tableClassName partialLoadWithParentFirst${tableClassName}UseCache($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Boolean useCache);
+
+    public $tableClassName partialLoadWithParentFirst${tableClassName}UseCacheOnResult($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName, Boolean useCache);
+
+    /**
+    * variation distinct
+    */
+    public List<$tableClassName> getDistinct$tableClassName($tableClassName ${tableVariableName}What, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName);
+
+    //
+    public List partialLoadWithParentForBean(Object bean, $tableClassName $tableVariableName, $tableClassName positive$tableClassName, $tableClassName negative$tableClassName);
+
+    /**
+    * search on prototype with cache
+    */
+    public List<$tableClassName> searchPrototypeWithCache$tableClassName ($tableClassName $tableVariableName);
+      
+#if ($hasUniqueKey) 
+   /**
+   * uk<->pk
+   */
+   public $tableClassName load${tableClassName}FromUniqueKey ($tableClassName $tableVariableName);
+
+   public $tableClassName load${tableClassName}FromUniqueKeyWithCacheOnResult ($tableClassName $tableVariableName);
+#if ($hasOnlyOnePrimaryKey)
+
+   public $primaryKeyType load${tableClassName}PkFromUniqueKey ($tableClassName $tableVariableName);
+
+   public $primaryKeyType load${tableClassName}PkFromUniqueKeyWithCacheOnResult ($tableClassName $tableVariableName);
+#end   
+#end
+    
+##    /**
+##    * search a list of $tableClassName whose field set in the mask ${tableVariableName}What are filled, and matching a list of where filter criteria prototypes 
+##    * set in the list ${tableVariableName}Wheres
+##    */
+##    //public List<$tableClassName> searchPrototype ($tableClassName ${tableVariableName}What, List<$tableClassName> ${tableVariableName}Wheres);
+## ##   
+##    /**
+##    * search a list of $tableClassName  matching a list of where filter criteria prototypes
+##    * set in the list ${tableVariableName}Wheres
+##    */
+##    //public List<$tableClassName> searchPrototype (List<$tableClassName> ${tableVariableName}Wheres);
+##
+    /**
+     * Searches a list of distinct $tableClassName entity based on a $tableClassName mask and a list of $tableClassName containing $tableClassName matching criteria
+     * @param $tableClassName $tableVariableName
+     * @param List<$tableClassName> ${tableVariableName}s
+     * @return List<$tableClassName>
+     */
+    public List<$tableClassName> searchDistinctPrototype$tableClassName($tableClassName ${tableVariableName}Mask, List<$tableClassName> ${tableVariableName}s) ;    
+
+	public List<$tableClassName> countDistinct ($tableClassName whatMask, $tableClassName whereEqCriteria);
+	
+	public Long count ($tableClassName whereEqCriteria);
+	
+	public List<$tableClassName> loadGraph($tableClassName graphMaskWhat, List<$tableClassName> whereMask);  
+	
+	public List<$tableClassName> loadGraphFromParentKey ($tableClassName graphMaskWhat, List<$tableClassName> parents); 
+	
+    /**
+     * generic to move after in superclass
+     */
+    public List<Object[]> getSQLQueryResult(String query);     
+
+	
+}
+

@@ -1,0 +1,87 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+
+import $importDomainObjectUML;
+import $importDaoIncubatorNameUML;
+import java.util.List;
+import java.sql.*;
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+import net.sf.minuteProject.architecture.bsla.dao.face.DataAccessObject;
+
+
+
+public class $className implements $daoInterfaceIncubatorNameUML {
+
+	/**
+	* returns the list of $tableClassName. Each $tableClassName has its corresponding mask attribute filled with value
+	* corresponding to duplicates
+	*/
+    public List<$tableClassName> searchDuplicateValues ($tableClassName ${tableVariableName}Mask){
+       return null;
+    }
+    
+    public List<$tableClassName> searchDuplicateEntities ($tableClassName ${tableVariableName}Prototype){
+       return null;
+    }
+    
+    public List<$tableClassName> searchDuplicateValueWithEntities ($tableClassName ${tableVariableName}Mask){
+       return null;
+    } 
+
+	public $tableClassName loadGraph ($tableClassName ${tableVariableName}Mask, $tableClassName ${tableVariableName}Where){
+       return null;
+    }
+	
+	public $tableClassName loadGraph ($tableClassName ${tableVariableName}Where, int depth){
+       return null;
+    }
+	
+#if($table.hasVersion())
+	public $tableClassName acquireOptimisticLock ($tableClassName ${tableVariableName}){
+	##check that the pks have value   
+	       checkPrimaryKeyPresent (${tableVariableName});
+	       ${tableVariableName} = copyPrimaryKeys(${tableVariableName});
+	##load pks + version fields
+       return getFirst${tableClassName} (${tableVariableName});
+    }
+	    
+	public boolean releaseOptimisticLock ($tableClassName ${tableVariableName}Lock){
+	##check that the pks have value  
+	checkPrimaryKeyPresent (${tableVariableName}Lock);
+	   ${tableVariableName}Lock = copyPrimaryKeysAndVersion(${tableVariableName}Lock);
+	   $tableClassName ${tableVariableName}VersionUpdate = getVersionNextValue (${tableVariableName}Lock);
+	   int nb = updateNotNullOnly${tableClassName}(${tableVariableName}VersionUpdate, ${tableVariableName}Lock);
+       return (nb!=1)?false:true;
+    }
+	
+	public boolean releaseOptimisticLock ($tableClassName ${tableVariableName}Lock, $tableClassName ${tableVariableName}NewValue){
+##check that the pks have value  
+	checkPrimaryKeyPresent (${tableVariableName}Lock);
+	   ${tableVariableName}Lock = copyPrimaryKeysAndVersion(${tableVariableName}Lock);
+	   $tableClassName ${tableVariableName}VersionUpdate = getVersionNextValue (${tableVariableName}NewValue);
+	   int nb = update${tableClassName}(${tableVariableName}VersionUpdate, ${tableVariableName}Lock);
+       return (nb!=1)?false:true;    
+		    }
+		    
+	public List<$tableClassName> acquireOptimisticLock (List<$tableClassName> ${tableVariableName}s){
+       return null;
+    }
+	    
+	public void releaseOptimisticLock (List<$tableClassName> ${tableVariableName}s) throws DBApiException{
+       return null;
+    }
+	
+#end
+	
+	protected void checkPrimaryKeyPresent ($tableClassName ${tableVariableName}){
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey)
+       if (${tableVariableName}.get$columnClass()==null) throw IllegalAccessException ("missing pk on ${tableVariableName} acquireOptimisticLock");
+#end
+#end    
+	}
+ 
+	    
+}

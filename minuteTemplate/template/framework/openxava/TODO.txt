@@ -1,0 +1,11 @@
+graphic for dashboard
+model report query
+
+Extract stats / to report trend: trenny
+jumps.
+
+i18n helper
+minsize
+view navigation with arrow
+helper correct css.
+.sh buildcommandUnix

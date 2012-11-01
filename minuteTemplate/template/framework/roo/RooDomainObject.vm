@@ -1,0 +1,134 @@
+#exposeVariableEntitySpecific()
+package ${packageName};
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Id;
+
+import java.sql.Timestamp;
+import java.sql.Clob;
+import java.sql.Blob;
+import org.springframework.roo.addon.javabean.RooJavaBean;
+import org.springframework.roo.addon.tostring.RooToString;
+import org.springframework.roo.addon.entity.RooEntity;
+import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+import javax.validation.constraints.Size;
+import java.util.Set;
+import java.util.HashSet;
+import javax.persistence.*;
+
+@Entity
+@RooJavaBean
+@RooToString
+@RooEntity(identifierField = "$primaryKeyVariable", identifierColumn = "$primaryKeyFirstColumn.name", identifierType = ${primaryKeyFullType}.class
+#if ($table.hasVersion())
+#set ($column = $tableUtils.getVersion($table))
+#putColumnParams() 
+   ,versionField = "#if ($table.hasVersion())$columnVar#end"
+#else
+   ,versionField = ""
+#end
+   )
+public class ${className} {
+
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+##    @Column(name="$column.name" #if($isLengthPrecisionColumn),length=$column.size#end)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    @SequenceGenerator(name = "${table.name}SEQ", sequenceName ="$sequenceName", allocationSize=1 )
+#end
+#end
+    @Id 
+#if (!$isMany2Many)
+#if (!$isPkUserProvided)
+#if ($databaseUtils.isPrimaryKeyPolicySequence($table))
+#set ($sequenceName = $databaseUtils.provideSequence($table))
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="${table.name}SEQ") 
+#elseif ($databaseUtils.isPrimaryKeyPolicyIncrement($table))
+    @GeneratedValue(strategy = GenerationType.AUTO)
+#end
+#end
+#end
+#end
+    @Column(name="$column.name" #if($isLengthPrecisionColumn),length=$column.size#end)
+    private $columnType $columnVar;
+
+#end
+
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+#columnJavaNaming()
+#if ($isView)
+    @Column(name="$column.name",  #if($isLengthPrecisionColumn)length=$column.size,#end #if($column.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true,#else unique=false,#end insertable=false, updatable=false)
+#else
+    @Column(name="$column.name",  #if($isLengthPrecisionColumn)length=$column.size,#end #if($column.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true#else unique=false#end)
+#end
+#if ($column.isLob())
+    @Lob
+#exposeLobProperties()
+##if ($convertClobToString=="true")
+##set($columnType="String")
+##end
+#end
+    private $columnType $columnVar; 
+#end
+
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+    @ManyToOne (fetch=FetchType.LAZY #if ($isMandatory && !$table.isLinkEntity()), optional=false#end)
+    @JoinColumn(name="$localColumnName", #if($localColumn.isRequired())nullable=false#else nullable=true#end, #if($isColumnUnique)unique=true,#else unique=false #end) 
+#exposeEnrichedPk($localColumn)
+#if (!$isEnrichedPk)
+#set($colVar = ${localColumnVariable})
+#else
+#set($colVar = ${linkedTableVariable})
+#end
+    private $linkedTableClass ${colVar}; 
+    
+#end
+
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+#if(!$linktableDB.isManyToMany())
+#set ($importDomainObjectForeignTable = $commonUtils.getEntityLevelTemplateFullPath($model, $linktableDB, $template, "RooDomainObject"))
+#set ($targetEntityClass="${importDomainObjectForeignTable}.class")
+#exposeEnrichedPk(${reference.column})
+#if (!$isEnrichedPk)
+#set ($foreignColumnVar = $formatUtils.getJavaNameVariable($columnDB.name))
+#else
+#set ($foreignColumnVar = $domainVariableName)
+#end
+    @OneToMany (targetEntity=$targetEntityClass, fetch=FetchType.LAZY, mappedBy="$linkedColumnVariable"#if (!$reference.column.isRequired() || $reference.table.isLinkEntity()), cascade=CascadeType.REMOVE#end)//, cascade=CascadeType.ALL)
+    private Set <$linkedTableClass> ${linkedTableVariable}${linkedColumnClass}s = new HashSet(); 
+   
+#end
+#end
+
+#foreach ($linkReference in $enrichmentUtils.getLinkedTargetReferenceByMany2Many($table))
+#exposeM2MSpecific()
+#exposeImportParamsUML($targetTable)
+#set($targetColumn=$enrichmentUtils.getOtherColumn($linkedTableDB, $linkReference.localColumn))
+    @ManyToMany
+    @JoinTable(name="$linkedTableDBName", 
+        joinColumns=@JoinColumn(name="$targetColumn.name"), 
+        inverseJoinColumns=@JoinColumn(name="$linkReference.localColumnName") 
+    )
+    private Set <$targetTableName> ${targetTableVariableName}Via${linkTableName}By${localColumnName}s = new HashSet<$targetTableName>();
+
+#end
+
+    /**
+    * Default constructor
+    */
+    public ${className}() {
+    }
+
+
+}

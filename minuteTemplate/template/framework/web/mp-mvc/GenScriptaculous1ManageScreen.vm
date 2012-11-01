@@ -1,0 +1,81 @@
+#exposeVariableEntitySpecific()
+#set ($action = "insert")
+#set ($actionURL = "crud.do")
+#set ($htmlFormName = $table.name)
+#exposeJSPElement()
+#set ($entityInSession = "${tableClassName}SearchResultOne")
+<%@ include file="/WEB-INF/jsp/common/common-include.jsp"%>
+<html>
+<head>
+	<title>$table.name edit screen</title>
+			<script src="scripts/scriptaculous/lib/prototype.js" type="text/javascript"></script>
+		<script src="scripts/scriptaculous/src/effects.js" type="text/javascript"></script>
+		<script type="text/javascript" src="scripts/fabtabulous.js"></script>
+		<script type="text/javascript" src="scripts/validation.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+</head>	
+<body>
+
+#includeAction()
+
+<div id="container">
+			<div id="mainmenu">
+					<ul id="tabs">
+						<li>
+							<a href="#standard">$table.name</a>
+						</li>
+					</ul>
+				<div>
+				<div class="bar">&nbsp;</div>
+				<div class="panel" id="standard">
+					<form id="test" name="$htmlFormName" action="${ctx}/$actionURL" >
+					<input type="hidden" name="action" value="$action">
+<input type="hidden" name="table" value="$table.name">
+					<fieldset>
+						<legend>$table.name field values</legend>
+						#foreach ($column in ${table.columns})
+												<div class="form-row">
+	#putColumnParams()
+	#exposeJstlEntity($entityInSession $columnVar)
+#if(!$column.isPrimaryKey())
+		<div class="field-label"><label for="$columnVar">$columnVar#if($column.isRequired()) *#end</label>:</div>
+							<div class="field-widget"><input name="$columnVar" id="$columnVar" class="#if($column.isRequired()) required#end" title="Enter $columnVar" /></div>
+#end
+</div>
+#if(!$column.isPrimaryKey())
+<input type="hidden" name="$columnVar" value="<c:out value="$entity"/>">
+#end
+#end
+						
+					</fieldset>
+					<table>
+					<tr>
+					<td><input type="submit" value="Search" onclick="setAction('search');"></td>
+					<td><input type="submit" value="Save" onclick="setAction('save');"></td>
+					<td><input type="button" value="Reset" onclick="valid.reset(); return false" /></td>
+					</tr>
+</table>
+					
+					</form>
+										<script type="text/javascript">
+						function formCallback(result, form) {
+							window.status = "valiation callback for form '" + form.id + "': result = " + result;
+						}
+						
+						var valid;
+						
+						function save() {
+						valid = new Validation('test', {immediate : true, onFormValidate : formCallback});
+					}
+					
+					function search() {
+					valid.reset();
+					valid=null;
+					setAction('search');
+					}
+					
+					</script>
+				</div>
+
+</body>
+</html>

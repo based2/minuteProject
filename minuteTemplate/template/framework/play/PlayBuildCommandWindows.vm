@@ -1,0 +1,7 @@
+#exposePlaySpecific()
+mkdir $applicationPlay
+call play new $applicationPlay
+xcopy play-app $applicationPlay /y /s
+xcopy %MP_HOME%\application\lib\extra\*.jar $applicationPlay\lib\*.* /y /s
+call play eclipsify $applicationPlay
+call play run $applicationPlay

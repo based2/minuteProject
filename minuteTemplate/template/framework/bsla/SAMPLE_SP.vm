@@ -1,0 +1,7 @@
+$function.name - $function.catalog
+
+$function
+
+#foreach($column in $function.functionColumns)
+$column.name - $column.type - $column.isRequired() - $column.direction - $column.size
+#end

@@ -1,0 +1,199 @@
+#macro(putReadmeText)
+$!commonUtils.getReadMeText($template)
+#end
+
+#macro(exposeVariableFunctionSpecific)
+#exposeVariableEntitySpecific()
+#exposeFunction()
+#set ($functionNameUpperCase=$routineUtils.getFunctionCallName($function))
+#set ($functionCall=$routineUtils.getFunctionCall($function))
+#end
+
+#macro(exposeCompositeSpecific)
+#set ($in = $commonUtils.getDirection("IN"))
+#set ($out = $commonUtils.getDirection("OUT"))
+#set ($packageName = $commonUtils.getPackageName($composite, $template))
+#set ($className = $commonUtils.getClassName($composite, $template))
+#set ($classVariableName = $formatUtils.firstLowerCase(${className}))
+#end
+
+#macro(exposeInputCompositeSpecific)
+#set ($in = $commonUtils.getDirection("IN"))
+#set ($out = $commonUtils.getDirection("OUT"))
+#set ($packageName = $commonUtils.getPackageName($composite, $template))
+#set ($className = $commonUtils.getClassName($composite, $template))
+#set ($classVariableName = $formatUtils.firstLowerCase(${className}))
+#end
+
+#macro(exposeQuerySpecific)
+#set ($packageName = $commonUtils.getPackageName($query, $template))
+#set ($className = $commonUtils.getClassName($query, $template))
+#set ($classVariableName = $formatUtils.firstLowerCase(${className}))
+#set ($inputBean = $query.inputBean)
+#set ($outputBean = $query.outputBean)
+#set ($isNotVoidInput = !$inputBean.getColumns().isEmpty())
+#end
+
+#macro(exposeChartSpecific)
+#set ($isChartLayout = $queryUtils.isChartLayout($query))
+#set ($isPieChart = $queryUtils.isPieChart($query))
+#set ($isBarChart = $queryUtils.isBarChart($query))
+#set ($outputBeanColumnDimension1 = $queryUtils.getOutputBeanDimension($query,0))
+#set ($outputBeanColumnValue = $queryUtils.getOutputBeanValue($query))
+#set ($outputBeanDimension1 = $formatUtils.getJavaName($outputBeanColumnDimension1.alias))
+#set ($outputBeanDimensionValue = $formatUtils.getJavaName($outputBeanColumnValue.alias))
+#set ($dimensions = $queryUtils.getOutputBeanDimension($query))
+#end
+
+#macro(exposeStatementParam)
+#set($javaType=$statementUtils.getJavaType($param))	
+#set($javaVariable=$statementUtils.getJavaVariableName($param))	
+#set($setterType=$statementUtils.getJdbcSetter($param))	
+#set($getterType=$statementUtils.getJdbcGetter($param))	
+#end
+
+#macro (exposeFunction)
+#exposeFunctionTemplate()
+#set ($in = $commonUtils.getDirection("IN"))
+#set ($out = $commonUtils.getDirection("OUT"))
+#set ($input = $function.getEntity($in))
+#set ($output = $function.getEntity($out))
+#set ($functionInputClass = $commonUtils.getTemplateClassName($input, $model, $templateFunctionInput))
+#set ($functionInputVariable = $commonUtils.getJavaNameVariableFirstLetter($functionInputClass))
+#set ($functionInputImport = $commonUtils.getEntityLevelTemplateFullPath($model, $input, $template, $templateFunctionInput))
+#set ($functionOutputClass = $commonUtils.getTemplateClassName($output, $model, $templateFunctionOutput))
+#set ($functionOutputVariable = $commonUtils.getJavaNameVariableFirstLetter($functionOutputVariable))
+#set ($functionOutputImport = $commonUtils.getEntityLevelTemplateFullPath($model, $output, $template, $templateFunctionOutput))
+#set ($functionInterfaceClassName = $commonUtils.getTemplateClassName($output, $model, $templateFunctionInterface))
+#set ($functionInterfaceVariableName = $commonUtils.getJavaNameVariableFirstLetter($functionInterfaceClassName))
+#set ($functionInterfaceImport = $commonUtils.getEntityLevelTemplateFullPath($model, $output, $template, $templateFunctionInterface))
+#end
+
+#macro (exposeFunctionTemplate)
+#set ($templateFunctionInput = "StoredProcedureInputBean")
+#set ($templateFunctionOutput = "StoredProcedureOutputBean")
+#set ($templateFunctionInterface = $template.getPropertyValue("functionInterface","DaoInterfaceStoreProcedure"))
+#end
+
+#macro (putGetterSetter $class $variable)
+#putGetterSetterAlt($class, $class, $variable)
+#end
+
+#macro (putGetterSetterAlt $class $classVariable $variable)
+    public ${class} get${classVariable} () {
+        return ${variable};
+    }
+
+    public void set${classVariable} (${class} ${variable}) {
+        this.${variable} = ${variable};
+    }
+
+#end
+
+#macro(exposeVariableTriggerSpecific)
+#set($triggerColumn =$triggerUtils.getColumn($trigger))
+#set($triggerColumnName =$triggerColumn.name)
+#set($triggerVar =$triggerUtils.getTriggerAlias($trigger))
+#set($triggerType =$triggerUtils.getTriggerType($trigger))
+#set($triggerJavaExpressionChunk =$triggerUtils.getJavaDisplayChunk($trigger, $template))
+#set($triggerSqlExpressionChunk =$triggerUtils.getSqlDisplayChunk($trigger, $template))
+#end
+
+#macro (putGetterAdder $classList $listVariable $class $variable)
+#set ($listClasses = $i18nUtils.plurialize(${class}))
+#if($addXmlBinding)
+    @XmlTransient
+#end
+    public List<${class}> get${listClasses} () {
+        if (${listVariable}==null)
+            ${listVariable} = new ArrayList<$class>();
+        return ${listVariable};
+    }
+
+    public void add${class} (${class} ${variable}) {
+        get${listClasses} ().add(${variable});
+    }
+
+#end
+
+#macro (putSetterGetterAdder $classList $listVariable $class $variable)
+#set ($listClasses = $i18nUtils.plurialize(${class}))
+    public void set${listClasses} (List<${class}> ${listVariable}) {
+        this.${listVariable} = ${listVariable};
+    }
+
+#putGetterAdder($classList $listVariable $class $variable)
+#end
+
+#macro (putImportSDDBean)
+#set ($templateJavaBean=$template.getPropertyValue("JavaBeanTemplate","JavaBeanTemplate"))
+#set ($beanClass = $commonUtils.getTemplateClassName($table, $model, $templateJavaBean))
+#set ($beanVariable = $commonUtils.getJavaNameVariableFirstLetter($beanClass))
+#set ($beanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateJavaBean))
+#set ($listVariable = $i18nUtils.plurialize(${beanVariable}))
+#set ($addXmlBinding=$template.getPropertyValue("add-xmlbinding",false))
+#set ($xmlFormat=$template.getPropertyValue("add-xml-format","none"))
+#end
+
+#macro (putImportCompositeSDDBean)
+#templateCommonDefinition()
+#set ($inputComposite = $composite.getInputComposite())
+#set ($outputComposite = $composite.getOutputComposite())
+#set ($sddInputCompositeBeanClass = $commonUtils.getTemplateClassName($inputComposite, $template, $templateSDDInputCompositeBean))
+#set ($sddInputCompositeBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputCompositeBeanClass))
+#set ($sddInputCompositeBeanImport = $commonUtils.getEntityLevelTemplateFullPath($inputComposite, $template, $templateSDDInputCompositeBean))
+#set ($sddOutputCompositeBeanClass = $commonUtils.getTemplateClassName($outputComposite, $template, $templateSDDOutputCompositeBean))
+#set ($sddOutputCompositeBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputCompositeBeanClass))
+#set ($sddOutputCompositeBeanImport = $commonUtils.getEntityLevelTemplateFullPath($outputComposite, $template, $templateSDDOutputCompositeBean))
+#end
+
+#macro (putImportCompositeOutputSDDBean)
+#templateCommonDefinition()
+#set ($sddOutputBeanClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDOutputBean))
+#set ($sddOutputBeanClasses = $i18nUtils.plurialize(${sddOutputBeanClass}))
+#set ($sddOutputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanClass))
+#set ($sddOutputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDOutputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDOutputBeanCollection))
+#set ($sddOutputBeanCollectionVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanCollectionClass))
+#set ($sddOutputBeanCollectionImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDOutputBeanCollection))
+#end
+
+#macro (putImportCompositeInputSDDBean)
+#templateCommonDefinition()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($table, $template, $templateSDDInputBean))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($table, $template, $templateSDDInputBean))
+#end
+
+#macro (putImportQuerySDDBean)
+#templateCommonDefinition()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($query.getInputBean(), $model, $templateSDDInputBean))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $query.getInputBean(), $template, $templateSDDInputBean))
+#set ($sddOutputBeanClass = $commonUtils.getTemplateClassName($query.getOutputBean(), $model, $templateSDDOutputBean))
+#set ($sddOutputBeanClasses = $i18nUtils.plurialize(${sddOutputBeanClass}))
+#set ($sddOutputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanClass))
+#set ($sddOutputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $query.getOutputBean(), $template, $templateSDDOutputBean))
+#set ($sddOutputBeanCollectionClass = $commonUtils.getTemplateClassName($query.getOutputBean(), $model, $templateSDDOutputBeanCollection))
+#set ($sddOutputBeanCollectionVariable = $commonUtils.getJavaNameVariableFirstLetter($sddOutputBeanCollectionClass))
+#set ($sddOutputBeanCollectionImport = $commonUtils.getEntityLevelTemplateFullPath($model, $query.getOutputBean(), $template, $templateSDDOutputBeanCollection))
+#end
+
+#macro(templateCommonDefinition)
+#set ($templateSDDInputBean  = "SDDInputBean")
+#set ($templateSDDOutputBean = "SDDOutputBean")
+#set ($templateSDDInputCompositeBean  = "SDDInputCompositeBean")
+#set ($templateSDDOutputCompositeBean = "SDDOutputCompositeBean")
+#set ($templateSDDOutputBeanCollection = "SDDOutputBeanCollection")
+#end
+
+#macro (putImportSDDInputBean)
+#templateCommonDefinition()
+#set ($sddInputBeanClass = $commonUtils.getTemplateClassName($table, $model, $templateSDDInputBean))
+#set ($sddInputBeanVariable = $commonUtils.getJavaNameVariableFirstLetter($sddInputBeanClass))
+#set ($sddInputBeanImport = $commonUtils.getEntityLevelTemplateFullPath($model, $table, $template, $templateSDDInputBean))
+#end
+
+#macro(exposeWebXmlSpecific)
+#set($webXmlVersion=$template.getPropertyValue("web-xml-version","3.0"))
+#end

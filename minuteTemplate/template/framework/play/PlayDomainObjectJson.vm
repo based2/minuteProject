@@ -1,0 +1,18 @@
+#exposeVariableEntitySpecific()
+{"${domainVariableName}":
+[
+{
+#set ($cpt = 0)
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+ #if($cpt>0),#else #end"$columnVar":"${${domainVariableName}.${columnVar}}"
+#set ($cpt=$cpt+1)
+#end
+#foreach ($column in ${table.attributes})
+#putColumnParams()
+ #if($cpt>0),#else #end"$columnVar":"${${domainVariableName}.${columnVar}}"
+#set ($cpt=$cpt+1) 
+#end
+}
+]
+}

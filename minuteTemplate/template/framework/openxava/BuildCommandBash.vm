@@ -1,0 +1,34 @@
+#exposeOXSpecific()
+#!/bin/sh
+
+GENDIR=$(cd `dirname $0`;pwd)
+
+##create OX project
+cd $OX_HOME/workspace/OpenXavaTemplate
+ant -f CreateNewProject.xml -Dproject=$applicationOX
+
+cp $MP_HOME/target/mp-openxava/*.jar $OX_HOME/workspace/$applicationOX/web/WEB-INF/lib
+##copy generated artifacts into $applicationOX workspace
+cd $GENDIR
+cp -R * ${OX_HOME}/workspace/$applicationOX 
+
+##overwrite tomcat context.xml
+cp other/tomcat/snippet/context.xml $OX_HOME/tomcat/conf
+
+##add jdbc driver dep in tomcat\lib
+cp $MP_HOME/application/lib/extra/*.jar $OX_HOME/tomcat/lib
+
+## start tomcat in appart process
+cd $OX_HOME/tomcat/bin
+./startup.sh
+
+cd $OX_HOME/workspace/$applicationOX
+ant -f mp4openxava-build.xml
+ant
+
+cd $OX_HOME/workspace/$applicationOX
+ant generatePortlets
+
+firefox http://localhost:8080/$applicationOX/xava/homeMenu.jsp
+
+cd $GENDIR

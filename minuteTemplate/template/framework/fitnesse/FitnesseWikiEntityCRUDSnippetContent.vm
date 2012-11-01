@@ -1,0 +1,29 @@
+#exposeVariableEntitySpecific()
+#exposeJdbc()
+#set ($datasource = $model.dataModel.basicDataSource)
+#set ($templateFitnesseEntityCRUDColumnFixture = "FitnesseEntityCRUDColumnFixture")
+#set ($importEntityCrudFixtureClass = $bslaLibraryUtils.getEntityLevelTemplateFullPath($model, $tableDB, $template, $templateFitnesseEntityCRUDColumnFixture))
+!contents -R2 -g -p -f -h
+
+!3 Datasource connection information
+!|net.sf.minuteproject.fitnesse.fixture.DbConnectionFixture|
+|username| password| url| driverClassName|
+|$datasource.username| $datasource.password| $datasource.url | $datasource.driverClassName|
+
+!3 Insert into $tableDB.name snippet
+!|${importEntityCrudFixtureClass}|
+|#foreach ($column in ${table.columns}) #putColumnParams() $formatUtils.getUppercaseUnderscore(${column.name}) #if ($isMandatory)#end| #end insert? |
+|#foreach ($column in ${table.columns}) | #end OK |
+
+!3 Update into $tableDB.name snippet
+!|${importEntityCrudFixtureClass}|
+|#foreach ($column in ${table.columns}) #putColumnParams() $formatUtils.getUppercaseUnderscore(${column.name}) |  #end #foreach ($column in ${table.columns}) #putColumnParams() WHERE_${column.name} | #end update? |
+|#foreach ($column in ${table.columns}) |  #end #foreach ($column in ${table.columns}) | #end OK |
+
+!3 Delete from $tableDB.name snippet
+!|${importEntityCrudFixtureClass}|
+|#foreach ($column in ${table.columns}) #putColumnParams() $formatUtils.getUppercaseUnderscore(${column.name}) |  #end #foreach ($column in ${table.columns}) #putColumnParams() WHERE_${column.name} | #end delete? |
+|#foreach ($column in ${table.columns}) |  #end #foreach ($column in ${table.columns}) | #end OK |
+
+
+

@@ -1,0 +1,15 @@
+#exposeVariableModelSpecific()
+				<business-package default="$model.businessModel.businessPackage.defaultPackage">
+#foreach ($package in ${businessPackages})
+#foreach ($table in ${package.listOfTables})				
+				    <condition type="package" startsWith="$table.name" result="$package.name"></condition>
+#end
+#end
+				</business-package>	
+				<enrichment>
+#foreach ($package in ${businessPackages})				
+				    <package name="$package.name">
+				        <security-color roles="$package.securityColor.roles"/>
+				    </package>
+#end
+				</enrichment>				

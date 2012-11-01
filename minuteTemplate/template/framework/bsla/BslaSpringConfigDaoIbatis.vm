@@ -1,0 +1,21 @@
+#exposeVariablePackageSpecific()
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecificBslaDaoIbatis()
+#exposeArchitectureParams()
+    <bean id="$daoInterfaceVariableName" class="$importIbatisDaoSqlImplName" singleton="false" >
+        <property name="sqlMapClientTemplate"><ref bean="$ibatisTemplateName"/></property>
+    </bean>
+#end
+#foreach ($view in ${package.listOfViews})
+#set ($table = $view)
+#exposeVariableEntitySpecificBslaDaoIbatis()
+#exposeArchitectureParams()
+    <bean id="$daoInterfaceVariableName" class="$importIbatisDaoSqlImplName" singleton="false" >
+        <property name="sqlMapClientTemplate"><ref bean="$ibatisTemplateName"/></property>
+    </bean>
+#end
+</beans>

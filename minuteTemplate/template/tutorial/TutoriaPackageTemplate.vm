@@ -1,0 +1,48 @@
+#exposeVariableModelSpecific()
+This template is a tutorial to help the user in creating MP-velocity based templates.
+This template takes the model has the main object.
+
+Model name is given by the property '$model.name'
+
+In a model the tables are associated to a package 
+Here is the code to loop on each package and for each package on each table.
+
+Feel free to copy paste, check in the vm macro for extra information available.
+Add your own plugins ...
+
+Use the macro # exposeVariableModelSpecific() to get the model variables
+Use the macro # exposeVariableEntitySpecific() to get the entity variables
+Caution: 
+Some variable are dependent on other template (such as DomainObjectUML.vm for domain object variables),
+If you need them, please add them in your main configuration (in order to get the metadata).
+
+#foreach ($package in ${businessPackages})
+> package name is $package.name
+#foreach ($table in ${package.listOfTables})
+#exposeVariableEntitySpecific()
+>> $velocityCount) table name is $table.name , the class name is $tableClassName .
+>>> fields:
+>>>> primary keys:
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#if(!$isForeignKey)
+     type $columnType, variable $columnClass $columnVar; 
+#end
+#end
+>>>> attributes :
+	#foreach ($column in ${table.attributes})
+#putColumnParams()
+     type $columnType, variable $columnVar; 
+#end
+>>>> foreign keys: (parents)
+#foreach ($reference in $table.parents)
+#putReferenceParams2()
+     foreign table ${reference.foreignTableName} - link via field ${reference.localColumnName}.
+#end
+>>>> references : (children)
+#foreach ($reference in $table.children)
+#putReferenceParams2()
+     child table ${reference.foreignTableName} - link via child field ${reference.foreignColumnName}.
+#end
+#end
+#end

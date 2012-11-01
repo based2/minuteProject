@@ -1,0 +1,49 @@
+#exposeJSFEntitySpecific()
+#exposeJSFModelSpecific()
+#exposeSeparator()
+#exposePrimefacesConfig()
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="$primefacesNamespace">
+<ui:composition template="$modelDecoratorJSFImport">
+	<ui:define name="title">#{i18n.createTitle} ${tableClassName}</ui:define>
+	<ui:define name="heading">#{i18n.createHeading}</ui:define>
+	<ui:define name="body">
+		<h:form>
+			<p:panel id="createPnl" header="#{i18n.$tableVariableName}"
+				toggleable="true" closable="false" toggleSpeed="500"
+				onCloseUpdate="growl" closeSpeed="2000" onToggleUpdate="growl"
+				widgetVar="panel">
+				<h:panelGrid columns="3" cellpadding="10">
+#foreach($column in ${table.primaryKeyColumns})
+#putColumnParams()
+#columnJavaNaming()
+#if (!$isMany2Many && $isPkUserProvided)
+#putJSFColumnSnippet()
+##$columnVar =  $column.alias
+#end
+#end
+#foreach ($columnGroup in $tableUtils.extractFieldGroup(${table.attributes}, $table))
+#foreach ($column in $columnGroup)
+#putColumnParams()
+#columnJavaNaming()
+#putJSFColumnSnippet()
+#end
+#end
+#foreach ($reference in $tableUtils.getParentOrderByReferenceData($table))
+#putReferenceParams2()
+#set ($column=$localColumn)
+#putColumnParams()
+#columnJavaNaming()
+#putJSFColumnSnippet()
+#end					
+					<p:commandButton title="#{i18n.save}" value="#{i18n.save}" update="createPnl"
+						action="#{${entityControllerJSFVariable}.create}" />
+				</h:panelGrid>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

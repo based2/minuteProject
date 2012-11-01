@@ -1,0 +1,20 @@
+#exposeADFBuildSpecific()
+<?xml version="1.0" encoding="windows-1252" ?>
+<project name="Deploy Helper Tasks" default="usage" basedir=".">
+  <property file="deploy_to_ear.ant.properties"/>
+  <target name="usage">
+    <echo>Use one of the following targets:</echo>
+    <echo>1) disable-wls-jdbc-autosync - desc todo</echo>
+    <echo>2) enable-wls-jdbc-autosync  - desc todo</echo>
+  </target>
+  <target name="disable-wls-jdbc-autosync">
+    <replaceregexp match="${ autosync.true}"
+                   file="${ oracle.jdeveloper.workspace.path}"
+                   replace="${ autosync.false}"/>
+  </target>
+  <target name="enable-wls-jdbc-autosync">
+    <replaceregexp match="${ autosync.false}"
+                   file="${ oracle.jdeveloper.workspace.path}"
+                   replace="${ autosync.true}"/>
+  </target>
+</project>

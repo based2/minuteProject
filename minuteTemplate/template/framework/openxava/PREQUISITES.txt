@@ -1,0 +1,7 @@
+
+OX_HOME
+ANT_HOME
+MP_HOME
+java 1.6
+
+jdbc driver in <OX_HOME>/tomcat/lib

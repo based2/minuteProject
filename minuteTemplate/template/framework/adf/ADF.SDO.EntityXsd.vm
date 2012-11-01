@@ -1,0 +1,42 @@
+#exposeVariableEntitySpecific()
+#addedAreas()
+#exposeSDOSpecific()
+<xsd:schema xmlns:sdoJava="commonj.sdo/java" xmlns:ns0="http://xmlns.oracle.com/adf/svc/types/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+     xmlns:sdoXML="commonj.sdo/xml" targetNamespace="$namespacePackage" xmlns="$namespacePackage"
+##	 xmlns="$namespaceTypesPackage"
+     elementFormDefault="qualified" sdoJava:package="${javaPackage}.common">
+    <xsd:import schemaLocation="classpath:/META-INF/wsdl/BC4JService.xsd" namespace="http://xmlns.oracle.com/adf/svc/types/"/>
+    <xsd:import schemaLocation="classpath:/xml/sdoJava.xsd" namespace="commonj.sdo/java"/>
+    <xsd:import schemaLocation="classpath:/xml/sdoXML.xsd" namespace="commonj.sdo/xml"/>
+##foreach ($reference in $table.children)
+##putReferenceParams2()
+##exposeADFEntityConfig()
+##    <xsd:include schemaLocation="${entityADFSDOXsdClassName}"/>
+###end
+    <xsd:complexType name="${className}">
+        <xsd:annotation>
+            <xsd:appinfo source="http://xmlns.oracle.com/adf/svc/metadata/">
+                <key xmlns="http://xmlns.oracle.com/adf/svc/metadata/">
+#foreach ($column in ${table.primaryKeyColumns})
+#putColumnParamNaming()
+                    <attribute>$columnClass</attribute>
+#end
+                </key>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:sequence>
+#foreach($column in ${table.columns})
+#putColumnParamNaming()
+#exposeSDOColumnSpecific()
+            <xsd:element name="${columnClass}" type="$sdoType" minOccurs="0"#if($hasSdoDataType) sdoXML:dataType="$sdoXmlDataType"#end#if(!$column.isRequired()) nillable="true"#end/>
+#end
+##            <xsd:element name="PersonId" type="xsd:long" minOccurs="0" sdoXML:dataType="sdoJava:LongObject"/>
+##            <xsd:element name="PrincipalName" type="xsd:string" minOccurs="0"/>
+###foreach($reference in $table.children)
+###exposeSDOReference()
+##            <xsd:element name="${linkedTableClass}View" type="${linkedTableClass}ViewSDO" minOccurs="0" maxOccurs="unbounded"/>
+###end
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="$formatUtils.firstLowerCaseOnly($className)" type="$className"/>
+</xsd:schema>

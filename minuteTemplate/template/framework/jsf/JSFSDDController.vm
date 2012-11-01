@@ -1,0 +1,131 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+$!updatedAreaImport
+import java.util.Date;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.*;
+import java.sql.*;
+
+import javax.servlet.http.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.enterprise.context.RequestScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+
+#exposeChartSpecific()
+#if ($isChartLayout)
+import org.primefaces.event.ItemSelectEvent;
+import org.primefaces.model.chart.CartesianChartModel;
+import org.primefaces.model.chart.PieChartModel;
+import org.primefaces.model.chart.ChartSeries;
+import org.primefaces.model.chart.LineChartSeries;
+#end
+
+import $sddOutputBeanCollectionImport;
+import $sddOutputBeanImport;
+#if($isNotVoidInput)
+import $sddInputBeanImport;
+#end
+##import $sddDaoInterfaceImport;
+import $sddServiceInterfaceImport;
+/**
+ *
+ * <p>Title: ${className}</p>
+ *
+ * <p>Description: remote interface for ${className} service </p>
+ *
+ */
+@ManagedBean (name="${classVariableName}")
+@RequestScoped
+public class ${className} {
+
+    @ManagedProperty("#{${sddServiceInterfaceVariable}}")
+    ${sddServiceInterfaceClass} $sddServiceInterfaceVariable;
+
+#if($isNotVoidInput)
+    private $sddInputBeanClass $sddInputBeanVariable = new $sddInputBeanClass();
+#end
+    private $sddOutputBeanCollectionClass $sddOutputBeanCollectionVariable;
+    private $sddOutputBeanClass selected$sddOutputBeanClass;
+
+#if ($isChartLayout)
+#if($isBarChart)
+    private CartesianChartModel categoryModel;  
+
+    public CartesianChartModel getCategoryModel() {  
+        return categoryModel;  
+    }  
+
+    public CartesianChartModel createCategoryModel() {  
+        execute();
+        categoryModel = new CartesianChartModel();  
+#foreach($column in $dimensions)
+#putColumnParamNaming()
+#set($dimVar = "${columnVar}$velocityCount")
+        ChartSeries $dimVar = new ChartSeries();  
+        ${dimVar}.setLabel("$columnClass");
+        for ($sddOutputBeanClass var : getOutputList()) {
+            ${dimVar}.set(var.get$outputBeanDimension1(), var.get$outputBeanDimensionValue());
+        }
+        categoryModel.addSeries(${dimVar});  
+#end
+        return categoryModel;
+    }
+    
+#end
+#if($isPieChart)
+    private PieChartModel pieModel;
+    public PieChartModel getPieModel() {  
+        return pieModel;  
+    }  
+    
+    public PieChartModel createPieModel() {
+        execute();
+        pieModel = new PieChartModel();  
+        for ($sddOutputBeanClass var : getOutputList()) {
+            pieModel.set(var.get$outputBeanDimension1(), var.get$outputBeanDimensionValue());
+        }
+        return pieModel;
+    }
+
+#end
+#end
+
+#exposeQueryUpdatedAreas("SDD_EXECUTE")
+$!updatedAreaBegin
+#if($isUpdated)
+$!updatedAreaSnippet
+#else
+    public $sddOutputBeanCollectionClass execute () {
+        $sddOutputBeanCollectionVariable = ${sddServiceInterfaceVariable}.execute(#if($isNotVoidInput)${sddInputBeanVariable}#end);
+        return $sddOutputBeanCollectionVariable;
+    }
+#end
+$!updatedAreaEnd
+
+#set ($table = $query.outputBean)
+#putImportSDDBean()
+    public List<$sddOutputBeanClass> getOutputList() {
+        return ($sddOutputBeanCollectionVariable==null)?new ArrayList<$sddOutputBeanClass>():${sddOutputBeanCollectionVariable}.get${beanClass}s();
+    }
+
+#if($isNotVoidInput)
+#putGetterSetter($sddInputBeanClass, $sddInputBeanVariable)
+#end
+#putGetterSetter($sddServiceInterfaceClass, $sddServiceInterfaceVariable)
+#putGetterSetterAlt($sddOutputBeanClass, "Selected$sddOutputBeanClass", "selected$sddOutputBeanClass")
+
+$!updatedAreaImplementation
+
+}

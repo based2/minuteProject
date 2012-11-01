@@ -1,0 +1,65 @@
+#set ($table = $scope.modelEntity)
+#exposeVariableEntitySpecific()
+#putImportParams()
+#exposeVariableEntitySpecificBslaDaoIbatis()
+#exposeArchitectureParams()
+package $packageName;
+
+#distinctEntityProperty()
+import $importDomainObject;
+import $importDaoInterface;
+import java.util.List;
+
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Service dealing with $className
+ * </p>
+ *
+ */
+public interface $className {
+
+    //private $daoInterfaceClassName $daoInterfaceVariableName;
+
+    //public $tableClassName duplicate$tableClassName ($tableClassName $tableVariableName);
+    
+#foreach($strategy in $scope.strategies)
+#set ($methodName = $serviceView.getStrategyMethod($strategy))
+#set ($methodInputParameters = $serviceView.getStrategyInputParam($strategy))
+#set ($methodOutputParameters = $serviceView.getStrategyOutputParam($strategy))
+#set ($view = $serviceView.getView($strategy))
+##set ($table = $view)
+#exposeVariableEntitySpecific()
+#if ($strategy.name == 'SearchEntityOnLogicalIdBasedOnVirtualPrimaryKey')      
+    public $tableClassName $methodName (
+#foreach ($column in $view.virtualPrimaryKeys) 
+#putColumnParams()
+       $columnType $columnVar#if ($velocityCount!=$primaryKeyCount),#end
+#end    
+       );
+#end
+#if ($strategy.name == 'SearchEntityOnLogicalId')      
+#set ($strategyColumnCount = $serviceView.getCountStrategyLogicalIdColumns($strategy))
+    public $tableClassName $methodName (
+#foreach ($column in $serviceView.getStrategyLogicalIdColumns($strategy)) 
+#putColumnParams()
+       $columnType $columnVar#if ($velocityCount!=$strategyColumnCount),#end
+#end    
+       );
+#end
+#if ($strategy.name == 'SearchListBasedOnPrototype')      
+    public List <${tableClassName}> $methodName (${tableClassName} $tableVariableName);
+#end
+#if ($strategy.name == 'SearchListBasedOnPrototypeInfo')      
+    
+    public List <${tableClassName}> $methodName (
+#foreach ($column in $serviceView.getStrategyLogicalIdColumns($strategy)) 
+#putColumnParams()
+       $columnType $columnVar#if ($velocityCount!=$strategyColumnCount),#end
+#end    
+    );
+#end       
+#end
+}

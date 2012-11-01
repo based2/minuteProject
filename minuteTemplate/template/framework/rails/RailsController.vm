@@ -1,0 +1,11 @@
+#exposeVariableEntitySpecific()
+#exposeEnvironmentParams()
+#putGrailsTemplateDefinition()
+#exposeImportGrailsParamParamsUML ($table)
+package $packageName
+
+import $importDomainObjectUML
+
+class ${className} {
+     def scaffold = $domainClassName
+}

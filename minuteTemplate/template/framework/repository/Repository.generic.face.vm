@@ -1,0 +1,155 @@
+#exposeVariableEntitySpecific()
+#putImportParamsUML()
+package $packageName;
+
+import $importDomainObjectUML;
+import java.util.List;
+import net.sf.minuteProject.architecture.bsla.bean.criteria.PaginationCriteria;
+import net.sf.minuteProject.architecture.bsla.dao.face.DataAccessObject;
+
+
+/**
+ *
+ * <p>Title: $className</p>
+ *
+ * <p>Description: Interface of a Data access object dealing with $className
+ * persistence. It offers a set of methods which allow for saving,
+ * deleting and searching t objects</p>
+ *
+ */
+public interface $className <T> extends DataAccessObject {
+
+    /**
+     * Inserts an entity 
+     * @param T t
+     */
+    public void insert(T t) ;
+ 
+    /**
+     * Inserts a list of entities 
+     * @param List<T> ts
+     */
+    public void insert(List<T> l) ;
+        
+    /**
+     * Updates a T entity 
+     * @param T t
+     */
+    public T updateT(T t) ;
+
+     /**
+     * Updates a T entity with only the attributes set into T.
+     * The primary keys are to be set for this method to operate.
+     * This is a performance friendly feature, which remove the udibiquous full load and full update when an
+     * update is to be done
+   * Remark: The primary keys cannot be update by this methods, nor are the attributes that must be set to null.
+   * @param T t
+   */
+    public int updateNotNullOnlyT(T t) ;
+     
+    public int updateNotNullOnlyPrototype${tableClassName}(T t, T prototypeCriteria);
+    
+     /**
+     * Saves a T entity 
+     * @param T t
+     */
+    public void saveT(T t);
+    
+    /**
+     * Deletes a T entity 
+     * @param T t
+     */
+    public void deleteT(T t) ;
+ 
+    /**
+     * Loads the T entity which is related to an instance of
+     * T
+     * @param Long id
+     * @return T The T entity
+     
+    public T loadT(Long id);
+*/
+    /**
+     * Loads the T entity which is related to an instance of
+     * T
+#if($isMany2Many)
+     * @param T t
+#else     
+     * @param $primaryKeyFullType $primaryKey
+#end
+     * @return T The T entity
+     */
+#if($isMany2Many)
+    public T loadT(T t);
+#else      
+    public T loadT($primaryKeyFullType $primaryKeyVariable);    
+#end
+
+    /**
+     * Loads a list of T entity 
+     * @param List<$primaryKeyFullType> ${primaryKeyVariable}s
+     * @return List<T> The T entity
+     */
+    public List<T> load${tableClassName}ListBy${tableClassName} (List<T> ts);
+    
+    /**
+     * Loads a list of T entity 
+     * @param List<PK> l
+     * @return List<T> The T entity
+     */
+    public List<T> loadListByIdentifiers(List<PK> l);
+    
+    /**
+     * Loads the T entity which is related to an instance of
+     * T and its dependent one to many objects
+     * @param PK pk
+     * @return T The T entity
+     */
+    public T loadFullFirstLevel(PK pk);
+    
+    /**
+     * Loads the T entity which is related to an instance of
+     * T
+     * @param T t
+     * @return T The T entity
+     */
+    public T loadFullFirstLevel(T t);    
+    
+    
+    /**
+     * Loads the T entity which is related to an instance of
+     * T and its dependent objects one to many
+     * @param PK pk
+     * @return T The T entity
+     */
+    public T loadFull(PK pk) ;
+
+    /**
+     * Searches a list of entities based on a T containing T matching criteria
+     * @param T t
+     * @return List<T>
+     */
+    public List<T> searchPrototypeT(T t) ;
+    
+    /**
+     * Searches a list of T entity based on a list of T containing T matching criteria
+     * @param List<T> ts
+     * @return List<T>
+     */
+    public List<T> searchPrototypeT(List<T> ts) ;    
+        
+    /**
+     * Searches a list of entity 
+     * @param T t
+     * @return List
+     */
+    public List<T> searchPrototype(T tPositive, T tNegative) ;
+        
+    /**
+     * Load a paginated list of entity dependent of pagination criteria
+     * @param PaginationCriteria paginationCriteria
+     * @return List
+     */
+    public List<T> loadPaginated (T t, PaginationCriteria paginationCriteria) ;
+            
+}

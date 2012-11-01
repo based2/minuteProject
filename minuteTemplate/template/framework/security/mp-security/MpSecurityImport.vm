@@ -1,0 +1,33 @@
+   <enrichment>
+      <security-globalrights-def name="default"  /> 
+      <security-filter-def name="" />
+      <security-profile>
+         <security-authenticator-identifier  />  
+         <security-globalrights-ref ref-name="default"  /> 
+         <security-filter-ref ref-name="" />
+      </security-profile>
+      <security-globalrights-entity rights="role_2, permission_3" entities="C,D" access="r"  />
+      <entity name="$table.name">
+         <security-access globalrights="ROLE_A, PERMISSION_2" access="rw" >
+            <security-filter-ref filter-ref="" />
+         </security-access>
+         ## foreach fk parents children rw
+      </entity>
+   </enrichment>
+   
+   ## security enrichment made simple:
+   # color based security
+   # the color of the table gives the role that administrates it (shortcut a color can be given to a package of tables)
+   # children table 
+   #    when not same color:
+   #       can affect (via or not filter)
+   #       cannot add new [DEFAULT]
+   #       can have a default
+   #    when same color:
+   #       can affect (via or not filter)
+   #       can add new  
+   
+   
+   
+   # nav masterdata table cannot navigate to theirs kids.
+   # masterdata appears thru their semantic ref

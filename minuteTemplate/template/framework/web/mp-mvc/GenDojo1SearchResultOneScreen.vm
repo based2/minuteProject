@@ -1,0 +1,67 @@
+#exposeVariableEntitySpecific()
+#set ($entityInSession = "${tableClassName}SearchResultOne")
+<%@ include file="/WEB-INF/jsp/common/common-include.jsp"%>
+<fmt:setBundle basename="$bundle"/>
+<html>
+<head>
+	<title>$tableDB.name entity</title>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/common/dojo.jsp"%>	
+<!-- main entity -->
+<div class="entityMainTitle">$tableDB.name</div>
+<jsp:include page="/jsp/$model.name/$businessPackageName/${tableClassName}ResultOneBody.jsp" />
+
+<!-parents-->
+</br>
+<b>Parents</b>
+</br>
+<div id="mainTabContainerParents" dojoType="TabContainer" doLayout="false" selectedChild="tab2">
+#foreach ($reference in $parentReferences)
+#putReferenceParams()
+#exposeJstlEntity(${entityInSession} ${var})
+	<div id="${var}" dojoType="ContentPane" label="<b><fmt:message key="$resource"/></b>" style="display:none;">
+		<c:set scope="session" var="${linkclass}SearchResultOne" value="${entity}" />
+		<c:choose>
+			<c:when test="${ not empty ${linkclass}SearchResultOne}">
+				<jsp:include page="/jsp/$model.name/$associatedPackageName/${linkclass}ResultOneBody.jsp" />
+			</c:when>
+			<c:otherwise>
+				No associated ${linkclass} via ${column}
+			</c:otherwise>
+		</c:choose>		
+	</div>
+#end
+</div>		
+
+
+<!--children-->
+</br>
+<b>Children</b>
+</br>
+<div id="mainTabContainerChildren" dojoType="TabContainer" doLayout="false" selectedChild="tab2">
+#foreach ($reference in $childReferences)
+#putReferenceParams()
+#exposeJstlEntity(${entityInSession} "${var}s")
+<c:set scope="session" var="${linkclass}SearchResultList" value="${entity}" />
+	<div id="${var}" dojoType="ContentPane" label="<b><fmt:message key="$resource"/> (${ fn:length(${linkclass}SearchResultList)})</b>" style="display:none;">
+		<c:choose>
+			<c:when test="${ not empty ${linkclass}SearchResultList}">
+				<jsp:include page="/jsp/$model.name/$associatedPackageName/${linkclass}ResultListBody.jsp" />
+			</c:when>
+			<c:otherwise>
+				No associated ${linkclass} via ${column}
+			</c:otherwise>
+		</c:choose>
+		#if ($hasPrimaryKey)
+		#set ($actionURL = $URLUtils.getURLAddReferencedEntity($linktable, $column, $entityInSession, $pK))
+		</br>
+				<a href="${ctx}/$actionURL"><img src="${ctx}/images/add.gif"></a>		
+		#end
+		</br>
+	</div>						
+#end
+</div>
+
+</body>
+

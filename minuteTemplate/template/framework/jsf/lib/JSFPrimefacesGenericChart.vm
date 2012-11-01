@@ -1,0 +1,33 @@
+#exposeQuerySpecific()
+#exposeSDDSpring()
+#putImportQuerySDDBean()
+#addedAreas()
+package $packageName;
+
+import org.primefaces.model.chart.ChartModel;
+
+$!updatedAreaImport
+
+public class abstract $className <T extends ChartModel> {
+
+    private T t;
+
+    public T getChartModel() {
+        return getChartModel(getOutputList());
+    }
+    
+    private T getChartModel (List<$sddOutputBeanClass> list) {
+        T t = new T();  
+        for ($sddOutputBeanClass e : list) {
+            t.set(
+#foreach($column in $sddOutputBeanClass.columns)
+#putJavaNaming()                
+        get$ColumnClassName #if($velocityCount<$sddOutputBeanClass.columnCount), #end 
+#end
+            );
+        }
+        return t;
+    }
+
+
+}
