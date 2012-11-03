@@ -19,10 +19,7 @@ package org.apache.ddlutils.platform;
  * under the License.
  */
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.sql.DataSource;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ddlutils.DdlUtilsException;
 import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformUtils;
@@ -38,8 +35,8 @@ import org.apache.ddlutils.platform.interbase.InterbasePlatform;
 import org.apache.ddlutils.platform.maxdb.MaxDbPlatform;
 import org.apache.ddlutils.platform.mckoi.MckoiPlatform;
 import org.apache.ddlutils.platform.mssql.MSSqlPlatform;
-import org.apache.ddlutils.platform.mysql.MySqlPlatform;
 import org.apache.ddlutils.platform.mysql.MySql50Platform;
+import org.apache.ddlutils.platform.mysql.MySqlPlatform;
 import org.apache.ddlutils.platform.oracle.Oracle10Platform;
 import org.apache.ddlutils.platform.oracle.Oracle8Platform;
 import org.apache.ddlutils.platform.oracle.Oracle9Platform;
@@ -48,6 +45,11 @@ import org.apache.ddlutils.platform.sapdb.SapDbPlatform;
 import org.apache.ddlutils.platform.sqlite.Sqlite3Platform;
 import org.apache.ddlutils.platform.sybase.SybaseASE15Platform;
 import org.apache.ddlutils.platform.sybase.SybasePlatform;
+import org.apache.log4j.Logger;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A factory of {@link org.apache.ddlutils.Platform} instances based on a case
@@ -58,6 +60,8 @@ import org.apache.ddlutils.platform.sybase.SybasePlatform;
  */
 public class PlatformFactory
 {
+    private static Logger logger = Logger.getLogger(PlatformFactory.class);
+
     /** The database name -> platform map. */
     private static Map _platforms = null;
 
@@ -86,15 +90,16 @@ public class PlatformFactory
      */
     public static synchronized Platform createNewPlatformInstance(String databaseName) throws DdlUtilsException
     {
-        Class platformClass = (Class)getPlatforms().get(databaseName.toLowerCase());
-
         try
         {
-            return platformClass != null ? (Platform)platformClass.newInstance() : null;
+            Class platformClass = (Class) getPlatforms().get(databaseName.toLowerCase());
+            return platformClass != null ? (Platform) platformClass.newInstance() : null;
         }
         catch (Exception ex)
         {
-            throw new DdlUtilsException("Could not create platform for database "+databaseName, ex);
+            String message = "Could not create platform for database "+databaseName;
+            logger.error(message);
+            throw new DdlUtilsException(message, ex);
         }
     }
 
@@ -110,6 +115,12 @@ public class PlatformFactory
      */
     public static synchronized Platform createNewPlatformInstance(String jdbcDriver, String jdbcConnectionUrl) throws DdlUtilsException
     {
+        if (jdbcDriver==null) {
+            logger.error("Empty jdbcDriver");
+        }
+        if (jdbcDriver==null) {
+            logger.error("Empty jdbcConnectionUrl");
+        }
         return createNewPlatformInstance(new PlatformUtils().determineDatabaseType(jdbcDriver, jdbcConnectionUrl));
     }
 
@@ -143,6 +154,15 @@ public class PlatformFactory
      */
     public static synchronized Platform createNewPlatformInstance(DataSource dataSource, String username, String password) throws DdlUtilsException
     {
+        if (dataSource==null) {
+            logger.error("Empty dataSource");
+        }
+        if (StringUtils.isBlank(username)) {
+            logger.warn("Empty username");
+        }
+        if (StringUtils.isBlank(password)) {
+            logger.warn("Empty password");
+        }
         Platform platform = createNewPlatformInstance(new PlatformUtils().determineDatabaseType(dataSource, username, password));
 
         platform.setDataSource(dataSource);
@@ -158,7 +178,7 @@ public class PlatformFactory
      */
     public static synchronized String[] getSupportedPlatforms()
     {
-        return (String[])getPlatforms().keySet().toArray(new String[0]);
+        return (String[]) getPlatforms().keySet().toArray(new String[0]);
     }
 
     /**
@@ -223,7 +243,10 @@ public class PlatformFactory
     {
         if (!Platform.class.isAssignableFrom(platformClass))
         {
-            throw new IllegalArgumentException("Cannot register class "+platformClass.getName()+" because it does not implement the "+Platform.class.getName()+" interface");
+            String message = "Cannot register class "+platformClass.getName()
+                    +" because it does not implement the "+Platform.class.getName()+" interface";
+            logger.error(message);
+            throw new IllegalArgumentException(message);
         }
         platformMap.put(platformName.toLowerCase(), platformClass);        
     }

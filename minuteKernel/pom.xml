@@ -123,7 +123,7 @@
      </dependencies>
 
      <build>
-         <finalName>mp-kernel</finalName>
+         <finalName>minuteKernel</finalName>
          <plugins>
              <plugin>
                  <groupId>org.codehaus.gmaven</groupId>
@@ -247,7 +247,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.5.1</version>
+                <version>2.5.1</version>     <!-- 2.6 -->
                 <reportSets>
                     <reportSet>
                         <reports>

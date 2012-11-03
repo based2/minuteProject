@@ -129,6 +129,8 @@
                         <configuration>
                             <tasks>
 
+                                <mkdir dir="${basedir}/target/appassembler/repo/extra" />
+
                                 <mkdir dir="${basedir}/target/appassembler/config" />
                                 <mkdir dir="${basedir}/target/appassembler/config/catalog" />
 
@@ -146,6 +148,21 @@
                                     <fileset dir="${templateDir}/template/" includes="**/*" />
                                 </copy>
 
+                                <echo message="copy: launch scripts - ${basedir}/src/main/config"/>
+
+                                <copy todir="${basedir}/target/appassembler/bin" verbose="true">
+                                    <fileset dir="${basedir}/src/main/config" includes="**/*" />
+                                </copy>
+
+                                <echo message="copy: JDBC extra lib - ${basedir}/src/main/extra"/>
+
+                                <copy todir="${basedir}/target/appassembler/repo/extra" verbose="true">
+                                    <fileset dir="${basedir}/src/main/extra" includes="**/*" />
+                                </copy>
+
+                                <!-- TODO fix java load to place it in config
+                                   http://stackoverflow.com/questions/3844307/how-to-read-text-file-from-relative-path-in-a-project
+                                -->
                                 <echo message="copying: xml rules - ${basedir}/../minuteKernel/src/main/resources"/>
 
                                 <copy todir="${basedir}/target/appassembler/bin" verbose="true">
@@ -156,12 +173,14 @@
                                 <echo message="os: ${os.name}"/>
                                 <echo message="os.version: ${os.version}"/>
 
-                                <exec dir="${basedir}/target/appassembler/bin/"
-                                      executable="chmod u+x minuteProjectConsole.sh" />
+                                <echo message="Put your JDBC drivers in ${basedir}/target/appassembler/repo/extra"/>
 
                                 <exec dir="${basedir}/target/appassembler/bin/"
-                                      executable="minuteProjectConsole.sh">
-                                <!-- <exec dir="${basedir}/target/appassembler/bin" executable="minuteProjectConsole.bat"> -->
+                                      executable="chmod u+x start-console2.sh" />
+
+                                <exec dir="${basedir}/target/appassembler/bin/"
+                                      executable="start-console2.sh">
+                                <!-- <exec dir="${basedir}/target/appassembler/bin" executable="start-console2.bat"> -->
                                   <!--  <arg value="/c"/>
                                     <arg value="InstallMyProgram-NT.bat"/>   -->
                                 </exec>
@@ -173,7 +192,5 @@
             </plugin>
         </plugins>
     </build>
-
-
 
 </project>
