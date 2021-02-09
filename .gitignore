@@ -6,6 +6,7 @@ minuteRelease/
 minuteSample/
 minuteTemplate2/
 target/
+.svn/
 .idea
 .classpath
 .project
